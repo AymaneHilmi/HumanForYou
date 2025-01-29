@@ -65,9 +65,30 @@ with col3:
     st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
     st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
-# 📌 HISTOGRAMME DE L'ÂGE
-st.subheader("📊 Répartition de l'âge des employés")
-st.bar_chart(df['Age'])
+
+# ONGLETS INTERACTIFS 
+tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
+
+with tab1:
+    st.subheader("📌 Détails des statistiques par variable")
+    st.dataframe(df.describe())
+
+    st.subheader("📊 Répartition des valeurs catégoriques")
+    for col in df.select_dtypes(include=['category']).columns:
+        st.write(f"### {col}")
+        st.write(df[col].value_counts())
+        st.bar_chart(df[col].value_counts())
+
+with tab2:
+    st.subheader("📊 Distribution des âges")
+    st.bar_chart(df['Age'])
+
+    st.subheader("💰 Répartition des salaires")
+    st.line_chart(df['MonthlyIncome'])
+
+with tab3:
+    st.subheader("📂 Aperçu des données")
+    st.dataframe(df.head(20))
 
 # 📌 MATRICE DE CORRÉLATION
 st.subheader("📌 Matrice de Corrélation")
