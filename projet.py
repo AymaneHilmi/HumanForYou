@@ -36,8 +36,6 @@
 
 # Import des bibliothèques principales
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import streamlit as st
 
 
@@ -167,70 +165,3 @@ correlation_matrix = numeric_data.corr()
 # Matrice de correlation des données
 st.write('Matrice de correlation des données')
 st.write(correlation_matrix)
-
-
-# In[44]:
-
-
-# Analyse univariée
-# Afficher les répartitions des données
-
-import pandas as pd
-# enlever les warnings
-import warnings
-warnings.filterwarnings('ignore')
-# Charger les données fusionnées
-hr_data = pd.read_csv('merged_data.csv')
-
-# Créer un dictionnaire pour stocker les statistiques
-statistics = []
-
-# Calculer les statistiques pour chaque colonne
-def calculate_statistics(data, statistics):
-    for column in data.columns:
-        col_data = data[column]
-        if col_data.dtypes == 'object':  # Colonnes catégorielles
-            value_counts = col_data.value_counts().to_dict()
-            statistics.append({
-                'Column': column,
-                'Type': 'Categorical',
-                'Value Counts': value_counts
-            })
-        else:  # Colonnes numériques
-            statistics.append({
-                'Column': column,
-                'Type': 'Numeric',
-                'Mean': col_data.mean(),
-                'Median': col_data.median(),
-                'StdDev': col_data.std(),
-                'Min': col_data.min(),
-                'Max': col_data.max(),
-                'Unique Values': col_data.nunique()
-            })
-
-# Appeler la fonction de calcul des statistiques
-calculate_statistics(hr_data, statistics)
-
-# Convertir les statistiques en DataFrame pour l'export
-statistics_df = pd.DataFrame(statistics)
-
-# Sauvegarder les statistiques dans un fichier CSV
-statistics_df.to_csv('statistics-data.csv', index=False)
-
-# Afficher les statistiques dans la console
-# print(statistics_df)
-
-
-# In[45]:
-
-
-# Caractéristiques des employés qui ont quitté l'entreprise
-# Séparer les employés ayant quitté l'entreprise
-attrition_yes = hr_data[hr_data['Attrition'] == 'Yes']
-# Calculer les statistiques pour les employés ayant quitté l'entreprise
-statistics_attrition = []
-calculate_statistics(attrition_yes, statistics_attrition)
-statistics_attrition_df = pd.DataFrame(statistics_attrition)
-statistics_attrition_df.to_csv('statistics-attrition.csv', index=False)
-#print(statistics_attrition_df)
-
