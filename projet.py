@@ -1,113 +1,106 @@
-
 # Import des bibliothèques principales
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# 📌 CONFIGURATION DE L'INTERFACE
+st.set_page_config(page_title="Analyse RH", layout="wide")
 
+# 📌 CHARGEMENT DES DONNÉES
+@st.cache_data
+def load_data():
+    hr_data = pd.read_csv('./data/general_data.csv')
+    survey_data = pd.read_csv('./data/employee_survey_data.csv')
+    manager_data = pd.read_csv('./data/manager_survey_data.csv')
+    
+    # Fusion des datasets
+    hr_data = hr_data.merge(survey_data, on='EmployeeID')
+    hr_data = hr_data.merge(manager_data, on='EmployeeID')
+    
+    # Nettoyage et conversions
+    hr_data.drop(['EmployeeCount', 'StandardHours', 'Over18'], axis=1, inplace=True)
+    hr_data.dropna(subset=['NumCompaniesWorked', 'TotalWorkingYears'], inplace=True)
 
-# In[105]:
+    # Remplacement des valeurs manquantes
+    for col in ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']:
+        hr_data[col].fillna(hr_data[col].mean().round(), inplace=True)
 
+    # Transformation des variables catégoriques
+    hr_data['Attrition'] = hr_data['Attrition'].map({'Yes': 1, 'No': 0})
+    hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 1, 'Travel_Frequently': 2})
+    hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
+    hr_data['MaritalStatus'] = hr_data['MaritalStatus'].map({'Single': 0, 'Married': 1, 'Divorced': 2})
+    hr_data['PercentSalaryHike'] = hr_data['PercentSalaryHike'] / 100  # Mise à l'échelle
+    
+    return hr_data
 
 # Charger les données
-hr_data = pd.read_csv('./data/general_data.csv')
-survey_data = pd.read_csv('./data/employee_survey_data.csv')
-manager_data = pd.read_csv('./data/manager_survey_data.csv')
-in_time_data = pd.read_csv('./data/in_time.csv')
-out_time_data = pd.read_csv('./data/out_time.csv')
+df = load_data()
 
-# Supprimer la colonne EmployeeCount, StandardHours, Over18
-hr_data.drop(['EmployeeCount', 'StandardHours', 'Over18'], axis=1, inplace=True)
+# 📌 SIDEBAR INTERACTIVE
+st.sidebar.header("🔎 Options d'analyse")
+selected_features = st.sidebar.multiselect("Sélectionnez les variables à afficher dans la matrice de corrélation :", 
+                                           df.select_dtypes(include=['int64', 'float64']).columns.tolist(), 
+                                           default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
 
-# Supprimer les lignes pour NumCompaniesWorked vide 
-hr_data.dropna(subset=['NumCompaniesWorked'], inplace=True)
+st.sidebar.write("💡 Astuce : Sélectionnez des variables pertinentes pour une meilleure lecture.")
 
-# Supprimer les lignes pour TotalWorkingYears vide
-hr_data.dropna(subset=['TotalWorkingYears'], inplace=True)
+# 📌 TITRE PRINCIPAL
+st.title("📊 Analyse des Données")
 
+# 📌 STATISTIQUES GÉNÉRALES
+st.subheader("📌 Statistiques Clés")
+col1, col2, col3 = st.columns(3)
 
-# In[106]:
+with col1:
+    st.metric("🌍 Nombre total d'employés", df.shape[0])
+    st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
+    
+with col2:
+    st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
+    st.metric("📅 Ancienneté moyenne", f"{df['YearsAtCompany'].mean():.1f} ans")
+    
+with col3:
+    st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
+    st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
+# 📌 HISTOGRAMME DE L'ÂGE
+st.subheader("📊 Répartition de l'âge des employés")
+st.bar_chart(df['Age'])
 
-# Renommer la première colonne pour qu'elle devienne "EmployeeID" dans in_time et out_time
-in_time_data.rename(columns={"Unnamed: 0": 'EmployeeID'}, inplace=True)
-out_time_data.rename(columns={"Unnamed: 0": 'EmployeeID'}, inplace=True)
-# Definir le format en date de toutes les colonnes (type) pour in_time et out_time sauf la colonne EmployeeID
-in_time_data.iloc[:, 1:] = in_time_data.iloc[:, 1:].apply(pd.to_datetime)
-out_time_data.iloc[:, 1:] = out_time_data.iloc[:, 1:].apply(pd.to_datetime)
+# 📌 MATRICE DE CORRÉLATION
+st.subheader("📌 Matrice de Corrélation")
 
-# Fusionner les données de chaque fichier
-hr_data = hr_data.merge(survey_data, on='EmployeeID')
-hr_data = hr_data.merge(manager_data, on='EmployeeID')
-#hr_data = hr_data.merge(in_time_data, on='EmployeeID')
-#hr_data = hr_data.merge(out_time_data, on='EmployeeID')
+# Filtrer les données selon les variables sélectionnées
+correlation_matrix = df[selected_features].corr()
 
-# Moyenne sans decimales de EnvironmentSatisfaction, JobSatisfaction, WorkLifeBalance pour les valeurs manquantes
-hr_data['EnvironmentSatisfaction'].fillna(hr_data['EnvironmentSatisfaction'].mean().round(), inplace=True)
-hr_data['JobSatisfaction'].fillna(hr_data['JobSatisfaction'].mean().round(), inplace=True)
-hr_data['WorkLifeBalance'].fillna(hr_data['WorkLifeBalance'].mean().round(), inplace=True)
+# Affichage de la heatmap
+fig, ax = plt.subplots(figsize=(12, 8))
+sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, ax=ax)
+st.pyplot(fig)
 
-# Definir le format de chaque colonne (type)
-hr_data['Age'] = hr_data['Age'].astype(int)
-hr_data['Attrition'] = hr_data['Attrition'].map({'Yes': 1, 'No': 0})
-hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 1, 'Travel_Frequently': 2})
-hr_data['DistanceFromHome'] = hr_data['DistanceFromHome'].astype(int)
-hr_data['Education'] = hr_data['Education'].astype('category')
-hr_data['EducationField'] = hr_data['EducationField'].astype('category')
-hr_data['EmployeeID'] = hr_data['EmployeeID'].astype(int)
-hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
-hr_data['JobLevel'] = hr_data['JobLevel'].astype(int)
-hr_data['JobRole'] = hr_data['JobRole'].astype('category')
-hr_data['MaritalStatus'] = hr_data['MaritalStatus'].map({'Single': 0, 'Married': 1, 'Divorced': 2})
-hr_data['MonthlyIncome'] = hr_data['MonthlyIncome'].astype(float)
-hr_data['NumCompaniesWorked'] = hr_data['NumCompaniesWorked'].astype(int)
-hr_data['PercentSalaryHike'] = hr_data['PercentSalaryHike'].astype(float) / 100
-hr_data['StockOptionLevel'] = hr_data['StockOptionLevel'].astype(int)
-hr_data['TotalWorkingYears'] = hr_data['TotalWorkingYears'].astype(int)
-hr_data['TrainingTimesLastYear'] = hr_data['TrainingTimesLastYear'].astype(int)
-hr_data['YearsAtCompany'] = hr_data['YearsAtCompany'].astype(int)
-hr_data['YearsSinceLastPromotion'] = hr_data['YearsSinceLastPromotion'].astype(int)
-hr_data['YearsWithCurrManager'] = hr_data['YearsWithCurrManager'].astype(int)
-hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype('category')
-hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype('category')
-hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype('category')
-hr_data['JobSatisfaction'] = hr_data['JobSatisfaction'].astype('category')
-hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
+# 📌 TABLEAU DES CORRÉLATIONS
+st.subheader("📊 Tableau des Corrélations")
+st.write(correlation_matrix)
 
+# 📌 ANALYSE DES DÉPARTS
+st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
+col1, col2 = st.columns(2)
 
-####### Ne pas lancer cette section avec Jupyter #######
+with col1:
+    st.write("📌 **Moyenne d'âge des employés ayant quitté :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['Age'].mean():.1f} ans")
 
-# Moyenne d'age des employés qui ont quitté l'entreprise
-####### Ne pas lancer cette section avec Jupyter #######
+    st.write("📌 **Salaire moyen des employés ayant quitté :**")
+    st.write(f"➡️ ${df[df['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
 
-# Moyenne d'age des employés qui ont quitté l'entreprise
-st.title('Analyse des données RH')
-st.write('Moyenne d\'age des employés qui ont quitté l\'entreprise')
-st.write(hr_data[hr_data['Attrition'] == 1]['Age'].mean())
+with col2:
+    st.write("📌 **Nombre moyen d'années dans l'entreprise avant de partir :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['YearsAtCompany'].mean():.1f} ans")
 
-# Moyenne d'age des employés qui sont restés dans l'entreprise
-st.write('Moyenne d\'age des employés qui sont restés dans l\'entreprise')
-st.write(hr_data[hr_data['Attrition'] == 0]['Age'].mean())
+    st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
 
-# Repartition hommes/femmes
-st.write('Repartition hommes/femmes')
-st.write(hr_data[hr_data['Gender'] == 1].shape[0]/hr_data.shape[0] * 100 , '% d\'hommes')
-
-# Taux de satisfaction en fonction du niveau d'implication
-st.write('Taux de satisfaction en fonction du niveau d\'implication')
-
-# Histogramme de l'age des employés
-st.write('Histogramme de l\'age des employés')
-st.bar_chart(hr_data['Age'])
-
-
-# Calculer la matrice de corrélation uniquement pour les colonnes numériques (utiliser les donnees normalisées)
-normalized_data = pd.read_csv('merged_data_normalized.csv')
-numeric_data = normalized_data.select_dtypes(include=['int', 'float'])
-correlation_matrix = numeric_data.corr()
-
-# Matrice de correlation des données avec des couleurs
-fig, ax = plt.subplots()
-sns.heatmap(correlation_matrix, annot=True, ax=ax)
-st.write(fig)
+# 📌 FIN DU SCRIPT
+st.success("🚀 Analyse terminée ! Sélectionnez des variables dans la sidebar pour explorer plus en détail. ")
