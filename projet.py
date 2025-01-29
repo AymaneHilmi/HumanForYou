@@ -1,62 +1,18 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[96]:
-
-
-# Age : Integer (Années)
-# Attrition : Boolean
-# BusinessTravel : Categorical (Non-Travel, Travel_Rarely, Travel_Frequently)
-# DistanceFromHome : Integer (km)
-# Education : Categorical (Avant College, College, Bachelor, Master, PhD)
-# EducationField : Categorical (Domaines d’étude)
-# EmployeeId : Integer (Identifiant unique)
-# Gender : Boolean (Homme/Femme)
-# JobLevel : Integer (1-5, niveau hiérarchique)
-# JobRole : Categorical (Intitulé des postes)
-# MaritalStatus : Categorical (Single, Married, Divorced)
-# MonthlyIncome : Float (Salaire mensuel)
-# NumCompaniesWorked : Integer (Nombre d’entreprises)
-# PercentSalaryHike : Float (Pourcentage)
-# StockOptionLevel : Integer (Niveau d’actions : 0, 1, 2, 3)
-# TotalWorkingYears : Integer (Années)
-# TrainingTimesLastYear : Integer (Jours)
-# YearsAtCompany : Integer (Années)
-# YearsSinceLastPromotion : Integer (Années)
-# YearsWithCurrentManager : Integer (Années)
-# JobInvolvement : Integer (1-4, Niveau d’implication)
-# PerformanceRating : Integer (1-4, Niveau de performance)
-# EnvironmentSatisfaction : Integer ou Null (1-4, Niveau de satisfaction, “NA” pour non-réponse)
-# JobSatisfaction : Integer ou Null (1-4, Niveau de satisfaction, “NA” pour non-réponse)
-# WorkLifeBalance : Integer ou Null (1-4, Niveau de satisfaction, “NA” pour non-réponse)
-
-
-# In[97]:
-
 
 # Import des bibliothèques principales
 import pandas as pd
 import streamlit as st
 
 
-# In[ ]:
+# In[105]:
 
 
 # Charger les données
-hr_data = pd.read_csv('general_data.csv')
-survey_data = pd.read_csv('employee_survey_data.csv')
-manager_data = pd.read_csv('manager_survey_data.csv')
-in_time_data = pd.read_csv('in_time.csv')
-out_time_data = pd.read_csv('out_time.csv')
-
-# Aperçu des données
-#print(in_time_data.head())
-#print(out_time_data.head())
-
-# Voir les donnees manquantes
-print(hr_data.isnull().sum())
-print(survey_data.isnull().sum())
-print(manager_data.isnull().sum())
+hr_data = pd.read_csv('./data/general_data.csv')
+survey_data = pd.read_csv('./data/employee_survey_data.csv')
+manager_data = pd.read_csv('./data/manager_survey_data.csv')
+in_time_data = pd.read_csv('./data/in_time.csv')
+out_time_data = pd.read_csv('./data/out_time.csv')
 
 # Supprimer la colonne EmployeeCount, StandardHours, Over18
 hr_data.drop(['EmployeeCount', 'StandardHours', 'Over18'], axis=1, inplace=True)
@@ -68,7 +24,7 @@ hr_data.dropna(subset=['NumCompaniesWorked'], inplace=True)
 hr_data.dropna(subset=['TotalWorkingYears'], inplace=True)
 
 
-# In[99]:
+# In[106]:
 
 
 # Renommer la première colonne pour qu'elle devienne "EmployeeID" dans in_time et out_time
@@ -116,24 +72,6 @@ hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype('
 hr_data['JobSatisfaction'] = hr_data['JobSatisfaction'].astype('category')
 hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
 
-# Sauvegarder les données fusionnées
-hr_data.to_csv('merged_data.csv', index=False)
-
-
-# In[ ]:
-
-
-# Verification du type de chaque colonne
-print(hr_data.dtypes)
-
-# Voir les donnees manquantes
-print(hr_data.isnull().sum())
-print(survey_data.isnull().sum())
-print(manager_data.isnull().sum())
-
-
-# In[ ]:
-
 
 ####### Ne pas lancer cette section avec Jupyter #######
 
@@ -156,7 +94,6 @@ st.write('Taux de satisfaction en fonction du niveau d\'implication')
 # Histogramme de l'age des employés
 st.write('Histogramme de l\'age des employés')
 st.bar_chart(hr_data['Age'])
-
 
 # Calculer la matrice de corrélation uniquement pour les colonnes numériques
 numeric_data = hr_data.select_dtypes(include=['int', 'float'])
