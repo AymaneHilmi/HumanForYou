@@ -76,6 +76,9 @@ hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
 ####### Ne pas lancer cette section avec Jupyter #######
 
 # Moyenne d'age des employés qui ont quitté l'entreprise
+####### Ne pas lancer cette section avec Jupyter #######
+
+# Moyenne d'age des employés qui ont quitté l'entreprise
 st.title('Analyse des données RH')
 st.write('Moyenne d\'age des employés qui ont quitté l\'entreprise')
 st.write(hr_data[hr_data['Attrition'] == 1]['Age'].mean())
@@ -95,8 +98,10 @@ st.write('Taux de satisfaction en fonction du niveau d\'implication')
 st.write('Histogramme de l\'age des employés')
 st.bar_chart(hr_data['Age'])
 
-# Calculer la matrice de corrélation uniquement pour les colonnes numériques
-numeric_data = hr_data.select_dtypes(include=['int', 'float'])
+
+# Calculer la matrice de corrélation uniquement pour les colonnes numériques (utiliser les donnees normalisées)
+normalized_data = pd.read_csv('merged_data_normalized.csv')
+numeric_data = normalized_data.select_dtypes(include=['int', 'float'])
 correlation_matrix = numeric_data.corr()
 
 # Matrice de correlation des données

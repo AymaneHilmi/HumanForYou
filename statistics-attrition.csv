@@ -1,0 +1,27 @@
+Column,Type,Mean,Median,StdDev,Min,Max,Unique Values,Value Counts
+Age,Numeric,,,,,,0.0,
+Attrition,Numeric,,,,,,0.0,
+BusinessTravel,Numeric,,,,,,0.0,
+Department,Categorical,,,,,,,{}
+DistanceFromHome,Numeric,,,,,,0.0,
+Education,Numeric,,,,,,0.0,
+EducationField,Categorical,,,,,,,{}
+EmployeeID,Numeric,,,,,,0.0,
+Gender,Numeric,,,,,,0.0,
+JobLevel,Numeric,,,,,,0.0,
+JobRole,Categorical,,,,,,,{}
+MaritalStatus,Numeric,,,,,,0.0,
+MonthlyIncome,Numeric,,,,,,0.0,
+NumCompaniesWorked,Numeric,,,,,,0.0,
+PercentSalaryHike,Numeric,,,,,,0.0,
+StockOptionLevel,Numeric,,,,,,0.0,
+TotalWorkingYears,Numeric,,,,,,0.0,
+TrainingTimesLastYear,Numeric,,,,,,0.0,
+YearsAtCompany,Numeric,,,,,,0.0,
+YearsSinceLastPromotion,Numeric,,,,,,0.0,
+YearsWithCurrManager,Numeric,,,,,,0.0,
+EnvironmentSatisfaction,Numeric,,,,,,0.0,
+JobSatisfaction,Numeric,,,,,,0.0,
+WorkLifeBalance,Numeric,,,,,,0.0,
+JobInvolvement,Numeric,,,,,,0.0,
+PerformanceRating,Numeric,,,,,,0.0,
