@@ -2,6 +2,7 @@
 # Import des bibliothèques principales
 import pandas as pd
 import streamlit as st
+import matplotlib.pyplot as plt
 
 
 # In[105]:
@@ -104,6 +105,7 @@ normalized_data = pd.read_csv('merged_data_normalized.csv')
 numeric_data = normalized_data.select_dtypes(include=['int', 'float'])
 correlation_matrix = numeric_data.corr()
 
-# Matrice de correlation des données
-st.write('Matrice de correlation des données')
-st.write(correlation_matrix)
+# Matrice de correlation des données avec des couleurs
+fig, ax = plt.subplots()
+sns.heatmap(correlation_matrix, annot=True, ax=ax)
+st.write(fig)
