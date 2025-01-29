@@ -41,7 +41,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 
 
-# In[98]:
+# In[ ]:
 
 
 # Charger les données
@@ -122,7 +122,7 @@ hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
 hr_data.to_csv('merged_data.csv', index=False)
 
 
-# In[100]:
+# In[ ]:
 
 
 # Verification du type de chaque colonne
@@ -134,8 +134,10 @@ print(survey_data.isnull().sum())
 print(manager_data.isnull().sum())
 
 
-# In[101]:
+# In[ ]:
 
+
+####### Ne pas lancer cette section avec Jupyter #######
 
 # Moyenne d'age des employés qui ont quitté l'entreprise
 st.title('Analyse des données RH')
@@ -148,7 +150,7 @@ st.write(hr_data[hr_data['Attrition'] == 0]['Age'].mean())
 
 # Repartition hommes/femmes
 st.write('Repartition hommes/femmes')
-st.write(hr_data[hr_data['Gender'] == 1].shape[0])
+st.write(hr_data[hr_data['Gender'] == 1].shape[0]/hr_data.shape[0] * 100 , '% d\'hommes')
 
 # Taux de satisfaction en fonction du niveau d'implication
 st.write('Taux de satisfaction en fonction du niveau d\'implication')
@@ -165,7 +167,6 @@ correlation_matrix = numeric_data.corr()
 # Matrice de correlation des données
 st.write('Matrice de correlation des données')
 st.write(correlation_matrix)
-
 
 
 # In[44]:
@@ -232,6 +233,4 @@ calculate_statistics(attrition_yes, statistics_attrition)
 statistics_attrition_df = pd.DataFrame(statistics_attrition)
 statistics_attrition_df.to_csv('statistics-attrition.csv', index=False)
 #print(statistics_attrition_df)
-
-
 
