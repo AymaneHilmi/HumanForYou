@@ -37,6 +37,8 @@ def load_data():
     # Chargement des données d'absentéisme
     in_time_data = pd.read_csv('./data/in_time.csv')
     out_time_data = pd.read_csv('./data/out_time.csv')
+    in_time_data.rename(columns={"Unnamed: 0": 'EmployeeID'}, inplace=True)
+    out_time_data.rename(columns={"Unnamed: 0": 'EmployeeID'}, inplace=True)
 
     # Calcul des jours d'absence
     absence_status = (in_time_data.iloc[:, 1:].isna() | out_time_data.iloc[:, 1:].isna())
@@ -87,12 +89,11 @@ st.subheader("📌 Statistiques d'Absentéisme")
 col1, col2 = st.columns(2)
 
 with col1:
-    st.metric("📅 Nombre total de jours d'absence", absence_days['AbsenceDays'].sum())
     st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
 
 with col2:
     max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
-    st.metric("👥 Employé avec le plus d'absences", f"ID: {max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+    st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
 
 # 📌 ONGLETS INTERACTIFS
 tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
