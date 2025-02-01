@@ -25,14 +25,33 @@ def load_data():
 
     # Remplacement des valeurs manquantes
     for col in ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']:
-        hr_data[col].fillna(hr_data[col].mean().round(), inplace=True)
+        hr_data[col].fillna(hr_data[col].median(), inplace=True)
 
     # Transformation des variables catégoriques
+    hr_data['Age'] = hr_data['Age'].astype(int)
     hr_data['Attrition'] = hr_data['Attrition'].map({'Yes': 1, 'No': 0})
     hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 1, 'Travel_Frequently': 2})
+    hr_data['DistanceFromHome'] = hr_data['DistanceFromHome'].astype(int)
+    hr_data['Education'] = hr_data['Education'].astype('category')
+    hr_data['EducationField'] = hr_data['EducationField'].astype('category')
+    hr_data['EmployeeID'] = hr_data['EmployeeID'].astype(int)
     hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
+    hr_data['JobLevel'] = hr_data['JobLevel'].astype(int)
+    hr_data['JobRole'] = hr_data['JobRole'].astype('category')
     hr_data['MaritalStatus'] = hr_data['MaritalStatus'].map({'Single': 0, 'Married': 1, 'Divorced': 2})
-    hr_data['PercentSalaryHike'] = hr_data['PercentSalaryHike'] / 100  # Mise à l'échelle
+    hr_data['MonthlyIncome'] = hr_data['MonthlyIncome'].astype(float)
+    hr_data['NumCompaniesWorked'] = hr_data['NumCompaniesWorked'].astype(int)
+    hr_data['PercentSalaryHike'] = hr_data['PercentSalaryHike'].astype(float) / 100
+    hr_data['StockOptionLevel'] = hr_data['StockOptionLevel'].astype(int)
+    hr_data['TotalWorkingYears'] = hr_data['TotalWorkingYears'].astype(int)
+    hr_data['TrainingTimesLastYear'] = hr_data['TrainingTimesLastYear'].astype(int)
+    hr_data['YearsAtCompany'] = hr_data['YearsAtCompany'].astype(int)
+    hr_data['YearsSinceLastPromotion'] = hr_data['YearsSinceLastPromotion'].astype(int)
+    hr_data['YearsWithCurrManager'] = hr_data['YearsWithCurrManager'].astype(int)
+    hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype('category')
+    hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype('category')
+    hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype('category')
+    hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
 
     # Chargement des données d'absentéisme
     in_time_data = pd.read_csv('./data/in_time.csv')
@@ -45,11 +64,11 @@ def load_data():
     absence_status = absence_status.dropna(axis=0, how='all')
     absence_status = absence_status.replace({True: 'Absent', False: 'Present'})
     absence_status.insert(0, 'EmployeeID', in_time_data['EmployeeID'])
-
+    
     # Comptage des jours d'absence
     absence_days = absence_status.iloc[:, 1:].apply(lambda x: (x == 'Absent').sum(), axis=1)
     absence_days = pd.DataFrame({'EmployeeID': absence_status['EmployeeID'], 'AbsenceDays': absence_days})
-
+    
     hr_data = hr_data.merge(absence_days, on='EmployeeID', how='left')  # Ajouter le nombre de jours d'absence
 
     return hr_data, absence_status, absence_days
@@ -95,7 +114,7 @@ with col2:
     max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
     st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
 
-# 📌 ONGLETS INTERACTIFS
+# 📌 ONGLETS INTERACTIFS 
 tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
 
 with tab1:
@@ -110,10 +129,33 @@ with tab1:
 
 with tab2:
     st.subheader("📊 Distribution des âges")
-    st.bar_chart(df['Age'])
+    st.write("📈 Répartition des âges des employés"
+             "\n🔴 18 - 25 ans, 🔵 26 - 35 ans, 🟢 36 - 45 ans, 🟡 46 - 55 ans, 🟣 56 - 65 ans")
+    age_bins = pd.cut(df['Age'], bins=[18, 25, 35, 45, 55, 65], precision=0, right=False)
+    age_bins_str = age_bins.astype(str)
+    age_distribution = age_bins_str.value_counts().sort_index()
+    age_distribution.index = age_distribution.index.str.replace('[', '').str.replace(')', '').str.replace(',', ' -')
+    st.bar_chart(age_distribution)
 
-    st.subheader("💰 Répartition des salaires")
-    st.line_chart(df['MonthlyIncome'])
+
+    # 📌 RÉPARTITION DES SALAIRES PAR TRANCHE
+    st.subheader("💰 Répartition des salaires par tranche")
+    salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
+    salary_bins_str = salary_bins.astype(str)
+    salary_distribution = salary_bins_str.value_counts().sort_index()
+    salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
+    st.bar_chart(salary_distribution)
+
+    st.subheader("📈 Répartition des années d'ancienneté par YearsAtCompany")
+    # axe x : nombre d'années, axe y : nombre d'employés
+    st.bar_chart(df['YearsAtCompany'].value_counts())
+
+    st.subheader("📊 Répartition des niveaux de satisfaction"
+                 "\n🔴 0 : Bas, 🔵 4 : Haut")
+    satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
+    for col in satisfaction_cols:
+        st.write(f"### {col}")
+        st.bar_chart(df[col].value_counts())
 
 with tab3:
     st.subheader("📂 Aperçu des données")
@@ -223,8 +265,3 @@ elif option == "📊 Taux d'attrition par genre":
     plot_line_chart(gender_attrition, "Genre", "Taux d'attrition par genre")
 elif option == "📉 Taux d'attrition par état matrimonial":
     plot_line_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
-
-
-
-# 📌 FIN DU SCRIPT
-st.success("🚀 Analyse terminée ! Sélectionnez des variables dans la sidebar pour explorer plus en détail. ")
