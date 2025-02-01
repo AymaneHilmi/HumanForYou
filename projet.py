@@ -194,3 +194,75 @@ with col2:
 
     st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
     st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
+
+# Définition des tranches d'âge
+def age_category(age):
+    if age < 30:
+        return "18-30 ans"
+    elif age <= 45:
+        return "30-45 ans"
+    else:
+        return "45+ ans"
+
+# Appliquer la fonction aux données
+df["AgeGroup"] = df["Age"].apply(age_category)
+
+# Calcul du taux d'attrition par tranche d'âge
+age_attrition = df.groupby("AgeGroup")["Attrition"].mean() * 100
+
+# Afficher les résultats
+print("Taux d'attrition par tranche d'âge (%)")
+print(age_attrition)
+
+# Visualisation avec un graphique à barres
+plt.figure(figsize=(8,5))
+sns.barplot(x=age_attrition.index, y=age_attrition.values, palette="coolwarm")
+plt.xlabel("Tranche d'âge")
+plt.ylabel("Taux d'attrition (%)")
+plt.title("Taux d'attrition par tranche d'âge")
+plt.show()
+
+import numpy as np
+from scipy.interpolate import make_interp_spline
+
+# 📌 ANALYSE DES DÉPARTS PAR GROUPE DÉMOGRAPHIQUE
+st.subheader("📊 Analyse de l'attrition par groupe démographique")
+
+# Appliquer les transformations aux colonnes nécessaires
+df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
+df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
+
+# Calcul des taux d'attrition
+age_attrition = df.groupby("Age")["Attrition"].mean() * 100
+gender_attrition = df.groupby("Gender")["Attrition"].mean() * 100
+marital_attrition = df.groupby("MaritalStatus")["Attrition"].mean() * 100
+
+# Sélection du graphique à afficher
+option = st.selectbox("Choisissez l'analyse à afficher :", ["📈 Taux d'attrition par âge", "📊 Taux d'attrition par genre", "📉 Taux d'attrition par état matrimonial"])
+
+# Fonction pour tracer un graphique avec lissage
+def plot_line_chart(data, xlabel, title):
+    fig, ax = plt.subplots(figsize=(10,6))
+
+    # Lissage avec une moyenne mobile
+    data_sorted = data.sort_index()
+    smoothed_data = data_sorted.rolling(window=3, min_periods=1).mean()
+
+    sns.lineplot(x=data_sorted.index, y=smoothed_data, marker="o", linestyle="-", color="b", ax=ax)
+
+    # Personnalisation
+    plt.xlabel(xlabel)
+    plt.ylabel("Taux d'attrition (%)")
+    plt.title(title)
+    plt.grid(True, linestyle="--", alpha=0.5)
+
+    # Affichage dans Streamlit
+    st.pyplot(fig)
+
+# Affichage du graphique en fonction de la sélection
+if option == "📈 Taux d'attrition par âge":
+    plot_line_chart(age_attrition, "Âge", "Évolution du taux d'attrition par âge")
+elif option == "📊 Taux d'attrition par genre":
+    plot_line_chart(gender_attrition, "Genre", "Taux d'attrition par genre")
+elif option == "📉 Taux d'attrition par état matrimonial":
+    plot_line_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
