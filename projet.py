@@ -123,5 +123,54 @@ with col2:
     st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
     st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
 
+# Définition des tranches d'âge
+def age_category(age):
+    if age < 30:
+        return "18-30 ans"
+    elif age <= 45:
+        return "30-45 ans"
+    else:
+        return "45+ ans"
+
+# Appliquer la fonction aux données
+df["AgeGroup"] = df["Age"].apply(age_category)
+
+# Calcul du taux d'attrition par tranche d'âge
+age_attrition = df.groupby("AgeGroup")["Attrition"].mean() * 100
+
+# Afficher les résultats
+print("Taux d'attrition par tranche d'âge (%)")
+print(age_attrition)
+
+# Visualisation avec un graphique à barres
+plt.figure(figsize=(8,5))
+sns.barplot(x=age_attrition.index, y=age_attrition.values, palette="coolwarm")
+plt.xlabel("Tranche d'âge")
+plt.ylabel("Taux d'attrition (%)")
+plt.title("Taux d'attrition par tranche d'âge")
+plt.show()
+
+# Définition des tranches d'âge
+df["AgeGroup"] = df["Age"].apply(age_category)
+
+# Calcul du taux d'attrition par tranche d'âge
+age_attrition = df.groupby("AgeGroup")["Attrition"].mean() * 100
+
+# Affichage dans Streamlit
+st.subheader("📌 Taux d'attrition par tranche d'âge")
+st.bar_chart(age_attrition)
+
+# 📌 ANALYSE DE L'ATTRITION PAR GENRE
+st.subheader("📊 Taux d'attrition par genre")
+
+# Remplacement des valeurs de la colonne Gender
+df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
+
+# Calcul du taux d'attrition par genre
+gender_attrition = df.groupby("Gender")["Attrition"].mean() * 100
+
+# Affichage des résultats sous forme de graphique
+st.bar_chart(gender_attrition)
+
 # 📌 FIN DU SCRIPT
 st.success("🚀 Analyse terminée ! Sélectionnez des variables dans la sidebar pour explorer plus en détail. ")
