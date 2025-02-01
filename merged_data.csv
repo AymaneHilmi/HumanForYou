@@ -10,7 +10,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 31,0,1,Research & Development,1,3,Life Sciences,9,1,3,Laboratory Technician,1,20440.0,0,0.21,0,10,2,9,7,8,2.0,4.0,3.0,3,4
 25,0,0,Research & Development,7,4,Medical,10,0,4,Laboratory Technician,2,134640.0,1,0.13,1,6,2,6,1,5,2.0,1.0,3.0,3,3
 45,0,1,Research & Development,17,2,Medical,11,1,2,Laboratory Technician,1,79910.0,0,0.13,2,21,2,20,4,10,3.0,4.0,3.0,2,3
-36,0,1,Research & Development,28,1,Life Sciences,12,1,1,Laboratory Technician,1,33770.0,0,0.12,2,16,2,15,10,11,3.0,4.0,3.0,3,3
+36,0,1,Research & Development,28,1,Life Sciences,12,1,1,Laboratory Technician,1,33770.0,0,0.12,2,16,2,15,10,11,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,3,3
 55,0,1,Research & Development,14,4,Life Sciences,13,0,1,Sales Executive,0,55380.0,0,0.17,0,37,2,36,4,13,4.0,1.0,3.0,3,3
 47,1,0,Research & Development,1,1,Medical,14,1,1,Research Scientist,1,57620.0,1,0.11,2,10,4,10,9,9,1.0,2.0,2.0,2,3
 28,0,1,Research & Development,1,3,Life Sciences,15,1,1,Manufacturing Director,1,25920.0,1,0.14,0,5,2,5,0,4,4.0,4.0,2.0,3,3
@@ -38,7 +49,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 42,0,2,Sales,2,2,Marketing,38,1,3,Research Director,1,29560.0,5,0.13,0,23,2,20,4,8,3.0,2.0,4.0,3,3
 18,1,1,Research & Development,1,4,Life Sciences,39,1,1,Sales Executive,0,23350.0,1,0.14,2,0,3,0,0,0,3.0,3.0,3.0,2,3
 35,0,1,Sales,20,2,Life Sciences,40,1,1,Laboratory Technician,1,51540.0,0,0.19,0,12,2,11,6,9,3.0,2.0,2.0,2,3
-36,0,2,Research & Development,8,3,Other,41,0,3,Sales Executive,1,69620.0,4,0.12,2,4,2,1,0,0,3.0,3.0,3.0,2,3
+36,0,2,Research & Development,8,3,Other,41,0,3,Sales Executive,1,69620.0,4,0.12,2,4,2,1,0,0,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,2,3
 51,0,1,Research & Development,2,3,Life Sciences,42,1,2,Laboratory Technician,2,56750.0,5,0.13,0,13,2,4,1,2,4.0,2.0,3.0,2,3
 41,0,1,Research & Development,29,1,Life Sciences,43,1,1,Laboratory Technician,0,23790.0,1,0.12,0,22,6,22,0,4,4.0,2.0,3.0,3,3
 18,0,1,Sales,7,3,Life Sciences,44,1,1,Research Scientist,0,38120.0,1,0.15,0,0,3,0,0,0,4.0,3.0,3.0,3,3
@@ -82,7 +104,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,1,Research & Development,11,2,Medical,82,1,1,Manager,1,43930.0,1,0.18,1,8,2,8,0,7,2.0,2.0,3.0,2,3
 37,0,1,Sales,1,4,Life Sciences,83,1,2,Healthcare Representative,2,133480.0,7,0.14,0,8,4,6,0,4,4.0,4.0,2.0,3,3
 38,0,1,Research & Development,28,4,Medical,84,1,1,Laboratory Technician,2,65830.0,0,0.12,0,12,1,11,2,9,3.0,4.0,3.0,3,3
-31,0,1,Research & Development,6,3,Medical,85,0,3,Manager,0,81030.0,1,0.15,1,11,5,11,4,10,3.0,4.0,3.0,3,3
+31,0,1,Research & Development,6,3,Medical,85,0,3,Manager,0,81030.0,1,0.15,1,11,5,11,4,10,3.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 29,0,1,Research & Development,3,4,Life Sciences,86,1,3,Sales Executive,2,39780.0,1,0.11,0,7,0,7,1,7,4.0,2.0,3.0,3,3
 35,0,1,Sales,16,2,Technical Degree,87,1,3,Manager,0,25440.0,0,0.13,1,17,3,16,0,13,3.0,2.0,3.0,4,3
 23,0,1,Research & Development,20,4,Life Sciences,88,1,1,Manufacturing Director,2,53990.0,1,0.23,0,4,2,4,0,2,3.0,4.0,2.0,2,4
@@ -109,7 +142,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 41,1,2,Research & Development,16,1,Medical,109,0,1,Research Scientist,0,28100.0,1,0.11,0,8,3,8,7,7,1.0,2.0,3.0,4,3
 50,0,1,Research & Development,9,3,Medical,110,0,3,Laboratory Technician,0,98880.0,6,0.15,0,20,2,4,1,3,4.0,4.0,3.0,3,3
 40,1,1,Research & Development,8,3,Medical,111,0,1,Healthcare Representative,1,86280.0,2,0.2,0,8,2,6,1,0,3.0,3.0,3.0,2,4
-31,0,1,Research & Development,1,3,Life Sciences,112,1,4,Human Resources,0,28670.0,0,0.24,0,3,5,2,2,2,3.0,2.0,3.0,3,4
+31,0,1,Research & Development,1,3,Life Sciences,112,1,4,Human Resources,0,28670.0,0,0.24,0,3,5,2,2,2,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",2.0,3.0,3,4
 21,1,1,Human Resources,10,2,Human Resources,113,1,1,Laboratory Technician,0,53730.0,1,0.12,1,1,2,1,0,0,3.0,2.0,3.0,3,3
 29,0,1,Research & Development,1,3,Life Sciences,114,0,2,Research Director,0,66670.0,9,0.12,1,6,6,3,1,2,4.0,4.0,3.0,4,3
 35,0,1,Research & Development,29,3,Life Sciences,115,0,3,Sales Executive,0,50030.0,9,0.15,0,10,2,1,0,0,3.0,2.0,3.0,3,3
@@ -121,7 +165,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 55,0,1,Sales,26,3,Marketing,122,1,1,Laboratory Technician,0,104480.0,2,0.13,0,30,3,5,1,2,3.0,4.0,3.0,3,3
 24,0,1,Research & Development,1,3,Life Sciences,123,0,5,Manager,2,28970.0,1,0.18,3,5,4,5,0,3,4.0,3.0,4.0,3,3
 30,0,1,Research & Development,3,3,Life Sciences,124,0,2,Manager,1,59680.0,1,0.13,0,1,3,1,0,0,3.0,2.0,3.0,3,3
-26,1,2,Sales,14,3,Life Sciences,125,1,2,Manager,0,75100.0,0,0.18,3,7,3,6,0,4,3.0,3.0,3.0,3,3
+26,1,2,Sales,14,3,Life Sciences,125,1,2,Manager,0,75100.0,0,0.18,3,7,3,6,0,4,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 22,0,1,Research & Development,16,5,Other,126,1,1,Research Scientist,1,29910.0,1,0.19,2,2,3,2,1,2,1.0,2.0,3.0,2,3
 36,0,1,Research & Development,1,3,Medical,127,0,5,Healthcare Representative,1,196360.0,1,0.12,1,10,3,10,9,0,2.0,3.0,3.0,3,3
 30,1,2,Sales,3,2,Marketing,128,1,3,Research Scientist,0,11290.0,9,0.19,0,3,2,1,0,0,3.0,4.0,3.0,2,3
@@ -191,7 +246,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 31,0,1,Research & Development,1,4,Life Sciences,193,1,3,Research Director,0,61420.0,4,0.13,2,10,2,6,0,5,2.0,4.0,4.0,2,3
 42,0,1,Research & Development,5,3,Medical,194,1,3,Sales Executive,1,53900.0,1,0.14,0,10,3,10,5,8,4.0,1.0,2.0,3,3
 45,0,1,Research & Development,2,1,Medical,195,0,4,Sales Executive,1,44040.0,0,0.23,0,9,2,8,3,7,4.0,2.0,4.0,3,4
-26,1,2,Research & Development,2,1,Life Sciences,196,0,2,Laboratory Technician,2,59930.0,0,0.12,0,8,3,7,1,0,3.0,3.0,2.0,3,3
+26,1,2,Research & Development,2,1,Life Sciences,196,0,2,Laboratory Technician,2,59930.0,0,0.12,0,8,3,7,1,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,2.0,3,3
 29,0,1,Research & Development,5,3,Medical,197,1,1,Research Scientist,2,51300.0,4,0.11,0,8,3,3,1,2,4.0,4.0,4.0,2,3
 33,0,1,Research & Development,16,3,Medical,198,0,1,Laboratory Technician,2,20900.0,4,0.16,0,10,2,6,0,5,1.0,3.0,3.0,3,3
 31,0,1,Research & Development,2,4,Life Sciences,199,0,1,Sales Executive,2,29090.0,9,0.14,2,10,2,5,0,1,3.0,4.0,2.0,3,3
@@ -268,7 +334,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 50,1,2,Research & Development,4,2,Medical,271,1,4,Sales Representative,1,44240.0,3,0.14,1,18,2,4,1,3,2.0,3.0,3.0,2,3
 38,0,1,Research & Development,9,4,Life Sciences,272,1,1,Sales Executive,0,43120.0,0,0.12,1,10,2,9,1,8,2.0,4.0,2.0,2,3
 27,0,1,Research & Development,10,3,Medical,273,1,5,Research Scientist,1,132450.0,1,0.23,1,9,3,9,0,7,3.0,1.0,3.0,2,4
-32,0,1,Sales,1,3,Medical,274,1,2,Sales Executive,0,136640.0,3,0.14,0,10,6,7,7,7,3.0,4.0,3.0,3,3
+32,0,1,Sales,1,3,Medical,274,1,2,Sales Executive,0,136640.0,3,0.14,0,10,6,7,7,7,3.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 47,0,1,Research & Development,2,3,Medical,275,0,5,Sales Executive,0,50210.0,2,0.17,0,20,3,7,1,7,4.0,1.0,3.0,3,3
 40,0,2,Research & Development,3,4,Medical,276,0,3,Human Resources,1,51260.0,5,0.18,0,20,2,18,1,12,4.0,1.0,3.0,3,3
 53,0,1,Research & Development,7,1,Life Sciences,277,1,2,Laboratory Technician,1,28590.0,3,0.18,1,32,2,5,1,3,3.0,3.0,3.0,3,3
@@ -295,7 +372,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 29,0,1,Sales,20,3,Marketing,298,0,2,Manager,2,29260.0,1,0.15,1,2,3,2,2,2,4.0,2.0,3.0,2,3
 53,0,1,Research & Development,9,3,Life Sciences,299,0,3,Laboratory Technician,0,48090.0,2,0.18,0,19,2,2,2,2,4.0,4.0,3.0,3,3
 35,0,0,Research & Development,5,1,Medical,300,1,1,Healthcare Representative,2,51630.0,2,0.18,2,16,4,1,0,0,4.0,1.0,4.0,3,3
-32,0,2,Sales,4,4,Life Sciences,301,1,2,Sales Executive,1,188440.0,1,0.19,0,10,3,10,4,7,3.0,4.0,3.0,1,3
+32,0,2,Sales,4,4,Life Sciences,301,1,2,Sales Executive,1,188440.0,1,0.19,0,10,3,10,4,7,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,1,3
 38,0,1,Sales,10,3,Medical,302,1,4,Laboratory Technician,1,181720.0,6,0.12,2,6,5,1,0,1,4.0,3.0,1.0,3,3
 34,0,1,Research & Development,20,3,Medical,303,0,3,Laboratory Technician,2,57440.0,3,0.19,1,7,4,0,0,0,2.0,1.0,3.0,2,3
 52,0,1,Sales,21,5,Technical Degree,304,1,3,Manager,1,28890.0,1,0.11,1,34,2,34,1,16,3.0,1.0,4.0,3,3
@@ -307,7 +395,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 55,1,1,Human Resources,7,3,Human Resources,311,1,4,Laboratory Technician,1,74280.0,5,0.12,0,24,2,5,1,4,4.0,1.0,3.0,3,3
 36,0,0,Research & Development,7,2,Life Sciences,312,1,5,Sales Executive,0,116310.0,1,0.18,1,10,2,10,0,9,1.0,1.0,3.0,1,3
 52,0,0,Research & Development,1,4,Life Sciences,313,1,5,Sales Executive,1,97380.0,0,0.18,2,5,2,4,1,2,4.0,4.0,3.0,3,3
-26,0,2,Research & Development,2,2,Life Sciences,314,1,1,Manufacturing Director,2,28350.0,3,0.11,1,5,2,2,2,0,1.0,3.0,3.0,3,3
+26,0,2,Research & Development,2,2,Life Sciences,314,1,1,Manufacturing Director,2,28350.0,3,0.11,1,5,2,2,2,0,1.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 29,0,1,Research & Development,10,2,Medical,315,1,3,Manufacturing Director,1,169590.0,4,0.14,3,11,5,8,1,1,2.0,3.0,2.0,3,3
 26,1,1,Research & Development,15,2,Life Sciences,316,1,2,Laboratory Technician,0,26130.0,6,0.19,1,6,2,4,1,2,4.0,1.0,2.0,3,3
 34,0,1,Research & Development,14,4,Technical Degree,317,1,2,Manufacturing Director,0,61460.0,2,0.12,0,10,3,4,1,3,2.0,4.0,3.0,3,3
@@ -398,7 +497,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 58,1,2,Sales,9,2,Technical Degree,403,1,1,Sales Executive,2,21530.0,9,0.11,0,3,3,1,0,0,4.0,4.0,2.0,3,3
 43,0,1,Sales,7,4,Marketing,404,1,2,Sales Executive,2,48760.0,4,0.16,2,4,4,1,0,0,1.0,2.0,4.0,3,3
 20,1,1,Research & Development,11,3,Medical,405,1,2,Sales Executive,0,93960.0,1,0.12,0,2,6,2,0,2,3.0,3.0,2.0,1,3
-21,1,1,Research & Development,1,3,Medical,406,1,2,Sales Executive,0,104000.0,1,0.13,1,1,2,1,0,0,3.0,4.0,2.0,3,3
+21,1,1,Research & Development,1,3,Medical,406,1,2,Sales Executive,0,104000.0,1,0.13,1,1,2,1,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,2.0,3,3
 36,0,1,Research & Development,26,4,Medical,407,1,1,Laboratory Technician,1,84740.0,0,0.14,0,17,3,16,4,11,3.0,4.0,2.0,3,3
 47,0,1,Research & Development,2,3,Life Sciences,408,1,2,Manufacturing Director,0,99810.0,1,0.21,1,3,3,3,1,2,4.0,4.0,2.0,3,4
 22,1,1,Research & Development,15,4,Life Sciences,409,0,1,Laboratory Technician,1,124900.0,0,0.13,0,4,3,3,0,2,2.0,3.0,4.0,3,3
@@ -475,13 +585,35 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 39,0,1,Sales,2,3,Life Sciences,481,1,3,Human Resources,1,21150.0,1,0.18,0,21,3,21,11,8,4.0,4.0,3.0,4,3
 27,0,1,Research & Development,3,3,Life Sciences,482,1,2,Human Resources,1,31610.0,0,0.13,2,4,0,3,2,2,1.0,4.0,3.0,3,3
 35,0,1,Sales,24,3,Medical,483,1,5,Sales Executive,2,57450.0,1,0.17,3,3,4,3,1,2,2.0,4.0,2.0,3,3
-42,0,1,Research & Development,23,4,Other,484,1,1,Research Scientist,1,23730.0,6,0.14,1,21,3,1,0,0,4.0,3.0,3.0,4,3
+42,0,1,Research & Development,23,4,Other,484,1,1,Research Scientist,1,23730.0,6,0.14,1,21,3,1,0,0,4.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,3
 50,0,1,Sales,27,3,Medical,485,1,2,Sales Executive,1,33100.0,4,0.22,1,8,3,1,0,0,1.0,4.0,3.0,4,4
 59,0,1,Research & Development,16,4,Medical,486,0,5,Laboratory Technician,0,186650.0,3,0.12,0,30,3,5,4,3,3.0,4.0,3.0,2,3
 37,1,1,Sales,15,3,Marketing,487,1,2,Laboratory Technician,1,44850.0,5,0.11,1,15,2,1,0,0,1.0,2.0,1.0,4,3
 55,0,2,Research & Development,26,2,Life Sciences,488,0,2,Sales Executive,1,27890.0,3,0.13,1,17,2,8,6,7,3.0,2.0,3.0,2,3
 41,0,0,Research & Development,19,1,Life Sciences,489,1,2,Research Scientist,2,58280.0,1,0.13,0,21,0,21,5,10,2.0,3.0,3.0,3,3
-38,0,1,Research & Development,24,2,Other,490,0,1,Laboratory Technician,0,23260.0,8,0.14,0,19,3,1,0,0,3.0,4.0,3.0,4,3
+38,0,1,Research & Development,24,2,Other,490,0,1,Laboratory Technician,0,23260.0,8,0.14,0,19,3,1,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,4,3
 26,1,0,Research & Development,21,1,Life Sciences,491,0,1,Manufacturing Director,0,135250.0,8,0.17,1,7,4,2,2,2,2.0,1.0,3.0,2,3
 52,1,1,Research & Development,5,4,Medical,492,0,4,Human Resources,1,14200.0,1,0.13,1,33,2,32,6,9,1.0,4.0,3.0,4,3
 44,0,1,Research & Development,16,3,Life Sciences,493,0,1,Healthcare Representative,1,80200.0,3,0.11,1,23,2,12,11,11,4.0,4.0,3.0,3,3
@@ -577,7 +709,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 24,0,1,Sales,7,4,Life Sciences,584,0,1,Laboratory Technician,0,25760.0,8,0.17,3,6,3,4,1,2,4.0,2.0,3.0,3,3
 28,1,1,Research & Development,15,4,Life Sciences,585,1,2,Sales Executive,1,41970.0,1,0.13,0,1,3,1,0,0,3.0,4.0,2.0,1,3
 26,0,1,Research & Development,1,4,Life Sciences,586,1,2,Sales Representative,1,143360.0,1,0.21,1,8,3,8,0,7,1.0,4.0,3.0,3,4
-30,0,1,Research & Development,7,2,Life Sciences,587,0,1,Manufacturing Director,1,34480.0,1,0.11,0,10,3,10,1,4,3.0,3.0,3.0,3,3
+30,0,1,Research & Development,7,2,Life Sciences,587,0,1,Manufacturing Director,1,34480.0,1,0.11,0,10,3,10,1,4,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 40,0,2,Research & Development,26,4,Life Sciences,588,1,2,Research Scientist,1,194060.0,3,0.2,3,16,2,1,0,0,3.0,4.0,1.0,3,4
 35,0,1,Research & Development,18,5,Medical,589,0,2,Research Scientist,2,65380.0,2,0.16,1,15,3,7,6,4,3.0,2.0,4.0,3,3
 34,0,2,Research & Development,6,2,Life Sciences,590,1,1,Research Director,0,43060.0,0,0.11,0,14,2,13,4,9,4.0,1.0,3.0,3,3
@@ -600,7 +743,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 41,1,0,Research & Development,12,3,Life Sciences,607,1,2,Sales Representative,2,195660.0,6,0.16,0,5,2,1,0,0,1.0,1.0,1.0,4,3
 30,0,1,Sales,20,3,Marketing,608,1,3,Sales Executive,2,48100.0,8,0.18,0,8,3,4,0,3,3.0,1.0,3.0,2,3
 40,0,2,Sales,9,3,Medical,609,1,1,Manufacturing Director,1,45230.0,5,0.16,1,5,5,0,0,0,2.0,2.0,3.0,4,3
-50,0,2,Research & Development,25,4,Life Sciences,610,0,2,Healthcare Representative,1,32020.0,2,0.24,1,32,2,2,2,2,4.0,1.0,3.0,3,4
+50,0,2,Research & Development,25,4,Life Sciences,610,0,2,Healthcare Representative,1,32020.0,2,0.24,1,32,2,2,2,2,4.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,4
 28,0,1,Research & Development,6,3,Technical Degree,611,1,2,Research Scientist,1,23510.0,1,0.16,0,6,4,6,3,3,4.0,1.0,3.0,3,3
 46,0,1,Research & Development,8,4,Other,612,1,3,Manager,1,17020.0,5,0.21,0,25,2,4,0,3,4.0,2.0,3.0,3,4
 35,0,1,Sales,4,4,Marketing,613,1,1,Laboratory Technician,1,180410.0,3,0.2,1,15,3,7,1,7,3.0,1.0,3.0,2,4
@@ -668,7 +822,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 28,0,1,Sales,1,4,Life Sciences,676,0,2,Sales Representative,0,20330.0,2,0.15,1,5,5,3,1,2,4.0,1.0,2.0,3,3
 25,0,1,Research & Development,18,2,Life Sciences,677,1,1,Research Scientist,0,36220.0,1,0.25,0,2,0,2,2,1,4.0,2.0,2.0,3,4
 32,0,1,Research & Development,10,4,Other,678,0,1,Sales Executive,1,42330.0,1,0.11,0,10,5,10,0,8,3.0,4.0,4.0,3,3
-45,0,2,Research & Development,19,3,Medical,679,1,3,Laboratory Technician,0,36810.0,3,0.17,1,22,2,0,0,0,3.0,2.0,3.0,3,3
+45,0,2,Research & Development,19,3,Medical,679,1,3,Laboratory Technician,0,36810.0,3,0.17,1,22,2,0,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",2.0,3.0,3,3
 39,0,1,Sales,29,1,Marketing,680,0,1,Laboratory Technician,2,54600.0,6,0.13,2,21,3,19,15,2,3.0,2.0,3.0,3,3
 58,0,1,Research & Development,27,3,Other,681,1,2,Laboratory Technician,2,21870.0,1,0.18,1,2,1,2,2,2,1.0,3.0,3.0,1,3
 32,1,1,Research & Development,5,3,Technical Degree,682,0,1,Sales Executive,1,96020.0,1,0.13,1,10,3,10,1,1,4.0,3.0,3.0,3,3
@@ -725,7 +890,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 33,0,2,Research & Development,2,3,Medical,733,0,1,Sales Executive,1,87930.0,6,0.17,0,8,2,5,1,2,2.0,4.0,4.0,3,3
 32,0,1,Research & Development,1,4,Medical,734,1,5,Research Director,1,191890.0,0,0.12,1,4,3,3,1,2,3.0,2.0,2.0,3,3
 39,0,0,Research & Development,29,2,Life Sciences,735,1,2,Sales Executive,1,38750.0,3,0.15,0,13,3,6,0,5,3.0,3.0,3.0,3,3
-25,0,1,Research & Development,7,4,Life Sciences,736,1,1,Sales Executive,1,22160.0,2,0.13,3,6,2,3,1,2,1.0,3.0,3.0,2,3
+25,0,1,Research & Development,7,4,Life Sciences,736,1,1,Sales Executive,1,22160.0,2,0.13,3,6,2,3,1,2,1.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,3
 52,0,2,Research & Development,2,1,Life Sciences,737,1,2,Sales Executive,1,117130.0,2,0.14,0,24,2,5,0,2,4.0,3.0,2.0,3,3
 43,0,1,Research & Development,2,2,Medical,738,1,1,Laboratory Technician,0,78610.0,1,0.14,2,20,1,20,1,8,1.0,3.0,1.0,3,3
 27,0,1,Research & Development,2,4,Life Sciences,739,1,1,Human Resources,1,37080.0,1,0.16,2,6,2,6,4,4,4.0,4.0,3.0,3,3
@@ -835,7 +1011,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 32,0,1,Research & Development,22,4,Medical,844,1,1,Sales Executive,1,29730.0,3,0.22,0,12,0,7,2,5,4.0,2.0,3.0,4,4
 36,0,1,Sales,9,3,Marketing,845,0,4,Research Scientist,0,142750.0,3,0.18,1,7,5,3,1,2,3.0,4.0,2.0,2,3
 48,0,1,Research & Development,12,4,Medical,846,1,1,Laboratory Technician,2,55620.0,8,0.13,1,18,2,8,7,7,3.0,3.0,3.0,3,3
-29,0,1,Research & Development,23,4,Life Sciences,847,0,2,Healthcare Representative,1,45370.0,6,0.18,1,5,5,1,0,0,3.0,3.0,2.0,4,3
+29,0,1,Research & Development,23,4,Life Sciences,847,0,2,Healthcare Representative,1,45370.0,6,0.18,1,5,5,1,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,2.0,4,3
 33,0,1,Research & Development,9,1,Medical,848,1,1,Healthcare Representative,1,76420.0,2,0.2,1,8,2,2,2,2,1.0,1.0,1.0,2,4
 30,1,1,Research & Development,1,3,Other,849,1,3,Sales Executive,1,179240.0,1,0.13,2,10,2,10,6,7,2.0,1.0,3.0,3,3
 38,0,2,Sales,9,3,Marketing,850,1,1,Manufacturing Director,1,52040.0,3,0.13,1,10,2,6,1,2,3.0,3.0,3.0,3,3
@@ -848,9 +1035,31 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 48,0,1,Research & Development,2,5,Life Sciences,857,1,1,Sales Executive,1,47650.0,8,0.12,1,10,4,8,7,6,3.0,1.0,2.0,3,3
 34,0,1,Research & Development,3,3,Life Sciences,858,1,2,Sales Executive,0,20440.0,1,0.11,0,1,2,1,0,0,1.0,4.0,1.0,3,3
 55,0,1,Research & Development,11,1,Medical,859,0,1,Laboratory Technician,1,26930.0,1,0.18,0,36,6,36,2,13,3.0,4.0,3.0,2,3
-34,0,1,Research & Development,2,2,Life Sciences,860,1,2,Research Scientist,1,65860.0,9,0.18,1,9,3,2,2,1,2.0,3.0,2.0,3,3
+34,0,1,Research & Development,2,2,Life Sciences,860,1,2,Research Scientist,1,65860.0,9,0.18,1,9,3,2,2,1,2.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",2.0,3,3
 26,0,1,Research & Development,4,3,Life Sciences,861,1,1,Research Director,1,32940.0,1,0.11,0,1,6,1,0,0,1.0,4.0,3.0,3,3
-38,0,1,Sales,14,2,Marketing,862,0,1,Sales Executive,1,41710.0,0,0.23,0,10,4,9,7,7,3.0,2.0,3.0,4,4
+38,0,1,Sales,14,2,Marketing,862,0,1,Sales Executive,1,41710.0,0,0.23,0,10,4,9,7,7,3.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,4
 38,0,1,Research & Development,2,3,Life Sciences,863,0,1,Manufacturing Director,0,27780.0,2,0.13,0,8,5,3,1,2,2.0,2.0,4.0,2,3
 36,0,1,Human Resources,1,3,Human Resources,864,1,1,Research Scientist,0,23770.0,6,0.13,2,15,3,1,0,0,2.0,3.0,3.0,3,3
 29,0,1,Research & Development,10,3,Life Sciences,865,1,1,Sales Representative,0,24040.0,1,0.17,0,10,3,10,1,5,2.0,1.0,3.0,2,3
@@ -898,7 +1107,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 40,0,1,Research & Development,8,3,Technical Degree,907,0,2,Healthcare Representative,0,24040.0,6,0.17,0,18,2,4,3,3,3.0,4.0,2.0,2,3
 44,0,2,Sales,2,2,Marketing,908,1,1,Laboratory Technician,1,34520.0,4,0.11,1,14,2,10,0,2,1.0,4.0,3.0,2,3
 48,0,2,Sales,10,4,Marketing,909,0,3,Manager,1,22700.0,2,0.14,3,23,2,2,2,2,3.0,4.0,3.0,3,3
-35,1,1,Research & Development,9,3,Life Sciences,910,1,2,Manager,2,173990.0,6,0.12,0,7,3,2,2,2,3.0,4.0,2.0,1,3
+35,1,1,Research & Development,9,3,Life Sciences,910,1,2,Manager,2,173990.0,6,0.12,0,7,3,2,2,2,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,2.0,1,3
 24,0,2,Research & Development,15,3,Life Sciences,911,1,2,Research Scientist,0,54880.0,1,0.22,1,6,6,6,1,3,1.0,4.0,3.0,3,4
 27,0,1,Sales,10,4,Life Sciences,912,1,3,Sales Executive,1,194190.0,7,0.14,1,5,2,3,0,2,2.0,3.0,3.0,1,3
 27,0,2,Research & Development,7,3,Life Sciences,913,1,1,Research Scientist,0,28110.0,2,0.2,0,6,3,4,1,2,4.0,4.0,2.0,3,4
@@ -975,7 +1195,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 40,0,1,Sales,6,3,Life Sciences,985,1,3,Manufacturing Director,0,104820.0,1,0.11,1,21,6,21,12,8,2.0,2.0,2.0,2,3
 45,0,1,Research & Development,19,4,Medical,986,1,1,Sales Representative,1,71190.0,4,0.15,0,9,2,5,0,3,3.0,3.0,4.0,3,3
 30,0,2,Sales,9,3,Life Sciences,987,1,1,Research Director,0,95820.0,0,0.12,1,10,2,9,0,7,4.0,1.0,3.0,3,3
-24,0,2,Sales,3,4,Marketing,988,1,1,Sales Executive,1,45080.0,0,0.11,1,3,5,2,2,1,1.0,4.0,3.0,3,3
+24,0,2,Sales,3,4,Marketing,988,1,1,Sales Executive,1,45080.0,0,0.11,1,3,5,2,2,1,1.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 30,1,2,Research & Development,10,3,Life Sciences,989,0,1,Human Resources,2,22070.0,6,0.14,0,6,4,4,1,2,3.0,4.0,2.0,3,3
 31,0,1,Research & Development,3,2,Life Sciences,990,1,3,Laboratory Technician,1,77560.0,1,0.15,2,6,3,5,0,2,1.0,3.0,3.0,4,3
 27,0,1,Sales,3,3,Life Sciences,991,1,1,Manager,0,66940.0,1,0.13,1,6,2,6,1,4,3.0,4.0,2.0,2,3
@@ -1065,7 +1296,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 29,1,2,Research & Development,13,2,Life Sciences,1075,0,1,Laboratory Technician,0,52200.0,1,0.17,0,1,3,1,1,0,4.0,4.0,2.0,2,3
 46,1,1,Research & Development,4,4,Medical,1076,0,2,Sales Representative,1,27430.0,5,0.25,1,14,1,8,0,7,3.0,2.0,3.0,4,4
 27,0,2,Research & Development,16,4,Medical,1077,1,3,Healthcare Representative,1,49980.0,0,0.2,2,8,3,7,7,3,4.0,1.0,2.0,3,4
-39,0,1,Research & Development,2,3,Technical Degree,1078,1,3,Healthcare Representative,2,102520.0,8,0.13,1,7,3,2,2,2,3.0,4.0,3.0,3,3
+39,0,1,Research & Development,2,3,Technical Degree,1078,1,3,Healthcare Representative,2,102520.0,8,0.13,1,7,3,2,2,2,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,3,3
 55,0,1,Research & Development,2,3,Life Sciences,1079,0,1,Human Resources,1,27810.0,8,0.13,1,19,2,5,0,4,2.0,4.0,4.0,3,3
 28,0,1,Research & Development,29,2,Life Sciences,1080,1,2,Laboratory Technician,1,68520.0,1,0.18,1,1,2,1,0,0,2.0,2.0,3.0,4,3
 30,1,1,Sales,12,4,Life Sciences,1081,0,2,Sales Executive,0,49500.0,1,0.12,2,1,3,1,0,0,2.0,4.0,2.0,3,3
@@ -1080,7 +1322,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,2,Research & Development,5,3,Medical,1090,0,4,Manufacturing Director,0,177790.0,1,0.17,1,10,5,10,0,8,2.0,4.0,2.0,1,3
 40,0,1,Research & Development,3,3,Other,1091,1,1,Sales Executive,2,68330.0,2,0.13,0,22,3,19,11,16,1.0,1.0,3.0,3,3
 26,0,1,Research & Development,26,2,Life Sciences,1092,1,2,Human Resources,1,68120.0,1,0.13,0,1,2,1,1,0,2.0,3.0,2.0,2,3
-27,0,1,Research & Development,4,3,Technical Degree,1093,1,2,Manufacturing Director,0,51710.0,0,0.2,1,9,1,8,0,7,1.0,3.0,3.0,2,4
+27,0,1,Research & Development,4,3,Technical Degree,1093,1,2,Manufacturing Director,0,51710.0,0,0.2,1,9,1,8,0,7,1.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,4
 48,0,2,Research & Development,2,3,Life Sciences,1094,1,2,Research Director,2,197400.0,3,0.14,0,24,2,22,4,7,4.0,4.0,3.0,4,3
 44,0,1,Sales,1,2,Medical,1095,1,4,Manager,1,187110.0,2,0.12,1,10,0,2,2,2,2.0,1.0,3.0,3,3
 34,1,0,Research & Development,27,2,Life Sciences,1096,0,1,Sales Representative,1,36920.0,1,0.12,1,5,5,5,3,0,4.0,1.0,3.0,3,3
@@ -1182,9 +1435,31 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 35,0,1,Research & Development,16,3,Medical,1193,0,2,Healthcare Representative,0,23940.0,1,0.16,1,9,3,9,1,7,3.0,4.0,3.0,3,3
 38,0,1,Research & Development,23,3,Medical,1194,1,3,Sales Representative,1,39040.0,1,0.22,0,10,3,10,1,9,1.0,4.0,3.0,2,4
 50,1,2,Sales,4,2,Life Sciences,1195,0,2,Laboratory Technician,2,167990.0,7,0.14,1,12,2,6,0,1,2.0,3.0,3.0,2,3
-36,0,1,Research & Development,22,4,Life Sciences,1196,1,1,Healthcare Representative,1,29500.0,4,0.14,0,8,1,6,0,0,2.0,3.0,2.0,2,3
+36,0,1,Research & Development,22,4,Life Sciences,1196,1,1,Healthcare Representative,1,29500.0,4,0.14,0,8,1,6,0,0,2.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",2.0,2,3
 45,0,1,Sales,24,3,Life Sciences,1197,1,1,Laboratory Technician,0,36290.0,8,0.16,1,8,2,5,0,1,4.0,3.0,3.0,4,3
-40,0,1,Sales,10,4,Life Sciences,1198,1,1,Research Scientist,0,93620.0,2,0.11,1,8,6,2,2,2,3.0,3.0,3.0,3,3
+40,0,1,Sales,10,4,Life Sciences,1198,1,1,Research Scientist,0,93620.0,2,0.11,1,8,6,2,2,2,3.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 35,0,2,Sales,7,2,Life Sciences,1199,1,2,Manufacturing Director,1,32290.0,1,0.25,0,10,2,10,0,2,3.0,3.0,4.0,2,4
 40,0,1,Research & Development,17,4,Life Sciences,1200,1,1,Manager,1,35780.0,2,0.14,1,20,2,5,0,2,3.0,3.0,3.0,3,3
 35,0,1,Human Resources,14,1,Life Sciences,1201,1,2,Research Scientist,1,79880.0,1,0.18,0,4,3,4,1,1,3.0,4.0,3.0,3,3
@@ -1211,7 +1486,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,1,Research & Development,7,3,Life Sciences,1222,1,1,Sales Executive,1,92040.0,6,0.23,1,17,2,7,7,7,3.0,3.0,2.0,3,4
 35,0,1,Human Resources,3,4,Human Resources,1223,1,2,Manager,1,32940.0,0,0.11,0,6,2,5,0,3,1.0,2.0,3.0,3,3
 29,0,1,Sales,29,4,Life Sciences,1224,1,2,Laboratory Technician,0,21270.0,0,0.11,1,10,3,9,0,8,4.0,3.0,3.0,2,3
-31,0,1,Research & Development,2,2,Medical,1225,1,2,Laboratory Technician,2,39750.0,1,0.15,1,5,3,5,4,3,3.0,3.0,2.0,3,3
+31,0,1,Research & Development,2,2,Medical,1225,1,2,Laboratory Technician,2,39750.0,1,0.15,1,5,3,5,4,3,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,2.0,3,3
 34,0,1,Research & Development,28,3,Technical Degree,1226,1,1,Laboratory Technician,2,107930.0,0,0.11,3,3,1,2,1,2,2.0,4.0,3.0,2,3
 28,1,1,Research & Development,1,4,Life Sciences,1227,1,5,Research Director,0,100960.0,5,0.13,0,6,2,4,0,3,3.0,3.0,3.0,3,3
 29,0,1,Research & Development,16,2,Life Sciences,1228,0,4,Laboratory Technician,2,36460.0,1,0.14,0,10,3,10,8,8,2.0,1.0,3.0,4,3
@@ -1247,7 +1533,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 41,1,1,Sales,20,4,Marketing,1258,1,2,Sales Executive,1,102090.0,1,0.13,1,23,2,22,15,8,2.0,3.0,3.0,3,3
 34,0,0,Research & Development,7,2,Technical Degree,1259,0,1,Research Scientist,0,86200.0,0,0.13,1,10,2,9,8,7,2.0,3.0,3.0,2,3
 37,0,1,Research & Development,17,3,Life Sciences,1260,0,3,Sales Executive,1,20640.0,4,0.16,0,8,3,1,0,0,2.0,2.0,3.0,2,3
-46,0,2,Research & Development,20,3,Technical Degree,1261,1,3,Sales Executive,0,40350.0,4,0.14,1,14,2,9,0,8,1.0,4.0,3.0,3,3
+46,0,2,Research & Development,20,3,Technical Degree,1261,1,3,Sales Executive,0,40350.0,4,0.14,1,14,2,9,0,8,1.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 35,0,1,Research & Development,8,4,Medical,1262,0,3,Research Scientist,1,38380.0,1,0.16,1,1,2,1,0,1,4.0,4.0,3.0,3,3
 48,1,1,Research & Development,2,4,Technical Degree,1263,0,1,Sales Executive,0,45910.0,9,0.16,0,23,6,1,0,0,1.0,3.0,3.0,1,3
 28,1,1,Research & Development,10,1,Medical,1264,1,1,Sales Executive,0,25610.0,1,0.22,1,2,3,2,2,2,3.0,3.0,2.0,3,4
@@ -1309,7 +1606,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 25,0,1,Research & Development,26,3,Technical Degree,1321,1,1,Laboratory Technician,1,88530.0,1,0.22,1,2,3,2,2,1,4.0,4.0,3.0,3,4
 22,0,1,Research & Development,2,1,Life Sciences,1322,1,1,Sales Representative,0,193310.0,1,0.12,1,1,2,0,0,0,2.0,4.0,3.0,3,3
 51,0,2,Research & Development,1,3,Life Sciences,1323,0,1,Sales Executive,0,20730.0,3,0.14,1,23,4,13,12,8,1.0,1.0,2.0,3,3
-34,1,2,Human Resources,4,4,Life Sciences,1324,0,5,Sales Executive,0,55620.0,1,0.15,0,9,3,9,0,6,1.0,3.0,3.0,3,3
+34,1,2,Human Resources,4,4,Life Sciences,1324,0,5,Sales Executive,0,55620.0,1,0.15,0,9,3,9,0,6,1.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 54,0,0,Research & Development,9,3,Life Sciences,1325,1,1,Laboratory Technician,0,196130.0,2,0.17,0,23,5,5,4,4,4.0,4.0,3.0,3,3
 24,0,1,Research & Development,2,1,Life Sciences,1326,1,2,Laboratory Technician,1,34070.0,0,0.13,1,6,4,5,1,2,2.0,3.0,3.0,3,3
 34,0,1,Sales,4,3,Marketing,1327,0,2,Sales Representative,2,50630.0,6,0.12,1,12,2,1,0,0,3.0,2.0,3.0,3,3
@@ -1393,7 +1701,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 35,1,1,Research & Development,2,4,Life Sciences,1405,0,2,Research Director,1,108830.0,3,0.12,0,8,3,1,0,1,2.0,3.0,3.0,4,3
 43,0,0,Research & Development,6,2,Medical,1406,1,1,Healthcare Representative,2,20280.0,4,0.2,1,7,2,5,2,2,4.0,4.0,4.0,2,4
 45,0,0,Research & Development,9,2,Medical,1407,0,1,Sales Executive,1,95250.0,9,0.19,0,22,3,20,11,8,1.0,4.0,3.0,3,3
-37,0,1,Research & Development,7,3,Life Sciences,1408,0,1,Research Scientist,1,29290.0,1,0.12,0,8,2,8,1,7,2.0,1.0,3.0,1,3
+37,0,1,Research & Development,7,3,Life Sciences,1408,0,1,Research Scientist,1,29290.0,1,0.12,0,8,2,8,1,7,2.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",1,3
 35,0,2,Research & Development,1,3,Other,1409,1,2,Research Director,0,22750.0,5,0.13,0,10,2,6,1,2,2.0,2.0,3.0,4,3
 42,0,0,Research & Development,1,1,Technical Degree,1410,1,2,Sales Executive,2,78790.0,2,0.11,1,11,2,5,0,2,3.0,3.0,3.0,3,3
 38,0,1,Sales,8,2,Marketing,1411,1,5,Research Scientist,1,49300.0,9,0.14,0,14,0,1,0,0,4.0,3.0,3.0,3,3
@@ -1454,15 +1773,48 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 42,0,1,Research & Development,5,4,Medical,1466,0,1,Research Scientist,0,60290.0,3,0.17,1,10,5,3,0,2,4.0,1.0,3.0,3,3
 29,0,1,Research & Development,2,4,Medical,1467,1,1,Laboratory Technician,2,26790.0,2,0.15,0,10,2,3,0,2,4.0,4.0,3.0,2,3
 25,0,1,Research & Development,25,2,Life Sciences,1468,1,2,Sales Executive,1,37020.0,0,0.2,0,5,4,4,1,2,1.0,3.0,3.0,3,4
-42,0,1,Sales,18,2,Medical,1469,1,1,Laboratory Technician,2,23980.0,0,0.14,1,10,2,9,7,8,4.0,3.0,3.0,2,3
+42,0,1,Sales,18,2,Medical,1469,1,1,Laboratory Technician,2,23980.0,0,0.14,1,10,2,9,7,8,4.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,2,3
 40,0,1,Research & Development,28,3,Medical,1470,1,2,Laboratory Technician,2,54680.0,0,0.12,0,22,6,21,3,9,1.0,3.0,3.0,4,3
-51,0,1,Sales,6,2,Life Sciences,1471,0,1,Healthcare Representative,1,131160.0,1,0.11,0,1,6,1,0,0,3.0,4.0,3.0,3,3
+51,0,1,Sales,6,2,Life Sciences,1471,0,1,Healthcare Representative,1,131160.0,1,0.11,0,1,6,1,0,0,3.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 31,1,2,Research & Development,10,1,Life Sciences,1472,0,1,Research Scientist,0,41890.0,0,0.23,1,6,3,5,1,4,3.0,2.0,4.0,2,4
 32,0,2,Research & Development,17,4,Other,1473,1,4,Sales Executive,1,193280.0,1,0.15,3,5,2,5,0,3,2.0,2.0,1.0,3,3
 38,0,0,Research & Development,2,5,Life Sciences,1474,1,3,Human Resources,1,83210.0,3,0.11,3,13,5,8,7,5,4.0,4.0,3.0,2,3
 32,0,1,Research & Development,10,1,Medical,1475,1,1,Sales Executive,0,23420.0,4,0.12,2,9,2,6,0,4,4.0,1.0,3.0,3,3
 46,0,1,Research & Development,8,3,Life Sciences,1476,0,4,Research Director,1,40710.0,3,0.13,0,28,5,7,7,7,3.0,2.0,2.0,3,3
-28,1,1,Research & Development,11,2,Medical,1477,1,2,Sales Executive,0,58130.0,2,0.2,1,5,2,0,0,0,3.0,3.0,1.0,3,4
+28,1,1,Research & Development,11,2,Medical,1477,1,2,Sales Executive,0,58130.0,2,0.2,1,5,2,0,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,1.0,3,4
 29,0,1,Research & Development,18,3,Life Sciences,1478,1,2,Sales Executive,1,31430.0,2,0.22,3,10,2,0,0,0,1.0,2.0,3.0,3,4
 31,0,1,Research & Development,1,3,Life Sciences,1479,1,3,Laboratory Technician,1,20440.0,0,0.21,0,10,2,9,7,8,2.0,4.0,3.0,3,4
 25,0,0,Research & Development,7,4,Medical,1480,0,4,Laboratory Technician,2,134640.0,1,0.13,1,6,2,6,1,5,2.0,1.0,3.0,3,3
@@ -1517,7 +1869,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,1,Research & Development,15,4,Medical,1531,1,3,Research Scientist,0,39020.0,1,0.22,0,4,2,4,1,2,3.0,2.0,2.0,3,4
 32,0,1,Research & Development,1,3,Life Sciences,1532,1,3,Research Scientist,1,26620.0,1,0.11,1,13,6,13,11,9,3.0,2.0,3.0,4,3
 27,0,1,Research & Development,13,2,Medical,1533,0,4,Research Director,0,28560.0,1,0.12,2,5,5,5,0,4,4.0,3.0,3.0,4,3
-31,0,1,Sales,24,3,Life Sciences,1534,1,2,Healthcare Representative,2,10810.0,4,0.11,3,13,4,7,1,7,4.0,4.0,3.0,4,3
+31,0,1,Sales,24,3,Life Sciences,1534,1,2,Healthcare Representative,2,10810.0,4,0.11,3,13,4,7,1,7,4.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,3
 32,0,1,Research & Development,7,3,Technical Degree,1535,1,2,Healthcare Representative,0,24720.0,7,0.13,0,10,2,7,0,7,1.0,4.0,2.0,3,3
 28,1,1,Research & Development,9,4,Medical,1536,1,1,Sales Executive,1,56730.0,5,0.14,1,5,4,3,2,2,1.0,4.0,2.0,2,3
 30,0,1,Research & Development,13,3,Life Sciences,1537,0,4,Research Director,1,41970.0,1,0.13,0,11,3,10,1,9,4.0,4.0,3.0,3,3
@@ -1580,7 +1943,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 30,0,1,Research & Development,3,3,Life Sciences,1594,0,2,Manager,1,59680.0,1,0.13,0,1,3,1,0,0,3.0,2.0,3.0,3,3
 26,1,2,Sales,14,3,Life Sciences,1595,1,2,Manager,0,75100.0,0,0.18,3,7,3,6,0,4,3.0,1.0,3.0,3,3
 22,0,1,Research & Development,16,5,Other,1596,1,1,Research Scientist,1,29910.0,1,0.19,2,2,3,2,1,2,1.0,2.0,3.0,2,3
-36,0,1,Research & Development,1,3,Medical,1597,0,5,Healthcare Representative,1,196360.0,1,0.12,1,10,3,10,9,0,2.0,3.0,3.0,3,3
+36,0,1,Research & Development,1,3,Medical,1597,0,5,Healthcare Representative,1,196360.0,1,0.12,1,10,3,10,9,0,2.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 30,1,2,Sales,3,2,Marketing,1598,1,3,Research Scientist,0,11290.0,9,0.19,0,3,2,1,0,0,3.0,4.0,3.0,2,3
 37,0,1,Research & Development,10,1,Technical Degree,1599,1,1,Sales Executive,2,133410.0,1,0.14,1,18,3,18,12,17,4.0,1.0,2.0,3,3
 40,0,1,Research & Development,6,2,Medical,1600,1,3,Research Scientist,2,43320.0,7,0.14,2,8,3,5,1,3,4.0,2.0,3.0,2,3
@@ -1643,7 +2017,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 48,0,1,Research & Development,6,3,Medical,1657,1,1,Laboratory Technician,1,108540.0,2,0.14,1,14,6,9,6,7,2.0,4.0,3.0,3,3
 55,0,1,Research & Development,1,3,Medical,1658,0,1,Sales Executive,0,120310.0,3,0.11,0,37,5,10,7,7,1.0,2.0,3.0,3,3
 41,0,0,Research & Development,3,2,Life Sciences,1659,0,2,Research Scientist,0,99360.0,7,0.17,1,16,2,14,1,10,4.0,4.0,3.0,2,3
-35,0,1,Research & Development,22,3,Medical,1660,0,1,Sales Representative,1,29660.0,9,0.18,0,15,2,11,6,9,2.0,3.0,3.0,2,3
+35,0,1,Research & Development,22,3,Medical,1660,0,1,Sales Representative,1,29660.0,9,0.18,0,15,2,11,6,9,2.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,3
 40,0,1,Research & Development,15,3,Life Sciences,1661,0,2,Laboratory Technician,0,25710.0,7,0.14,0,22,1,20,5,13,2.0,3.0,3.0,3,3
 39,0,2,Research & Development,12,1,Medical,1662,1,1,Research Scientist,1,99910.0,1,0.16,1,8,3,8,0,7,3.0,3.0,3.0,3,3
 31,0,1,Research & Development,1,4,Life Sciences,1663,1,3,Research Director,0,61420.0,4,0.13,2,10,2,6,0,5,2.0,4.0,4.0,2,3
@@ -1662,7 +2047,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 26,1,1,Sales,1,3,Marketing,1676,0,2,Manufacturing Director,0,24260.0,1,0.22,0,1,3,1,0,0,3.0,4.0,1.0,1,4
 37,0,1,Research & Development,8,1,Life Sciences,1677,1,1,Sales Executive,0,41930.0,4,0.16,1,12,5,6,1,2,2.0,4.0,4.0,3,3
 46,0,2,Research & Development,4,1,Medical,1678,1,5,Human Resources,1,29110.0,5,0.13,0,28,3,2,1,2,1.0,3.0,2.0,3,3
-41,0,1,Research & Development,24,1,Life Sciences,1679,1,1,Research Director,1,26610.0,7,0.14,1,22,2,18,11,8,2.0,3.0,3.0,3,3
+41,0,1,Research & Development,24,1,Life Sciences,1679,1,1,Research Director,1,26610.0,7,0.14,1,22,2,18,11,8,2.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 37,0,0,Research & Development,7,2,Medical,1680,1,1,Sales Executive,2,20280.0,1,0.16,1,9,3,9,7,7,1.0,2.0,3.0,3,3
 52,0,1,Sales,2,1,Medical,1681,1,1,Laboratory Technician,2,99800.0,3,0.11,1,18,2,10,6,9,4.0,1.0,3.0,3,3
 32,1,0,Research & Development,7,2,Life Sciences,1682,0,2,Research Director,1,32980.0,8,0.22,0,6,4,4,1,2,4.0,3.0,3.0,2,4
@@ -1705,7 +2101,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 29,0,1,Research & Development,2,3,Life Sciences,1720,0,1,Healthcare Representative,1,41570.0,1,0.17,3,6,2,6,1,2,2.0,3.0,2.0,3,3
 35,0,1,Research & Development,10,5,Medical,1721,0,4,Laboratory Technician,0,134580.0,1,0.11,0,17,3,17,11,8,2.0,4.0,3.0,3,3
 33,0,2,Research & Development,8,3,Technical Degree,1722,1,2,Laboratory Technician,2,90690.0,3,0.25,1,15,3,13,4,7,3.0,4.0,1.0,3,4
-54,0,1,Research & Development,5,2,Life Sciences,1723,0,2,Sales Executive,1,40140.0,2,0.19,1,16,4,9,7,1,3.0,2.0,3.0,2,3
+54,0,1,Research & Development,5,2,Life Sciences,1723,0,2,Sales Executive,1,40140.0,2,0.19,1,16,4,9,7,1,3.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,3
 36,0,1,Research & Development,8,3,Life Sciences,1724,1,2,Research Scientist,2,59150.0,2,0.13,1,13,3,3,0,2,2.0,2.0,3.0,2,3
 27,0,1,Sales,9,3,Marketing,1725,1,5,Research Director,0,59930.0,0,0.14,1,5,3,4,1,1,1.0,4.0,3.0,1,3
 20,1,1,Research & Development,1,3,Life Sciences,1726,1,5,Sales Representative,0,61620.0,1,0.12,3,1,2,1,1,1,4.0,3.0,3.0,2,3
@@ -1768,7 +2175,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 52,0,0,Research & Development,1,4,Life Sciences,1783,1,5,Sales Executive,1,97380.0,0,0.18,2,5,2,4,1,2,4.0,4.0,3.0,3,3
 26,0,2,Research & Development,2,2,Life Sciences,1784,1,1,Manufacturing Director,2,28350.0,3,0.11,1,5,2,2,2,0,1.0,4.0,3.0,3,3
 29,0,1,Research & Development,10,2,Medical,1785,1,3,Manufacturing Director,1,169590.0,4,0.14,3,11,5,8,1,1,2.0,3.0,2.0,3,3
-26,1,1,Research & Development,15,2,Life Sciences,1786,1,2,Laboratory Technician,0,26130.0,6,0.19,1,6,2,4,1,2,4.0,1.0,3.0,3,3
+26,1,1,Research & Development,15,2,Life Sciences,1786,1,2,Laboratory Technician,0,26130.0,6,0.19,1,6,2,4,1,2,4.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 34,0,1,Research & Development,14,4,Technical Degree,1787,1,2,Manufacturing Director,0,61460.0,2,0.12,0,10,3,4,1,3,2.0,4.0,3.0,3,3
 54,0,1,Research & Development,18,4,Medical,1788,0,2,Laboratory Technician,2,49630.0,9,0.15,1,9,2,5,1,4,4.0,1.0,3.0,3,3
 27,0,2,Research & Development,13,2,Life Sciences,1789,0,4,Research Scientist,1,195370.0,0,0.12,0,5,5,4,1,1,3.0,4.0,3.0,3,3
@@ -1795,7 +2213,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 42,0,1,Sales,15,1,Marketing,1810,1,2,Laboratory Technician,1,46680.0,9,0.18,2,8,2,4,0,2,4.0,4.0,3.0,3,3
 28,1,1,Research & Development,19,4,Medical,1811,0,2,Sales Executive,0,32040.0,6,0.16,1,5,4,2,2,1,3.0,3.0,2.0,2,3
 36,0,1,Research & Development,2,3,Life Sciences,1812,1,2,Healthcare Representative,1,27200.0,4,0.14,1,8,3,5,0,4,3.0,2.0,3.0,3,3
-32,0,1,Research & Development,3,1,Medical,1813,1,2,Manufacturing Director,1,171810.0,1,0.14,0,14,2,14,6,8,3.0,3.0,3.0,2,3
+32,0,1,Research & Development,3,1,Medical,1813,1,2,Manufacturing Director,1,171810.0,1,0.14,0,14,2,14,6,8,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,3.0,2,3
 40,0,2,Sales,9,3,Marketing,1814,1,3,Manufacturing Director,0,22380.0,6,0.14,0,10,3,1,0,0,1.0,3.0,3.0,3,3
 30,0,1,Research & Development,7,3,Technical Degree,1815,1,2,Research Director,0,14830.0,5,0.13,0,12,3,0,0,0,3.0,4.0,2.0,3,3
 45,0,1,Research & Development,10,4,Life Sciences,1816,1,1,Research Director,0,56050.0,1,0.12,2,1,2,1,0,0,2.0,3.0,3.0,3,3
@@ -1831,7 +2260,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,1,Research & Development,14,3,Other,1846,1,2,Research Scientist,1,39290.0,0,0.24,0,6,6,5,0,3,1.0,1.0,3.0,2,4
 25,0,1,Sales,11,3,Life Sciences,1847,0,1,Laboratory Technician,1,23110.0,1,0.11,1,5,2,5,0,3,3.0,1.0,3.0,3,3
 35,0,1,Research & Development,9,2,Life Sciences,1848,0,1,Healthcare Representative,1,31400.0,1,0.13,1,17,2,17,5,15,4.0,3.0,3.0,2,3
-35,1,2,Sales,8,2,Marketing,1849,0,1,Laboratory Technician,2,36900.0,1,0.13,1,10,2,10,7,8,4.0,2.0,3.0,4,3
+35,1,2,Sales,8,2,Marketing,1849,0,1,Laboratory Technician,2,36900.0,1,0.13,1,10,2,10,7,8,4.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,3
 32,0,0,Research & Development,21,3,Life Sciences,1850,1,1,Sales Executive,2,44500.0,0,0.13,0,4,3,3,0,2,4.0,4.0,3.0,3,3
 25,0,1,Sales,5,3,Marketing,1851,0,4,Research Scientist,1,27560.0,1,0.12,2,5,2,5,0,3,3.0,1.0,4.0,3,3
 49,0,1,Sales,9,3,Technical Degree,1852,0,2,Sales Representative,1,190330.0,2,0.18,1,7,5,4,0,2,3.0,1.0,3.0,3,3
@@ -1892,9 +2332,31 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 33,0,1,Research & Development,1,4,Medical,1907,0,4,Manufacturing Director,0,44650.0,0,0.13,0,6,3,5,1,4,2.0,4.0,3.0,3,3
 37,1,1,Sales,10,4,Marketing,1908,0,3,Human Resources,1,30720.0,5,0.14,0,17,3,14,11,7,1.0,3.0,1.0,2,3
 45,0,0,Research & Development,8,1,Life Sciences,1909,1,2,Sales Executive,1,33190.0,1,0.12,1,9,3,9,0,8,3.0,2.0,2.0,3,3
-29,0,2,Research & Development,29,1,Life Sciences,1910,1,1,Sales Representative,1,192020.0,1,0.12,0,3,5,3,0,2,3.0,3.0,3.0,3,3
+29,0,2,Research & Development,29,1,Life Sciences,1910,1,1,Sales Representative,1,192020.0,1,0.12,0,3,5,3,0,2,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 35,0,1,Human Resources,1,3,Human Resources,1911,1,3,Laboratory Technician,1,136750.0,1,0.15,3,5,5,5,1,0,3.0,3.0,3.0,2,3
-52,0,1,Research & Development,5,4,Other,1912,1,1,Laboratory Technician,1,29110.0,2,0.17,2,26,3,9,7,8,4.0,4.0,3.0,3,3
+52,0,1,Research & Development,5,4,Other,1912,1,1,Laboratory Technician,1,29110.0,2,0.17,2,26,3,9,7,8,4.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 58,1,1,Sales,9,2,Medical,1913,0,4,Sales Executive,0,59570.0,4,0.14,1,7,2,1,0,0,4.0,3.0,3.0,1,3
 53,0,1,Research & Development,9,3,Technical Degree,1914,1,1,Manager,2,39200.0,6,0.16,1,22,3,17,15,2,3.0,3.0,4.0,3,3
 30,0,1,Sales,3,4,Marketing,1915,1,1,Sales Executive,2,64340.0,5,0.14,1,10,3,8,7,7,3.0,3.0,4.0,2,3
@@ -1936,7 +2398,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 39,0,1,Sales,2,3,Life Sciences,1951,1,3,Human Resources,1,21150.0,1,0.18,0,21,3,21,11,8,4.0,4.0,3.0,4,3
 27,0,1,Research & Development,3,3,Life Sciences,1952,1,2,Human Resources,1,31610.0,0,0.13,2,4,0,3,2,2,1.0,4.0,3.0,3,3
 35,0,1,Sales,24,3,Medical,1953,1,5,Sales Executive,2,57450.0,1,0.17,3,3,4,3,1,2,2.0,4.0,2.0,3,3
-42,0,1,Research & Development,23,4,Other,1954,1,1,Research Scientist,1,23730.0,6,0.14,1,21,3,1,0,0,4.0,3.0,3.0,4,3
+42,0,1,Research & Development,23,4,Other,1954,1,1,Research Scientist,1,23730.0,6,0.14,1,21,3,1,0,0,4.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,3
 50,0,1,Sales,27,3,Medical,1955,1,2,Sales Executive,1,33100.0,4,0.22,1,8,3,1,0,0,1.0,4.0,3.0,4,4
 59,0,1,Research & Development,16,4,Medical,1956,0,5,Laboratory Technician,0,186650.0,3,0.12,0,30,3,5,4,3,3.0,4.0,3.0,2,3
 37,1,1,Sales,15,3,Marketing,1957,1,2,Laboratory Technician,1,44850.0,5,0.11,1,15,2,1,0,0,1.0,2.0,1.0,4,3
@@ -1998,7 +2471,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 50,1,2,Research & Development,1,4,Medical,2014,1,2,Research Scientist,0,159920.0,3,0.14,0,5,3,0,0,0,4.0,3.0,3.0,3,3
 33,0,2,Sales,9,3,Medical,2015,0,2,Research Scientist,1,46490.0,0,0.12,0,4,2,3,0,2,4.0,2.0,3.0,2,3
 34,0,0,Sales,1,1,Marketing,2016,0,2,Research Director,1,26960.0,3,0.23,0,6,3,0,0,0,3.0,4.0,3.0,3,4
-48,0,0,Sales,2,1,Life Sciences,2017,1,2,Sales Executive,0,23700.0,2,0.11,0,27,3,5,2,1,1.0,4.0,3.0,3,3
+48,0,0,Sales,2,1,Life Sciences,2017,1,2,Sales Executive,0,23700.0,2,0.11,0,27,3,5,2,1,1.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 45,0,0,Research & Development,1,3,Medical,2018,0,2,Human Resources,1,125040.0,1,0.12,1,15,2,15,4,12,2.0,3.0,3.0,3,3
 52,0,1,Sales,1,3,Life Sciences,2019,1,1,Sales Executive,0,59740.0,7,0.18,1,18,6,8,4,0,2.0,2.0,3.0,3,3
 38,0,1,Research & Development,6,2,Medical,2020,1,1,Research Scientist,2,47360.0,0,0.11,1,9,3,8,2,7,3.0,3.0,3.0,2,3
@@ -2061,7 +2545,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 41,1,0,Research & Development,12,3,Life Sciences,2077,1,2,Sales Representative,2,195660.0,6,0.16,0,5,2,1,0,0,1.0,1.0,1.0,4,3
 30,0,1,Sales,20,3,Marketing,2078,1,3,Sales Executive,2,48100.0,8,0.18,0,8,3,4,0,3,3.0,1.0,3.0,2,3
 40,0,2,Sales,9,3,Medical,2079,1,1,Manufacturing Director,1,45230.0,5,0.16,1,5,5,0,0,0,2.0,2.0,3.0,4,3
-50,0,2,Research & Development,25,4,Life Sciences,2080,0,2,Healthcare Representative,1,32020.0,2,0.24,1,32,2,2,2,2,4.0,1.0,3.0,3,4
+50,0,2,Research & Development,25,4,Life Sciences,2080,0,2,Healthcare Representative,1,32020.0,2,0.24,1,32,2,2,2,2,4.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,4
 28,0,1,Research & Development,6,3,Technical Degree,2081,1,2,Research Scientist,1,23510.0,1,0.16,0,6,4,6,3,3,4.0,1.0,3.0,3,3
 46,0,1,Research & Development,8,4,Other,2082,1,3,Manager,1,17020.0,5,0.21,0,25,2,4,0,3,4.0,2.0,3.0,3,4
 35,0,1,Sales,4,4,Marketing,2083,1,1,Laboratory Technician,1,180410.0,3,0.2,1,15,3,7,1,7,3.0,1.0,3.0,2,4
@@ -2124,13 +2619,35 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,1,Research & Development,2,4,Medical,2140,1,1,Healthcare Representative,0,27250.0,9,0.21,1,18,4,16,5,12,3.0,2.0,3.0,2,4
 44,1,1,Research & Development,21,4,Life Sciences,2141,0,2,Laboratory Technician,1,62720.0,1,0.19,1,10,3,10,0,5,1.0,4.0,3.0,3,3
 28,0,2,Research & Development,2,3,Life Sciences,2142,0,2,Sales Representative,1,21270.0,1,0.14,0,2,3,2,2,2,4.0,4.0,3.0,3,3
-51,0,2,Sales,21,4,Medical,2143,1,2,Research Scientist,0,182000.0,0,0.17,0,8,3,7,7,7,2.0,3.0,3.0,3,3
+51,0,2,Sales,21,4,Medical,2143,1,2,Research Scientist,0,182000.0,0,0.17,0,8,3,7,7,7,2.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 30,0,0,Research & Development,2,4,Other,2144,1,1,Research Scientist,0,20960.0,7,0.11,3,10,2,8,1,7,3.0,3.0,3.0,3,3
 29,1,1,Research & Development,29,4,Technical Degree,2145,0,1,Sales Representative,2,28860.0,3,0.13,0,10,4,7,7,7,2.0,3.0,3.0,3,3
 28,0,1,Sales,1,4,Life Sciences,2146,0,2,Sales Representative,0,20330.0,2,0.15,1,5,5,3,1,2,4.0,1.0,2.0,3,3
 25,0,1,Research & Development,18,2,Life Sciences,2147,1,1,Research Scientist,0,36220.0,1,0.25,0,2,0,2,2,1,4.0,2.0,2.0,3,4
 32,0,1,Research & Development,10,4,Other,2148,0,1,Sales Executive,1,42330.0,1,0.11,0,10,5,10,0,8,3.0,4.0,4.0,3,3
-45,0,2,Research & Development,19,3,Medical,2149,1,3,Laboratory Technician,0,36810.0,3,0.17,1,22,2,0,0,0,3.0,2.0,3.0,3,3
+45,0,2,Research & Development,19,3,Medical,2149,1,3,Laboratory Technician,0,36810.0,3,0.17,1,22,2,0,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",2.0,3.0,3,3
 39,0,1,Sales,29,1,Marketing,2150,0,1,Laboratory Technician,2,54600.0,6,0.13,2,21,3,19,15,2,3.0,2.0,3.0,3,3
 58,0,1,Research & Development,27,3,Other,2151,1,2,Laboratory Technician,2,21870.0,1,0.18,1,2,1,2,2,2,1.0,3.0,3.0,1,3
 32,1,1,Research & Development,5,3,Technical Degree,2152,0,1,Sales Executive,1,96020.0,1,0.13,1,10,3,10,1,1,4.0,3.0,3.0,3,3
@@ -2164,7 +2681,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 40,0,1,Research & Development,14,4,Medical,2180,0,1,Research Scientist,1,33480.0,3,0.22,0,7,2,4,0,3,2.0,2.0,3.0,1,4
 36,0,2,Sales,16,2,Life Sciences,2181,1,1,Research Scientist,1,12810.0,2,0.11,0,17,2,15,6,13,1.0,1.0,2.0,3,3
 48,0,1,Research & Development,2,1,Life Sciences,2182,1,2,Research Scientist,0,28190.0,1,0.2,0,11,2,10,0,8,4.0,4.0,3.0,2,4
-27,0,1,Research & Development,2,3,Life Sciences,2183,0,2,Laboratory Technician,1,48510.0,8,0.18,0,5,2,1,0,0,3.0,3.0,3.0,3,3
+27,0,1,Research & Development,2,3,Life Sciences,2183,0,2,Laboratory Technician,1,48510.0,8,0.18,0,5,2,1,0,0,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 51,0,1,Research & Development,4,1,Medical,2184,0,3,Manufacturing Director,0,40280.0,3,0.14,0,29,3,5,0,3,4.0,2.0,2.0,3,3
 18,0,0,Research & Development,1,4,Medical,2185,1,2,Sales Executive,0,27200.0,1,0.22,1,0,2,0,0,0,4.0,4.0,4.0,3,4
 35,0,1,Research & Development,1,4,Other,2186,0,2,Research Director,1,81200.0,0,0.13,0,10,2,9,0,0,4.0,4.0,3.0,2,3
@@ -2208,7 +2736,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,1,Research & Development,1,3,Medical,2224,1,2,Sales Executive,0,53090.0,3,0.13,0,15,5,5,0,1,1.0,2.0,3.0,3,3
 31,1,2,Sales,4,3,Life Sciences,2225,1,2,Manager,0,30570.0,1,0.19,0,1,3,1,0,0,2.0,3.0,3.0,3,3
 30,0,1,Sales,3,3,Life Sciences,2226,1,3,Sales Executive,2,51210.0,7,0.13,0,8,4,3,0,2,4.0,1.0,3.0,3,3
-31,0,1,Research & Development,1,3,Medical,2227,1,1,Laboratory Technician,0,168560.0,3,0.12,1,9,3,3,1,0,1.0,2.0,3.0,3,3
+31,0,1,Research & Development,1,3,Medical,2227,1,1,Laboratory Technician,0,168560.0,3,0.12,1,9,3,3,1,0,1.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 34,0,2,Sales,2,1,Marketing,2228,0,5,Manager,2,26860.0,5,0.11,0,10,3,4,1,3,4.0,1.0,3.0,4,3
 31,1,1,Sales,20,3,Technical Degree,2229,1,1,Research Scientist,0,61800.0,1,0.14,1,1,2,1,0,0,1.0,2.0,4.0,1,3
 27,0,1,Human Resources,11,4,Medical,2230,1,4,Sales Executive,1,66320.0,0,0.16,0,6,3,5,1,4,2.0,1.0,4.0,3,3
@@ -2292,7 +2831,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 33,0,1,Research & Development,9,3,Medical,2308,0,2,Manufacturing Director,1,28990.0,1,0.17,0,15,3,15,5,7,2.0,3.0,3.0,2,3
 40,0,1,Sales,5,5,Life Sciences,2309,1,1,Manufacturing Director,0,52310.0,1,0.12,2,21,4,21,7,7,3.0,4.0,3.0,3,3
 24,0,1,Sales,10,2,Marketing,2310,1,1,Manufacturing Director,2,23560.0,0,0.13,0,2,5,1,0,0,3.0,1.0,3.0,3,3
-40,0,0,Research & Development,7,3,Medical,2311,1,1,Research Scientist,2,28000.0,3,0.12,2,8,0,2,2,2,4.0,4.0,3.0,2,3
+40,0,0,Research & Development,7,3,Medical,2311,1,1,Research Scientist,2,28000.0,3,0.12,2,8,0,2,2,2,4.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,3
 45,0,1,Research & Development,4,3,Medical,2312,0,3,Laboratory Technician,2,118360.0,1,0.22,0,10,2,10,7,7,1.0,2.0,3.0,4,4
 35,0,1,Research & Development,10,1,Life Sciences,2313,1,1,Healthcare Representative,1,109030.0,0,0.11,0,6,3,5,4,2,2.0,3.0,3.0,4,3
 32,0,1,Research & Development,22,4,Medical,2314,1,1,Sales Executive,1,29730.0,3,0.22,0,12,0,7,2,5,4.0,2.0,3.0,4,4
@@ -2359,7 +2909,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 40,0,1,Research & Development,8,3,Technical Degree,2377,0,2,Healthcare Representative,0,24040.0,6,0.17,0,18,2,4,3,3,3.0,4.0,2.0,2,3
 44,0,2,Sales,2,2,Marketing,2378,1,1,Laboratory Technician,1,34520.0,4,0.11,1,14,2,10,0,2,1.0,4.0,3.0,2,3
 48,0,2,Sales,10,4,Marketing,2379,0,3,Manager,1,22700.0,2,0.14,3,23,2,2,2,2,3.0,4.0,3.0,3,3
-35,1,1,Research & Development,9,3,Life Sciences,2380,1,2,Manager,2,173990.0,6,0.12,0,7,3,2,2,2,3.0,4.0,2.0,1,3
+35,1,1,Research & Development,9,3,Life Sciences,2380,1,2,Manager,2,173990.0,6,0.12,0,7,3,2,2,2,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,2.0,1,3
 24,0,2,Research & Development,15,3,Life Sciences,2381,1,2,Research Scientist,0,54880.0,1,0.22,1,6,6,6,1,3,1.0,4.0,3.0,3,4
 27,0,1,Sales,10,4,Life Sciences,2382,1,3,Sales Executive,1,194190.0,7,0.14,1,5,2,3,0,2,2.0,3.0,3.0,1,3
 27,0,2,Research & Development,7,3,Life Sciences,2383,1,1,Research Scientist,0,28110.0,2,0.2,0,6,3,4,1,2,4.0,4.0,2.0,3,4
@@ -2374,7 +2935,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 34,0,1,Research & Development,10,3,Medical,2392,1,3,Laboratory Technician,2,41480.0,1,0.11,0,11,3,11,7,9,4.0,2.0,3.0,3,3
 36,0,1,Research & Development,1,3,Life Sciences,2393,0,2,Healthcare Representative,0,10510.0,2,0.14,0,15,2,4,1,3,1.0,2.0,3.0,3,3
 49,0,1,Human Resources,6,2,Life Sciences,2394,0,2,Research Scientist,1,107390.0,2,0.11,3,30,3,15,2,12,3.0,3.0,3.0,3,3
-36,0,0,Research & Development,8,4,Life Sciences,2395,1,4,Laboratory Technician,1,103880.0,0,0.14,0,4,2,3,1,2,4.0,3.0,3.0,3,3
+36,0,0,Research & Development,8,4,Life Sciences,2395,1,4,Laboratory Technician,1,103880.0,0,0.14,0,4,2,3,1,2,4.0,3.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 36,0,1,Research & Development,2,2,Medical,2396,0,2,Healthcare Representative,2,114160.0,6,0.16,0,13,2,5,0,4,4.0,1.0,3.0,3,3
 54,0,1,Sales,24,3,Marketing,2397,1,1,Laboratory Technician,1,26000.0,3,0.14,0,36,5,10,4,7,2.0,3.0,3.0,3,3
 43,0,1,Research & Development,2,4,Life Sciences,2398,0,1,Research Scientist,1,24220.0,1,0.11,1,14,2,14,6,11,3.0,3.0,3.0,3,3
@@ -2456,9 +3028,31 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 38,0,1,Research & Development,8,2,Technical Degree,2474,0,1,Manufacturing Director,1,25140.0,3,0.11,0,15,2,1,1,0,2.0,4.0,3.0,2,3
 43,1,2,Research & Development,1,4,Other,2475,1,3,Sales Executive,1,76550.0,9,0.12,1,6,3,1,0,0,3.0,3.0,3.0,3,3
 42,0,1,Human Resources,1,3,Other,2476,0,1,Healthcare Representative,2,174650.0,8,0.13,1,7,3,5,0,4,2.0,2.0,2.0,3,3
-55,0,1,Research & Development,3,2,Life Sciences,2477,0,1,Sales Executive,1,73510.0,8,0.2,1,34,3,1,0,0,3.0,3.0,3.0,3,4
+55,0,1,Research & Development,3,2,Life Sciences,2477,0,1,Sales Executive,1,73510.0,8,0.2,1,34,3,1,0,0,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,4
 33,0,0,Research & Development,14,3,Other,2478,1,1,Research Scientist,2,108200.0,5,0.12,0,11,2,9,1,7,4.0,2.0,2.0,3,3
-41,0,1,Research & Development,5,3,Medical,2479,1,1,Sales Representative,2,121690.0,1,0.19,0,5,2,5,0,4,3.0,1.0,3.0,3,3
+41,0,1,Research & Development,5,3,Medical,2479,1,1,Sales Representative,2,121690.0,1,0.19,0,5,2,5,0,4,3.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 34,0,0,Research & Development,7,4,Medical,2480,0,1,Research Scientist,2,196260.0,1,0.21,0,15,5,15,0,7,4.0,3.0,3.0,2,4
 53,0,0,Research & Development,10,4,Medical,2481,1,2,Healthcare Representative,1,20700.0,4,0.13,2,27,2,3,0,2,1.0,3.0,2.0,4,3
 43,0,1,Sales,16,2,Marketing,2482,0,1,Laboratory Technician,0,67820.0,0,0.16,1,10,2,9,1,8,2.0,4.0,3.0,3,3
@@ -2548,7 +3142,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 34,1,0,Research & Development,27,2,Life Sciences,2566,0,1,Sales Representative,1,36920.0,1,0.12,1,5,5,5,3,0,4.0,1.0,3.0,3,3
 56,1,1,Human Resources,1,2,Medical,2567,0,5,Sales Executive,0,25590.0,1,0.21,0,5,3,4,1,0,1.0,4.0,3.0,3,4
 36,0,1,Research & Development,13,3,Technical Degree,2568,0,3,Healthcare Representative,1,25170.0,2,0.14,0,12,3,4,1,3,3.0,2.0,1.0,3,3
-41,0,1,Research & Development,5,3,Life Sciences,2569,0,1,Sales Executive,1,66230.0,5,0.18,0,14,3,5,1,4,3.0,2.0,3.0,3,3
+41,0,1,Research & Development,5,3,Life Sciences,2569,0,1,Sales Executive,1,66230.0,5,0.18,0,14,3,5,1,4,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",2.0,3.0,3,3
 42,0,1,Research & Development,7,3,Technical Degree,2570,0,2,Sales Executive,1,182650.0,9,0.12,1,18,4,13,5,7,3.0,1.0,4.0,3,3
 31,0,1,Sales,9,4,Life Sciences,2571,0,1,Sales Executive,2,161240.0,2,0.23,1,8,2,5,1,4,3.0,4.0,3.0,2,4
 34,0,1,Research & Development,8,1,Life Sciences,2572,0,3,Laboratory Technician,1,25850.0,3,0.12,0,9,5,4,0,1,4.0,4.0,2.0,3,3
@@ -2563,7 +3168,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 34,0,2,Research & Development,9,4,Life Sciences,2581,0,2,Manufacturing Director,1,26250.0,1,0.12,3,16,4,15,6,11,3.0,4.0,3.0,3,3
 28,1,1,Research & Development,25,3,Technical Degree,2582,1,1,Research Director,0,187890.0,3,0.16,1,6,4,2,2,2,4.0,3.0,3.0,3,3
 47,0,0,Research & Development,1,4,Medical,2583,1,1,Research Scientist,1,45380.0,8,0.11,0,16,3,8,1,7,3.0,2.0,4.0,3,3
-56,0,1,Research & Development,4,3,Technical Degree,2584,0,2,Sales Executive,1,198470.0,4,0.14,0,6,6,0,0,0,4.0,1.0,3.0,3,3
+56,0,1,Research & Development,4,3,Technical Degree,2584,0,2,Sales Executive,1,198470.0,4,0.14,0,6,6,0,0,0,4.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 39,0,1,Research & Development,1,3,Other,2585,0,1,Laboratory Technician,1,105120.0,1,0.12,1,10,2,10,7,9,1.0,1.0,3.0,3,3
 38,0,2,Research & Development,4,2,Medical,2586,0,1,Manager,2,44440.0,1,0.13,0,20,2,20,0,7,4.0,2.0,3.0,3,3
 58,0,1,Sales,5,3,Marketing,2587,1,5,Sales Representative,1,21540.0,4,0.21,1,29,3,1,0,0,4.0,4.0,2.0,3,4
@@ -2686,9 +3302,31 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 34,0,1,Sales,24,3,Marketing,2705,1,4,Research Scientist,0,27420.0,0,0.11,1,13,2,12,2,11,1.0,2.0,3.0,3,3
 21,0,1,Sales,2,3,Life Sciences,2706,1,2,Manufacturing Director,0,137570.0,1,0.12,1,0,3,0,0,0,3.0,4.0,3.0,3,3
 34,1,1,Sales,15,2,Marketing,2707,0,2,Research Scientist,0,84630.0,2,0.13,0,8,2,4,1,3,2.0,1.0,3.0,1,3
-53,0,1,Sales,2,1,Life Sciences,2708,1,5,Human Resources,2,31620.0,4,0.15,0,26,4,14,4,8,3.0,3.0,2.0,3,3
+53,0,1,Sales,2,1,Life Sciences,2708,1,5,Human Resources,2,31620.0,4,0.15,0,26,4,14,4,8,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",2.0,3,3
 32,1,2,Research & Development,10,3,Medical,2709,0,2,Manufacturing Director,0,165980.0,1,0.13,0,10,2,10,6,7,2.0,1.0,3.0,3,3
-42,0,1,Research & Development,10,3,Technical Degree,2710,1,2,Laboratory Technician,1,66510.0,0,0.2,0,10,5,9,4,2,3.0,2.0,3.0,2,4
+42,0,1,Research & Development,10,3,Technical Degree,2710,1,2,Laboratory Technician,1,66510.0,0,0.2,0,10,5,9,4,2,3.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,4
 44,0,1,Research & Development,3,1,Life Sciences,2711,0,1,Manufacturing Director,1,23450.0,3,0.15,2,24,0,22,5,17,1.0,4.0,3.0,3,3
 46,0,1,Sales,2,3,Life Sciences,2712,0,1,Research Scientist,0,34200.0,3,0.13,2,22,3,2,2,1,2.0,1.0,2.0,1,3
 33,0,1,Sales,3,3,Medical,2713,1,1,Manufacturing Director,0,43730.0,4,0.14,0,7,3,1,0,0,3.0,4.0,3.0,3,3
@@ -2715,7 +3353,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 28,1,1,Research & Development,10,1,Medical,2734,1,1,Sales Executive,0,25610.0,1,0.22,1,2,3,2,2,2,3.0,3.0,2.0,3,4
 44,0,1,Research & Development,1,1,Medical,2735,0,3,Research Scientist,2,15630.0,5,0.12,2,9,3,4,1,3,2.0,1.0,2.0,3,3
 35,0,0,Research & Development,5,4,Technical Degree,2736,0,3,Manufacturing Director,1,48980.0,2,0.15,2,10,2,4,2,3,3.0,1.0,3.0,3,3
-26,0,1,Research & Development,4,4,Life Sciences,2737,0,3,Sales Executive,1,47890.0,7,0.2,1,5,2,2,0,0,3.0,4.0,2.0,3,4
+26,0,1,Research & Development,4,4,Life Sciences,2737,0,3,Sales Executive,1,47890.0,7,0.2,1,5,2,2,0,0,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,2.0,3,4
 33,0,2,Sales,29,4,Life Sciences,2738,0,1,Human Resources,0,31800.0,1,0.14,1,15,2,15,8,12,1.0,4.0,3.0,3,3
 35,0,2,Research & Development,15,3,Medical,2739,1,3,Manufacturing Director,1,65490.0,1,0.2,0,9,3,9,1,8,2.0,1.0,2.0,3,4
 35,0,1,Human Resources,3,2,Life Sciences,2740,0,1,Laboratory Technician,1,63880.0,3,0.13,0,4,6,2,2,2,3.0,1.0,3.0,2,3
@@ -2854,7 +3503,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 52,0,1,Research & Development,2,4,Medical,2873,0,2,Sales Representative,1,35370.0,0,0.11,1,34,3,33,11,9,3.0,3.0,3.0,3,3
 27,0,1,Sales,15,3,Marketing,2874,1,1,Research Scientist,0,39860.0,1,0.12,2,7,3,7,0,3,4.0,2.0,2.0,3,3
 35,1,1,Research & Development,2,4,Life Sciences,2875,0,2,Research Director,1,108830.0,3,0.12,0,8,3,1,0,1,2.0,3.0,3.0,4,3
-43,0,0,Research & Development,6,2,Medical,2876,1,1,Healthcare Representative,2,20280.0,4,0.2,1,7,2,5,2,2,4.0,3.0,4.0,2,4
+43,0,0,Research & Development,6,2,Medical,2876,1,1,Healthcare Representative,2,20280.0,4,0.2,1,7,2,5,2,2,4.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",4.0,2,4
 45,0,0,Research & Development,9,2,Medical,2877,0,1,Sales Executive,1,95250.0,9,0.19,0,22,3,20,11,8,1.0,4.0,3.0,3,3
 37,0,1,Research & Development,7,3,Life Sciences,2878,0,1,Research Scientist,1,29290.0,1,0.12,0,8,2,8,1,7,2.0,1.0,2.0,1,3
 35,0,2,Research & Development,1,3,Other,2879,1,2,Research Director,0,22750.0,5,0.13,0,10,2,6,1,2,2.0,2.0,3.0,4,3
@@ -2877,7 +3537,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 51,0,1,Research & Development,2,1,Medical,2896,0,1,Manufacturing Director,1,39070.0,5,0.13,0,16,2,10,4,7,2.0,2.0,1.0,3,3
 30,1,1,Research & Development,10,4,Life Sciences,2897,0,2,Research Scientist,0,55620.0,5,0.13,0,8,3,5,0,4,4.0,1.0,3.0,2,3
 41,0,1,Research & Development,1,3,Life Sciences,2898,1,2,Human Resources,0,68830.0,3,0.19,2,16,3,1,0,0,4.0,4.0,3.0,2,3
-30,1,2,Sales,3,2,Medical,2899,1,2,Healthcare Representative,0,28620.0,5,0.14,0,9,2,6,0,1,3.0,1.0,3.0,2,3
+30,1,2,Sales,3,2,Medical,2899,1,2,Healthcare Representative,0,28620.0,5,0.14,0,9,2,6,0,1,3.0,1.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",2,3
 29,1,1,Research & Development,2,3,Life Sciences,2900,1,1,Sales Executive,0,49780.0,0,0.13,0,7,3,6,1,5,3.0,3.0,2.0,2,3
 45,0,0,Research & Development,2,3,Medical,2901,0,2,Research Scientist,0,103680.0,6,0.12,2,23,2,19,12,8,4.0,4.0,3.0,3,3
 54,0,1,Sales,8,2,Marketing,2902,0,2,Laboratory Technician,1,61340.0,2,0.19,0,16,2,6,0,5,4.0,1.0,3.0,2,3
@@ -2904,7 +3575,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 39,0,1,Sales,26,4,Life Sciences,2923,1,2,Research Director,2,81610.0,7,0.12,1,7,2,3,1,2,3.0,3.0,3.0,4,3
 32,0,0,Sales,2,4,Marketing,2924,1,4,Research Scientist,1,21090.0,0,0.13,1,4,3,3,2,2,3.0,4.0,3.0,2,3
 41,0,1,Sales,29,3,Life Sciences,2925,0,2,Laboratory Technician,2,52940.0,2,0.15,0,17,3,1,0,0,3.0,1.0,2.0,2,3
-40,0,1,Research & Development,2,3,Life Sciences,2926,1,1,Manufacturing Director,2,27180.0,1,0.14,1,9,4,9,4,7,3.0,4.0,3.0,2,3
+40,0,1,Research & Development,2,3,Life Sciences,2926,1,1,Manufacturing Director,2,27180.0,1,0.14,1,9,4,9,4,7,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,2,3
 45,0,1,Research & Development,18,1,Life Sciences,2927,0,2,Sales Representative,1,58110.0,0,0.14,0,25,4,24,1,7,3.0,4.0,3.0,2,3
 31,0,2,Research & Development,7,4,Medical,2928,1,1,Research Scientist,2,24370.0,9,0.14,1,9,3,2,2,2,2.0,3.0,3.0,4,3
 33,0,1,Research & Development,2,4,Life Sciences,2929,0,1,Sales Executive,1,27660.0,1,0.12,1,2,2,2,0,2,3.0,4.0,2.0,3,3
@@ -3003,7 +3685,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,1,Research & Development,11,2,Medical,3022,1,1,Manager,1,43930.0,1,0.18,1,8,2,8,0,7,2.0,2.0,3.0,2,3
 37,0,1,Sales,1,4,Life Sciences,3023,1,2,Healthcare Representative,2,133480.0,7,0.14,0,8,4,6,0,4,4.0,4.0,2.0,3,3
 38,0,1,Research & Development,28,4,Medical,3024,1,1,Laboratory Technician,2,65830.0,0,0.12,0,12,1,11,2,9,3.0,4.0,3.0,3,3
-31,0,1,Research & Development,6,3,Medical,3025,0,3,Manager,0,81030.0,1,0.15,1,11,5,11,4,10,3.0,4.0,3.0,3,3
+31,0,1,Research & Development,6,3,Medical,3025,0,3,Manager,0,81030.0,1,0.15,1,11,5,11,4,10,3.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 29,0,1,Research & Development,3,4,Life Sciences,3026,1,3,Sales Executive,2,39780.0,1,0.11,0,7,0,7,1,7,4.0,2.0,3.0,3,3
 35,0,1,Sales,16,2,Technical Degree,3027,1,3,Manager,0,25440.0,0,0.13,1,17,3,16,0,13,3.0,2.0,3.0,4,3
 23,0,1,Research & Development,20,4,Life Sciences,3028,1,1,Manufacturing Director,2,53990.0,1,0.23,0,4,2,4,0,2,3.0,4.0,2.0,2,4
@@ -3063,7 +3756,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 39,0,2,Research & Development,26,4,Technical Degree,3083,0,1,Sales Executive,2,30670.0,1,0.2,1,21,5,21,1,6,2.0,3.0,3.0,1,4
 56,0,2,Research & Development,20,4,Life Sciences,3084,0,3,Sales Executive,1,53210.0,9,0.14,0,36,1,7,7,7,3.0,1.0,2.0,3,3
 30,0,1,Sales,5,4,Medical,3085,0,2,Manufacturing Director,0,54100.0,0,0.17,1,6,2,5,4,4,2.0,3.0,3.0,3,3
-41,0,1,Research & Development,7,3,Technical Degree,3086,0,3,Research Scientist,1,27820.0,1,0.14,0,10,2,10,0,7,2.0,3.0,3.0,2,3
+41,0,1,Research & Development,7,3,Technical Degree,3086,0,3,Research Scientist,1,27820.0,1,0.14,0,10,2,10,0,7,2.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,2,3
 28,0,1,Research & Development,7,3,Medical,3087,1,3,Healthcare Representative,2,119570.0,1,0.13,0,10,2,10,1,8,3.0,1.0,3.0,2,3
 25,1,1,Research & Development,5,2,Life Sciences,3088,0,3,Laboratory Technician,1,26600.0,5,0.13,0,6,3,2,0,2,1.0,1.0,3.0,3,3
 52,0,1,Research & Development,26,2,Life Sciences,3089,0,2,Sales Representative,1,33750.0,2,0.21,0,28,2,5,0,4,4.0,3.0,3.0,2,4
@@ -3092,7 +3796,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 46,0,1,Sales,4,1,Technical Degree,3112,1,1,Laboratory Technician,1,67120.0,6,0.21,1,26,3,3,0,1,1.0,3.0,1.0,2,4
 35,0,1,Research & Development,15,2,Medical,3113,0,2,Laboratory Technician,0,54060.0,0,0.12,1,6,2,5,4,3,4.0,3.0,3.0,3,3
 54,0,1,Research & Development,2,4,Medical,3114,1,2,Human Resources,0,89380.0,7,0.11,3,19,2,1,0,0,3.0,3.0,3.0,3,3
-34,0,1,Sales,8,2,Life Sciences,3115,1,1,Laboratory Technician,2,24390.0,3,0.11,2,14,2,7,5,7,3.0,3.0,3.0,4,3
+34,0,1,Sales,8,2,Life Sciences,3115,1,1,Laboratory Technician,2,24390.0,3,0.11,2,14,2,7,5,7,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,3.0,4,3
 46,0,1,Research & Development,2,3,Life Sciences,3116,1,1,Healthcare Representative,1,88370.0,2,0.18,0,15,3,3,1,2,3.0,4.0,3.0,2,3
 31,0,1,Research & Development,7,3,Life Sciences,3117,1,2,Research Director,2,53430.0,1,0.14,1,13,3,13,0,8,3.0,2.0,4.0,3,3
 33,1,1,Research & Development,10,3,Life Sciences,3118,0,4,Research Director,1,67280.0,7,0.22,0,15,2,7,7,7,2.0,3.0,4.0,2,4
@@ -3238,7 +3953,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,2,Research & Development,13,2,Life Sciences,3259,0,4,Research Scientist,1,195370.0,0,0.12,0,5,5,4,1,1,3.0,4.0,3.0,3,3
 37,0,1,Sales,2,4,Technical Degree,3260,1,2,Manufacturing Director,2,61720.0,0,0.11,0,6,1,5,4,3,4.0,1.0,2.0,3,3
 38,0,2,Sales,2,4,Life Sciences,3261,0,2,Research Scientist,0,23680.0,6,0.11,1,17,3,15,4,12,1.0,1.0,3.0,3,3
-34,0,1,Sales,2,3,Marketing,3262,1,1,Sales Representative,0,103120.0,1,0.12,0,6,2,6,1,3,3.0,1.0,3.0,3,3
+34,0,1,Sales,2,3,Marketing,3262,1,1,Sales Representative,0,103120.0,1,0.12,0,6,2,6,1,3,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",1.0,3.0,3,3
 35,0,1,Research & Development,5,4,Medical,3263,1,3,Manager,1,16750.0,1,0.16,0,3,6,3,0,2,1.0,4.0,2.0,2,3
 30,0,1,Research & Development,20,3,Medical,3264,1,1,Laboratory Technician,1,25230.0,3,0.13,1,7,2,2,0,2,4.0,3.0,3.0,3,3
 40,0,2,Research & Development,10,4,Medical,3265,1,2,Manufacturing Director,1,65670.0,1,0.13,1,8,3,8,3,7,3.0,2.0,3.0,4,3
@@ -3272,7 +3998,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,1,Sales,2,4,Medical,3293,1,2,Manager,2,33460.0,1,0.21,1,9,2,9,0,8,3.0,4.0,3.0,2,4
 35,0,1,Research & Development,1,3,Medical,3294,1,1,Research Director,0,108550.0,3,0.13,1,17,2,8,1,6,3.0,3.0,4.0,3,3
 28,0,1,Sales,1,2,Technical Degree,3295,0,1,Sales Executive,1,22310.0,1,0.12,0,8,3,8,7,5,2.0,2.0,3.0,2,3
-34,0,1,Sales,2,5,Life Sciences,3296,1,4,Research Scientist,1,23230.0,0,0.17,0,4,2,3,0,2,3.0,3.0,1.0,3,3
+34,0,1,Sales,2,5,Life Sciences,3296,1,4,Research Scientist,1,23230.0,0,0.17,0,4,2,3,0,2,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",1.0,3,3
 26,1,2,Research & Development,22,4,Other,3297,0,1,Sales Executive,1,20240.0,1,0.23,0,8,2,8,1,7,3.0,3.0,3.0,3,4
 27,0,0,Sales,1,3,Technical Degree,3298,0,1,Sales Executive,1,27130.0,1,0.11,0,0,2,0,0,0,4.0,4.0,2.0,3,3
 51,0,1,Sales,16,3,Medical,3299,1,3,Research Scientist,1,94390.0,2,0.15,3,29,0,20,4,17,1.0,3.0,2.0,3,3
@@ -3316,7 +4053,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 39,0,1,Research & Development,1,3,Other,3337,0,3,Human Resources,1,68040.0,8,0.14,1,13,3,5,0,4,4.0,4.0,3.0,2,3
 33,0,1,Sales,7,3,Life Sciences,3338,1,2,Manufacturing Director,2,38150.0,3,0.11,1,7,3,4,0,3,4.0,2.0,4.0,3,3
 32,1,1,Research & Development,9,1,Medical,3339,0,1,Laboratory Technician,0,27410.0,1,0.15,1,1,5,1,0,1,1.0,4.0,1.0,2,3
-29,0,1,Research & Development,5,4,Life Sciences,3340,0,4,Healthcare Representative,2,66730.0,6,0.12,1,8,2,4,0,3,1.0,4.0,3.0,4,3
+29,0,1,Research & Development,5,4,Life Sciences,3340,0,4,Healthcare Representative,2,66730.0,6,0.12,1,8,2,4,0,3,1.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",4,3
 44,0,1,Research & Development,26,2,Life Sciences,3341,1,2,Manufacturing Director,1,76390.0,1,0.14,0,8,6,8,7,1,2.0,1.0,3.0,3,3
 28,0,1,Sales,24,5,Life Sciences,3342,0,1,Research Scientist,0,23280.0,1,0.11,2,4,3,4,0,2,1.0,4.0,3.0,3,3
 58,1,2,Sales,9,2,Technical Degree,3343,1,1,Sales Executive,2,21530.0,9,0.11,0,3,3,1,0,0,4.0,4.0,2.0,3,3
@@ -3364,7 +4112,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 30,0,1,Sales,3,4,Marketing,3385,1,1,Sales Executive,2,64340.0,5,0.14,1,10,3,8,7,7,3.0,3.0,4.0,2,3
 38,0,0,Sales,4,3,Life Sciences,3386,1,2,Research Director,0,100480.0,1,0.23,1,6,2,5,1,3,3.0,4.0,3.0,3,4
 35,0,1,Sales,1,2,Life Sciences,3387,0,2,Healthcare Representative,2,109380.0,6,0.14,2,12,2,10,0,8,4.0,4.0,3.0,1,3
-39,0,1,Sales,1,1,Marketing,3388,1,2,Research Scientist,0,23400.0,0,0.11,1,9,2,8,0,7,3.0,3.0,3.0,2,3
+39,0,1,Sales,1,1,Marketing,3388,1,2,Research Scientist,0,23400.0,0,0.11,1,9,2,8,0,7,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,3.0,2,3
 40,1,0,Research & Development,2,4,Life Sciences,3389,1,1,Human Resources,0,65450.0,4,0.15,0,22,2,1,0,0,2.0,2.0,2.0,3,3
 47,0,2,Research & Development,7,4,Life Sciences,3390,1,3,Sales Executive,2,69310.0,1,0.11,0,20,3,19,2,7,3.0,3.0,4.0,3,3
 36,0,0,Sales,28,1,Life Sciences,3391,1,2,Research Scientist,2,48980.0,4,0.13,1,12,3,7,0,7,1.0,4.0,3.0,3,3
@@ -3503,14 +4262,36 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 24,0,1,Sales,7,4,Life Sciences,3524,0,1,Laboratory Technician,0,25760.0,8,0.17,3,6,3,4,1,2,4.0,2.0,3.0,3,3
 28,1,1,Research & Development,15,4,Life Sciences,3525,1,2,Sales Executive,1,41970.0,1,0.13,0,1,3,1,0,0,3.0,4.0,2.0,1,3
 26,0,1,Research & Development,1,4,Life Sciences,3526,1,2,Sales Representative,1,143360.0,1,0.21,1,8,3,8,0,7,1.0,4.0,3.0,3,4
-30,0,1,Research & Development,7,2,Life Sciences,3527,0,1,Manufacturing Director,1,34480.0,1,0.11,0,10,3,10,1,4,3.0,3.0,3.0,3,3
+30,0,1,Research & Development,7,2,Life Sciences,3527,0,1,Manufacturing Director,1,34480.0,1,0.11,0,10,3,10,1,4,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 40,0,2,Research & Development,26,4,Life Sciences,3528,1,2,Research Scientist,1,194060.0,3,0.2,3,16,2,1,0,0,3.0,4.0,1.0,3,4
 35,0,1,Research & Development,18,5,Medical,3529,0,2,Research Scientist,2,65380.0,2,0.16,1,15,3,7,6,4,3.0,2.0,4.0,3,3
 34,0,2,Research & Development,6,2,Life Sciences,3530,1,1,Research Director,0,43060.0,0,0.11,0,14,2,13,4,9,4.0,1.0,3.0,3,3
 35,0,2,Research & Development,3,3,Medical,3531,0,2,Laboratory Technician,1,22580.0,1,0.11,1,2,2,2,2,2,4.0,4.0,4.0,3,3
 43,1,1,Sales,5,3,Marketing,3532,0,3,Research Scientist,0,45220.0,8,0.15,1,7,3,4,1,3,1.0,3.0,2.0,3,3
 32,0,0,Research & Development,11,2,Other,3533,0,2,Research Scientist,2,44870.0,1,0.11,0,1,5,1,0,0,3.0,1.0,3.0,2,3
-29,0,1,Research & Development,26,1,Life Sciences,3535,1,1,Laboratory Technician,1,22180.0,1,0.24,1,10,1,10,0,8,3.0,4.0,3.0,3,4
+29,0,1,Research & Development,26,1,Life Sciences,3535,1,1,Laboratory Technician,1,22180.0,1,0.24,1,10,1,10,0,8,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,3,4
 19,0,1,Research & Development,23,4,Life Sciences,3536,1,2,Laboratory Technician,0,191970.0,1,0.12,0,1,2,1,0,0,3.0,1.0,3.0,3,3
 45,0,1,Research & Development,22,3,Life Sciences,3537,0,2,Sales Representative,1,132120.0,4,0.13,0,7,4,3,0,2,1.0,3.0,2.0,3,3
 37,0,1,Research & Development,14,4,Life Sciences,3538,1,3,Research Scientist,1,65770.0,1,0.13,0,14,1,14,3,11,4.0,4.0,2.0,1,3
@@ -3630,7 +4411,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 48,0,1,Research & Development,2,1,Life Sciences,3652,1,2,Research Scientist,0,28190.0,1,0.2,0,11,2,10,0,8,4.0,4.0,3.0,2,4
 27,0,1,Research & Development,2,3,Life Sciences,3653,0,2,Laboratory Technician,1,48510.0,8,0.18,0,5,2,1,0,0,3.0,4.0,3.0,3,3
 51,0,1,Research & Development,4,1,Medical,3654,0,3,Manufacturing Director,0,40280.0,3,0.14,0,29,3,5,0,3,4.0,2.0,2.0,3,3
-18,0,0,Research & Development,1,4,Medical,3655,1,2,Sales Executive,0,27200.0,1,0.22,1,0,2,0,0,0,4.0,4.0,3.0,3,4
+18,0,0,Research & Development,1,4,Medical,3655,1,2,Sales Executive,0,27200.0,1,0.22,1,0,2,0,0,0,4.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,4
 35,0,1,Research & Development,1,4,Other,3656,0,2,Research Director,1,81200.0,0,0.13,0,10,2,9,0,0,4.0,4.0,3.0,2,3
 27,0,2,Research & Development,26,4,Medical,3657,0,1,Research Director,0,46470.0,3,0.17,0,8,3,6,0,0,4.0,4.0,3.0,4,3
 55,1,1,Research & Development,19,3,Technical Degree,3658,1,1,Human Resources,0,46800.0,6,0.14,3,24,0,19,3,8,1.0,3.0,2.0,4,3
@@ -3657,7 +4449,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 27,0,1,Research & Development,2,4,Life Sciences,3679,1,1,Human Resources,1,37080.0,1,0.16,2,6,2,6,4,4,4.0,4.0,3.0,3,3
 27,1,1,Research & Development,2,5,Life Sciences,3680,0,1,Research Scientist,0,137700.0,1,0.18,1,8,3,8,7,7,4.0,3.0,3.0,4,3
 26,0,1,Research & Development,2,2,Other,3681,1,3,Laboratory Technician,0,53040.0,0,0.2,1,5,2,4,1,1,1.0,4.0,3.0,3,4
-42,0,1,Sales,23,3,Marketing,3682,0,3,Research Scientist,1,26420.0,0,0.13,1,21,3,20,0,9,3.0,1.0,3.0,3,3
+42,0,1,Sales,23,3,Marketing,3682,0,3,Research Scientist,1,26420.0,0,0.13,1,21,3,20,0,9,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",1.0,3.0,3,3
 52,0,1,Research & Development,5,2,Life Sciences,3683,0,1,Healthcare Representative,1,27590.0,9,0.18,1,12,6,5,0,4,3.0,1.0,1.0,3,3
 37,0,1,Research & Development,20,5,Life Sciences,3684,1,2,Manager,0,68040.0,4,0.13,1,8,1,3,0,2,1.0,3.0,3.0,3,3
 35,0,2,Research & Development,6,4,Medical,3685,0,2,Research Director,0,61420.0,2,0.15,1,10,2,2,2,2,3.0,4.0,3.0,3,3
@@ -3754,7 +4557,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 42,0,2,Human Resources,1,4,Technical Degree,3776,1,2,Manufacturing Director,1,31620.0,2,0.17,2,24,1,20,13,9,4.0,4.0,1.0,3,3
 40,0,1,Sales,10,1,Life Sciences,3777,0,1,Manufacturing Director,1,65240.0,0,0.13,1,9,2,8,7,1,1.0,1.0,4.0,4,3
 33,0,1,Research & Development,9,3,Medical,3778,0,2,Manufacturing Director,1,28990.0,1,0.17,0,15,3,15,5,7,2.0,3.0,3.0,2,3
-40,0,1,Sales,5,5,Life Sciences,3779,1,1,Manufacturing Director,0,52310.0,1,0.12,2,21,4,21,7,7,3.0,3.0,3.0,3,3
+40,0,1,Sales,5,5,Life Sciences,3779,1,1,Manufacturing Director,0,52310.0,1,0.12,2,21,4,21,7,7,3.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 24,0,1,Sales,10,2,Marketing,3780,1,1,Manufacturing Director,2,23560.0,0,0.13,0,2,5,1,0,0,3.0,1.0,3.0,3,3
 40,0,0,Research & Development,7,3,Medical,3781,1,1,Research Scientist,2,28000.0,3,0.12,2,8,0,2,2,2,4.0,4.0,3.0,2,3
 45,0,1,Research & Development,4,3,Medical,3782,0,3,Laboratory Technician,2,118360.0,1,0.22,0,10,2,10,7,7,1.0,2.0,3.0,4,4
@@ -3860,7 +4674,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 44,0,1,Research & Development,9,3,Technical Degree,3883,0,3,Healthcare Representative,2,68610.0,4,0.12,0,8,2,2,2,2,3.0,4.0,3.0,2,3
 23,1,1,Human Resources,6,3,Life Sciences,3884,0,3,Laboratory Technician,0,49690.0,1,0.12,0,5,3,5,1,2,4.0,3.0,3.0,3,3
 38,0,1,Research & Development,11,2,Life Sciences,3885,1,1,Sales Executive,1,198450.0,7,0.11,1,7,3,0,0,0,4.0,3.0,2.0,3,3
-53,0,1,Research & Development,24,3,Life Sciences,3886,1,4,Research Director,1,133200.0,3,0.11,0,11,2,4,1,2,2.0,4.0,3.0,3,3
+53,0,1,Research & Development,24,3,Life Sciences,3886,1,4,Research Director,1,133200.0,3,0.11,0,11,2,4,1,2,2.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 48,1,2,Sales,10,2,Marketing,3887,1,1,Healthcare Representative,1,63470.0,2,0.12,1,19,3,9,7,7,4.0,3.0,3.0,1,3
 32,1,1,Sales,1,3,Life Sciences,3888,1,2,Research Scientist,0,27430.0,1,0.19,1,1,2,1,0,0,4.0,2.0,3.0,3,3
 26,0,0,Research & Development,18,2,Medical,3889,1,1,Human Resources,0,108800.0,1,0.23,1,7,5,7,5,7,4.0,4.0,3.0,3,4
@@ -3970,7 +4795,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 18,0,0,Research & Development,2,3,Life Sciences,3994,1,3,Sales Representative,0,186060.0,1,0.24,2,0,4,0,0,0,2.0,3.0,1.0,3,4
 31,1,1,Research & Development,2,3,Life Sciences,3995,1,3,Laboratory Technician,1,21680.0,0,0.14,1,2,2,1,0,0,4.0,1.0,3.0,3,3
 29,1,1,Research & Development,8,2,Medical,3996,1,1,Manager,2,28530.0,4,0.14,1,4,5,2,2,0,1.0,1.0,3.0,2,3
-45,0,0,Sales,1,4,Technical Degree,3997,1,1,Research Scientist,1,170480.0,4,0.15,0,10,3,8,5,7,3.0,3.0,4.0,2,3
+45,0,0,Sales,1,4,Technical Degree,3997,1,1,Research Scientist,1,170480.0,4,0.15,0,10,3,8,5,7,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",3.0,4.0,2,3
 36,0,1,Sales,2,3,Technical Degree,3998,0,5,Laboratory Technician,1,22900.0,4,0.11,0,15,5,1,0,0,4.0,2.0,3.0,3,3
 43,0,2,Sales,8,3,Medical,3999,1,1,Research Director,1,36000.0,1,0.23,0,7,2,7,7,7,1.0,4.0,3.0,3,4
 27,0,2,Sales,8,4,Life Sciences,4000,1,5,Research Scientist,0,21070.0,0,0.13,0,6,2,5,0,2,4.0,4.0,2.0,3,3
@@ -4004,7 +4840,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 35,0,1,Sales,2,1,Technical Degree,4028,1,2,Laboratory Technician,1,18590.0,0,0.25,1,4,2,3,0,2,4.0,2.0,3.0,2,4
 45,0,1,Research & Development,3,3,Medical,4029,0,2,Sales Executive,1,37600.0,0,0.14,1,10,2,9,3,8,2.0,4.0,2.0,2,3
 36,0,2,Research & Development,5,3,Medical,4030,0,4,Manufacturing Director,0,177790.0,1,0.17,1,10,5,10,0,8,2.0,4.0,2.0,1,3
-40,0,1,Research & Development,3,3,Other,4031,1,1,Sales Executive,2,68330.0,2,0.13,0,22,3,19,11,16,1.0,3.0,3.0,3,3
+40,0,1,Research & Development,3,3,Other,4031,1,1,Sales Executive,2,68330.0,2,0.13,0,22,3,19,11,16,1.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 26,0,1,Research & Development,26,2,Life Sciences,4032,1,2,Human Resources,1,68120.0,1,0.13,0,1,2,1,1,0,2.0,3.0,2.0,2,3
 27,0,1,Research & Development,4,3,Technical Degree,4033,1,2,Manufacturing Director,0,51710.0,0,0.2,1,9,1,8,0,7,1.0,3.0,2.0,2,4
 48,0,2,Research & Development,2,3,Life Sciences,4034,1,2,Research Director,2,197400.0,3,0.14,0,24,2,22,4,7,4.0,4.0,3.0,4,3
@@ -4090,7 +4937,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 32,0,1,Research & Development,18,3,Life Sciences,4114,1,2,Manager,1,63770.0,1,0.12,2,14,3,14,5,7,3.0,4.0,3.0,3,3
 37,0,1,Research & Development,1,3,Life Sciences,4115,0,4,Sales Executive,1,54290.0,1,0.17,1,16,3,16,6,8,3.0,4.0,3.0,3,3
 25,0,1,Research & Development,2,4,Medical,4116,0,2,Manufacturing Director,2,27850.0,0,0.21,0,6,2,5,0,4,1.0,3.0,2.0,3,4
-52,0,0,Research & Development,2,4,Other,4117,1,1,Manager,2,46140.0,2,0.16,1,16,3,9,0,0,1.0,4.0,3.0,3,3
+52,0,0,Research & Development,2,4,Other,4117,1,1,Manager,2,46140.0,2,0.16,1,16,3,9,0,0,1.0,4.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 44,0,1,Research & Development,8,1,Life Sciences,4118,0,1,Sales Representative,0,26100.0,6,0.15,0,6,2,4,1,2,2.0,4.0,3.0,3,3
 21,0,1,Sales,10,5,Medical,4119,1,3,Research Scientist,0,66870.0,1,0.19,3,2,0,2,1,2,3.0,1.0,3.0,3,3
 39,0,0,Research & Development,3,4,Life Sciences,4120,0,2,Research Director,0,47240.0,2,0.12,1,21,4,6,1,3,4.0,4.0,2.0,4,3
@@ -4193,7 +5051,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 36,0,1,Sales,1,2,Marketing,4217,0,2,Sales Executive,2,86060.0,1,0.14,2,17,3,17,12,8,3.0,3.0,3.0,3,3
 55,0,1,Research & Development,7,3,Medical,4218,1,3,Research Scientist,2,22720.0,2,0.17,1,21,2,5,0,2,4.0,3.0,3.0,3,3
 36,0,2,Research & Development,3,3,Life Sciences,4219,0,2,Laboratory Technician,0,20180.0,1,0.13,0,6,5,6,0,3,2.0,2.0,3.0,3,3
-45,0,1,Research & Development,1,2,Medical,4220,0,1,Sales Executive,2,70830.0,2,0.12,1,25,5,1,0,0,2.0,3.0,3.0,3,3
+45,0,1,Research & Development,1,2,Medical,4220,0,1,Sales Executive,2,70830.0,2,0.12,1,25,5,1,0,0,2.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",3.0,3,3
 35,0,2,Human Resources,9,3,Other,4221,0,2,Sales Representative,1,40840.0,4,0.13,1,5,3,3,1,2,2.0,1.0,2.0,3,3
 36,1,1,Sales,7,2,Life Sciences,4222,1,4,Laboratory Technician,1,144110.0,0,0.18,3,2,2,1,0,0,4.0,3.0,2.0,4,3
 59,0,2,Research & Development,10,4,Life Sciences,4223,1,3,Research Scientist,0,23080.0,7,0.19,1,20,4,4,1,3,1.0,3.0,2.0,2,3
@@ -4278,7 +5147,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 40,0,2,Research & Development,26,4,Medical,4303,1,2,Manufacturing Director,2,54400.0,1,0.12,1,20,2,20,2,13,2.0,2.0,3.0,3,3
 35,0,1,Sales,8,1,Marketing,4304,0,3,Laboratory Technician,1,37600.0,1,0.14,3,10,2,10,0,6,3.0,2.0,3.0,3,3
 53,0,1,Sales,14,2,Life Sciences,4305,0,5,Manufacturing Director,1,35170.0,2,0.12,1,13,1,7,4,5,2.0,3.0,1.0,2,3
-45,0,1,Sales,1,4,Technical Degree,4306,1,1,Research Scientist,2,25800.0,8,0.17,3,20,3,17,0,15,2.0,2.0,3.0,3,3
+45,0,1,Sales,1,4,Technical Degree,4306,1,1,Research Scientist,2,25800.0,8,0.17,3,20,3,17,0,15,2.0,2.0,"<bound method Series.median of 0       2.0
+1       4.0
+2       1.0
+3       3.0
+4       3.0
+       ... 
+4377    3.0
+4378    3.0
+4379    3.0
+4380    3.0
+4381    3.0
+Name: WorkLifeBalance, Length: 4382, dtype: object>",3,3
 32,0,2,Sales,2,2,Life Sciences,4307,0,1,Manufacturing Director,0,21660.0,1,0.19,1,9,4,9,3,7,2.0,4.0,3.0,1,3
 29,0,0,Research & Development,10,4,Technical Degree,4308,1,3,Healthcare Representative,1,58690.0,1,0.11,1,10,6,10,0,9,4.0,3.0,3.0,4,3
 51,0,1,Research & Development,1,3,Other,4309,0,3,Research Director,1,80080.0,2,0.15,1,10,4,1,0,0,2.0,3.0,3.0,3,3
@@ -4305,7 +5185,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 19,1,1,Research & Development,8,2,Life Sciences,4330,1,2,Sales Executive,0,159720.0,1,0.21,0,1,2,1,1,0,2.0,4.0,2.0,3,4
 46,0,1,Research & Development,10,3,Technical Degree,4331,0,2,Laboratory Technician,2,153790.0,1,0.12,0,24,1,24,15,7,2.0,1.0,3.0,1,3
 38,0,1,Sales,4,4,Life Sciences,4332,1,1,Manufacturing Director,0,70820.0,1,0.14,0,2,3,2,2,1,3.0,4.0,3.0,4,3
-31,0,1,Sales,2,5,Life Sciences,4333,1,2,Sales Representative,1,27280.0,8,0.11,0,7,3,4,0,2,3.0,4.0,3.0,4,3
+31,0,1,Sales,2,5,Life Sciences,4333,1,2,Sales Representative,1,27280.0,8,0.11,0,7,3,4,0,2,"<bound method Series.median of 0       3.0
+1       3.0
+2       2.0
+3       4.0
+4       4.0
+       ... 
+4377    3.0
+4378    4.0
+4379    4.0
+4380    1.0
+4381    4.0
+Name: EnvironmentSatisfaction, Length: 4382, dtype: object>",4.0,3.0,4,3
 34,0,1,Sales,9,3,Marketing,4334,0,2,Manager,0,53680.0,2,0.14,1,9,2,3,1,2,4.0,2.0,3.0,3,3
 41,1,1,Research & Development,18,4,Life Sciences,4335,1,5,Laboratory Technician,0,53470.0,1,0.24,1,4,1,4,0,2,2.0,2.0,2.0,3,4
 50,0,1,Sales,19,4,Marketing,4336,1,3,Sales Executive,1,31950.0,2,0.11,0,5,4,3,0,2,3.0,3.0,2.0,2,3
@@ -4318,7 +5209,18 @@ Age,Attrition,BusinessTravel,Department,DistanceFromHome,Education,EducationFiel
 52,0,1,Research & Development,2,4,Medical,4343,0,2,Sales Representative,1,35370.0,0,0.11,1,34,3,33,11,9,3.0,3.0,3.0,3,3
 27,0,1,Sales,15,3,Marketing,4344,1,1,Research Scientist,0,39860.0,1,0.12,2,7,3,7,0,3,4.0,2.0,2.0,3,3
 35,1,1,Research & Development,2,4,Life Sciences,4345,0,2,Research Director,1,108830.0,3,0.12,0,8,3,1,0,1,2.0,3.0,3.0,4,3
-43,0,0,Research & Development,6,2,Medical,4346,1,1,Healthcare Representative,2,20280.0,4,0.2,1,7,2,5,2,2,4.0,3.0,4.0,2,4
+43,0,0,Research & Development,6,2,Medical,4346,1,1,Healthcare Representative,2,20280.0,4,0.2,1,7,2,5,2,2,4.0,"<bound method Series.median of 0       4.0
+1       2.0
+2       2.0
+3       4.0
+4       1.0
+       ... 
+4377    4.0
+4378    1.0
+4379    4.0
+4380    3.0
+4381    1.0
+Name: JobSatisfaction, Length: 4382, dtype: object>",4.0,2,4
 45,0,0,Research & Development,9,2,Medical,4347,0,1,Sales Executive,1,95250.0,9,0.19,0,22,3,20,11,8,1.0,4.0,3.0,3,3
 37,0,1,Research & Development,7,3,Life Sciences,4348,0,1,Research Scientist,1,29290.0,1,0.12,0,8,2,8,1,7,2.0,1.0,2.0,1,3
 35,0,2,Research & Development,1,3,Other,4349,1,2,Research Director,0,22750.0,5,0.13,0,10,2,6,1,2,2.0,2.0,3.0,4,3

@@ -10,6 +10,7 @@ st.set_page_config(page_title="Analyse RH", layout="wide")
 # 📌 CHARGEMENT DES DONNÉES
 @st.cache_data
 def load_data():
+    # Chargement des données RH
     hr_data = pd.read_csv('./data/general_data.csv')
     survey_data = pd.read_csv('./data/employee_survey_data.csv')
     manager_data = pd.read_csv('./data/manager_survey_data.csv')
@@ -32,11 +33,27 @@ def load_data():
     hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
     hr_data['MaritalStatus'] = hr_data['MaritalStatus'].map({'Single': 0, 'Married': 1, 'Divorced': 2})
     hr_data['PercentSalaryHike'] = hr_data['PercentSalaryHike'] / 100  # Mise à l'échelle
-    
-    return hr_data
+
+    # Chargement des données d'absentéisme
+    in_time_data = pd.read_csv('./data/in_time.csv')
+    out_time_data = pd.read_csv('./data/out_time.csv')
+
+    # Calcul des jours d'absence
+    absence_status = (in_time_data.iloc[:, 1:].isna() | out_time_data.iloc[:, 1:].isna())
+    absence_status = absence_status.dropna(axis=0, how='all')
+    absence_status = absence_status.replace({True: 'Absent', False: 'Present'})
+    absence_status.insert(0, 'EmployeeID', in_time_data['EmployeeID'])
+
+    # Comptage des jours d'absence
+    absence_days = absence_status.iloc[:, 1:].apply(lambda x: (x == 'Absent').sum(), axis=1)
+    absence_days = pd.DataFrame({'EmployeeID': absence_status['EmployeeID'], 'AbsenceDays': absence_days})
+
+    hr_data = hr_data.merge(absence_days, on='EmployeeID', how='left')  # Ajouter le nombre de jours d'absence
+
+    return hr_data, absence_status, absence_days
 
 # Charger les données
-df = load_data()
+df, absence_status, absence_days = load_data()
 
 # 📌 SIDEBAR INTERACTIVE
 st.sidebar.header("🔎 Options d'analyse")
@@ -65,8 +82,19 @@ with col3:
     st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
     st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
+# 📌 STATISTIQUES D'ABSENTÉISME
+st.subheader("📌 Statistiques d'Absentéisme")
+col1, col2 = st.columns(2)
 
-# ONGLETS INTERACTIFS 
+with col1:
+    st.metric("📅 Nombre total de jours d'absence", absence_days['AbsenceDays'].sum())
+    st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+
+with col2:
+    max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
+    st.metric("👥 Employé avec le plus d'absences", f"ID: {max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+
+# 📌 ONGLETS INTERACTIFS
 tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
 
 with tab1:
