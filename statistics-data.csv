@@ -20,8 +20,8 @@ TrainingTimesLastYear,Numeric,2.798265632131447,3.0,1.2894022066059956,0.0,6.0,7
 YearsAtCompany,Numeric,7.010497489730716,5.0,6.129350531669393,0.0,40.0,37.0,
 YearsSinceLastPromotion,Numeric,2.191693290734824,1.0,3.224994320458549,0.0,15.0,16.0,
 YearsWithCurrManager,Numeric,4.126198083067092,3.0,3.569674079459996,0.0,17.0,18.0,
-EnvironmentSatisfaction,Numeric,2.7250114103149246,3.0,1.0904786772743107,1.0,4.0,4.0,
-JobSatisfaction,Numeric,2.729347329986308,3.0,1.0993768787022904,1.0,4.0,4.0,
-WorkLifeBalance,Numeric,2.7631218621633957,3.0,0.7044581180672442,1.0,4.0,4.0,
+EnvironmentSatisfaction,Categorical,,,,,,,"{'3.0': 1339, '4.0': 1327, '2.0': 850, '1.0': 841, '<bound method Series.median of 0       3.0\n1       3.0\n2       2.0\n3       4.0\n4       4.0\n       ... \n4377    3.0\n4378    4.0\n4379    4.0\n4380    1.0\n4381    4.0\nName: EnvironmentSatisfaction, Length: 4382, dtype: object>': 25}"
+JobSatisfaction,Categorical,,,,,,,"{'4.0': 1359, '3.0': 1314, '1.0': 856, '2.0': 833, '<bound method Series.median of 0       4.0\n1       2.0\n2       2.0\n3       4.0\n4       1.0\n       ... \n4377    4.0\n4378    1.0\n4379    4.0\n4380    3.0\n4381    1.0\nName: JobSatisfaction, Length: 4382, dtype: object>': 20}"
+WorkLifeBalance,Categorical,,,,,,,"{'3.0': 2639, '2.0': 1015, '4.0': 453, '1.0': 238, '<bound method Series.median of 0       2.0\n1       4.0\n2       1.0\n3       3.0\n4       3.0\n       ... \n4377    3.0\n4378    3.0\n4379    3.0\n4380    3.0\n4381    3.0\nName: WorkLifeBalance, Length: 4382, dtype: object>': 37}"
 JobInvolvement,Numeric,2.730488361478777,3.0,0.710681980979301,1.0,4.0,4.0,
 PerformanceRating,Numeric,3.154039251483341,3.0,0.3610275683397162,3.0,4.0,2.0,

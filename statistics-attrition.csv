@@ -20,8 +20,8 @@ TrainingTimesLastYear,Numeric,,,,,,0.0,
 YearsAtCompany,Numeric,,,,,,0.0,
 YearsSinceLastPromotion,Numeric,,,,,,0.0,
 YearsWithCurrManager,Numeric,,,,,,0.0,
-EnvironmentSatisfaction,Numeric,,,,,,0.0,
-JobSatisfaction,Numeric,,,,,,0.0,
-WorkLifeBalance,Numeric,,,,,,0.0,
+EnvironmentSatisfaction,Categorical,,,,,,,{}
+JobSatisfaction,Categorical,,,,,,,{}
+WorkLifeBalance,Categorical,,,,,,,{}
 JobInvolvement,Numeric,,,,,,0.0,
 PerformanceRating,Numeric,,,,,,0.0,
