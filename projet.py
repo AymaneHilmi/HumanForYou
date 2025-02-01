@@ -175,30 +175,7 @@ fig, ax = plt.subplots(figsize=(12, 8))
 sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, ax=ax)
 st.pyplot(fig)
 
-# 📌 TABLEAU DES CORRÉLATIONS
-st.subheader("📊 Tableau des Corrélations")
-st.write(correlation_matrix)
-
 # 📌 ANALYSE DES DÉPARTS
-st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
-col1, col2 = st.columns(2)
-
-with col1:
-    st.write("📌 **Moyenne d'âge des employés ayant quitté :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['Age'].mean():.1f} ans")
-
-    st.write("📌 **Salaire moyen des employés ayant quitté :**")
-    st.write(f"➡️ ${df[df['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
-
-with col2:
-    st.write("📌 **Nombre moyen d'années dans l'entreprise avant de partir :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['YearsAtCompany'].mean():.1f} ans")
-
-    st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
-
-# 📌 ANALYSE DES DÉPARTS
-st.subheader("📊 Analyse de l'attrition")
 
 # Appliquer les transformations aux colonnes nécessaires
 df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
@@ -228,3 +205,21 @@ elif option == "📊 Taux d'attrition par genre":
 
 elif option == "📉 Taux d'attrition par état matrimonial":
     plot_bar_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
+
+st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.write("📌 **Moyenne d'âge des employés ayant quitté :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['Age'].mean():.1f} ans")
+
+    st.write("📌 **Salaire moyen des employés ayant quitté :**")
+    st.write(f"➡️ ${df[df['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
+
+with col2:
+    st.write("📌 **Nombre moyen d'années dans l'entreprise avant de partir :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['YearsAtCompany'].mean():.1f} ans")
+
+    st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
+    st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
+
