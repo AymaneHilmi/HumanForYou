@@ -150,7 +150,6 @@ with tab2:
     # axe x : nombre d'années, axe y : nombre d'employés
     st.bar_chart(df['YearsAtCompany'].value_counts())
 
-
     st.subheader("📊 Répartition des niveaux de satisfaction"
                  "\n🔴 0 : Bas, 🔵 4 : Haut")
     satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
