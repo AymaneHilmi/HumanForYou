@@ -1,8 +1,13 @@
 # Import des bibliothèques principales
+import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="Analyse RH", layout="wide")
@@ -25,7 +30,7 @@ def load_data():
 
     # Remplacement des valeurs manquantes
     for col in ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']:
-        hr_data[col].fillna(hr_data[col].median(), inplace=True)
+        hr_data[col] = hr_data[col].fillna(hr_data[col].median())
 
     # Transformation des variables catégoriques
     hr_data['Age'] = hr_data['Age'].astype(int)
@@ -315,5 +320,105 @@ with page4:
     st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
 
 with page5:
-    #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
-    st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
+    # 📌 ONGLETS INTERACTIFS
+    tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
+
+    with tab1:
+        # Import des bibliothèques nécessaires
+        import pandas as pd
+        import numpy as np
+        import streamlit as st
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from sklearn.model_selection import train_test_split
+        from sklearn.preprocessing import StandardScaler, OneHotEncoder
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+        # 📌 VARIABLES À UTILISER DANS LE MODÈLE
+        features = [
+            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+            "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
+            "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
+            "DistanceFromHome", "AbsenceDays", "TotalWorkingYears", "Department",
+            "Education", "PerformanceRating", "JobInvolvement"
+        ]
+
+        target = "Attrition"  # Variable cible (1 = Quitte l'entreprise, 0 = Reste)
+
+        # 📌 PRÉPARATION DES DONNÉES
+        categorical_features = ["JobRole", "BusinessTravel", "Department"]
+        numerical_features = [col for col in features if col not in categorical_features]
+
+        # Encoder les variables catégoriques
+        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
+        df_encoded = pd.DataFrame(encoder.fit_transform(df[categorical_features]),
+                                  columns=encoder.get_feature_names_out(categorical_features))
+        df_encoded.index = df.index
+
+        # Normaliser les variables numériques
+        scaler = StandardScaler()
+        df_scaled = pd.DataFrame(scaler.fit_transform(df[numerical_features]),
+                                 columns=numerical_features)
+        df_scaled.index = df.index
+
+        # Combiner les données transformées
+        df_final = pd.concat([df_encoded, df_scaled, df[target]], axis=1)
+
+        # 📌 DIVISION DES DONNÉES EN TRAIN & TEST
+        X = df_final.drop(columns=[target])
+        y = df_final[target]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+        model = LogisticRegression(max_iter=500)
+        model.fit(X_train, y_train)
+
+        # 📌 PRÉDICTION & AJUSTEMENT DU SEUIL
+        y_pred_proba = model.predict_proba(X_test)[:, 1]
+        threshold = 0.35  # Ajustement du seuil
+        y_pred = (y_pred_proba >= threshold).astype(int)
+
+        # 📌 ÉVALUATION DU MODÈLE
+        accuracy = accuracy_score(y_test, y_pred)
+
+        # 📌 AFFICHAGE DES RÉSULTATS DANS STREAMLIT
+        st.subheader("📊 Prédiction de l'attrition avec Régression Logistique")
+        st.write(f"📌 **Précision du modèle :** {accuracy * 100:.2f} %")
+
+        # 📌 AFFICHAGE DE LA MATRICE DE CONFUSION
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        fig, ax = plt.subplots(figsize=(5,3))
+        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"])
+        plt.xlabel("Prédiction")
+        plt.ylabel("Réel")
+        plt.title("Matrice de Confusion")
+        st.pyplot(fig)
+
+        # 📌 FONCTION POUR AFFICHER LES STATISTIQUES DU MODÈLE
+        def display_metrics(y_test, y_pred, model_name="Régression Logistique"):
+            st.subheader(f"📊 Performances du modèle : {model_name}")
+            class_report = classification_report(y_test, y_pred, output_dict=True, zero_division=1)
+            df_report = pd.DataFrame(class_report).transpose()
+            st.dataframe(df_report)
+            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
+            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
+            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
+            st.write(f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
+
+            # Calcul et affichage des taux de faux positifs et faux négatifs
+            FP_rate = conf_matrix[0, 1] / (conf_matrix[0, 1] + conf_matrix[0, 0])
+            FN_rate = conf_matrix[1, 0] / (conf_matrix[1, 0] + conf_matrix[1, 1])
+            st.write(f"📌 **Taux de Faux Positifs (False Positive Rate) :** {FP_rate:.2f}")
+            st.write(f"📌 **Taux de Faux Négatifs (False Negative Rate) :** {FN_rate:.2f}")
+
+        # 📌 APPELER LA FONCTION POUR AFFICHER LES MÉTRIQUES
+        display_metrics(y_test, y_pred)
+
+    with tab2:
+        # Partie mathys
+        st.write(f"SVM")
+    with tab3:
+        #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
+        st.write(f"Random Forest")
