@@ -48,10 +48,10 @@ def load_data():
     hr_data['YearsAtCompany'] = hr_data['YearsAtCompany'].astype(int)
     hr_data['YearsSinceLastPromotion'] = hr_data['YearsSinceLastPromotion'].astype(int)
     hr_data['YearsWithCurrManager'] = hr_data['YearsWithCurrManager'].astype(int)
-    hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype('category')
-    hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype('category')
-    hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype('category')
-    hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
+    hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype(int)
+    hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype(int)
+    hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype(int)
+    hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype(int)
 
     # Chargement des données d'absentéisme
     in_time_data = pd.read_csv('./data/in_time.csv')
@@ -70,6 +70,15 @@ def load_data():
     absence_days = pd.DataFrame({'EmployeeID': absence_status['EmployeeID'], 'AbsenceDays': absence_days})
     
     hr_data = hr_data.merge(absence_days, on='EmployeeID', how='left')  # Ajouter le nombre de jours d'absence
+
+    hr_data["CareerGrowthRate"] = hr_data["JobLevel"] / (hr_data["TotalWorkingYears"] + 1)
+    hr_data["PromotionRate"] = hr_data["YearsSinceLastPromotion"] / (hr_data["YearsAtCompany"] + 1)
+    hr_data["ManagerChangeRate"] = hr_data["YearsAtCompany"] / (hr_data["YearsWithCurrManager"] + 1)
+    hr_data["SatisfactionScore"] = (hr_data["JobSatisfaction"] + hr_data["EnvironmentSatisfaction"] + hr_data["WorkLifeBalance"]) / 3
+    hr_data["SalarySatisfactionGap"] = hr_data["MonthlyIncome"] / (hr_data["JobSatisfaction"] + 1)
+    hr_data["PerformanceInvolvementGap"] = hr_data["PerformanceRating"] - hr_data["JobInvolvement"]
+    hr_data["AbsenceRate"] = hr_data["AbsenceDays"] / (hr_data["YearsAtCompany"] + 1)
+    hr_data["TravelFatigue"] = hr_data["BusinessTravel"] * hr_data["DistanceFromHome"]
 
     return hr_data, absence_status, absence_days
 
@@ -115,7 +124,7 @@ with col2:
     st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
 
 # 📌 ONGLETS INTERACTIFS 
-tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
+tab1, tab2, tab3, tab4 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes", "📌 Indicateurs de Performance"])
 
 with tab1:
     st.subheader("📌 Détails des statistiques par variable")
@@ -163,6 +172,38 @@ with tab2:
 with tab3:
     st.subheader("📂 Aperçu des données")
     st.dataframe(df.head(20))
+
+# 📌 TAB 4 : INDICATEURS DE PERFORMANCE
+with tab4:
+    st.subheader("📌 Indicateurs de Performance et de Satisfaction")
+
+    # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
+    def display_metric(label, value, low_threshold, high_threshold):
+        """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
+        if value < low_threshold:
+            status = "🔴 Mauvais"
+        elif value < high_threshold:
+            status = "🟡 Moyen"
+        else:
+            status = "🟢 Bon"
+        st.metric(label, f"{value:.2f}", status)
+
+    # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
+        display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
+        display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
+
+    with col2:
+        display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
+        display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
+        display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
+
+    with col3:
+        display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
+        display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
 # 📌 MATRICE DE CORRÉLATION
 st.subheader("📌 Matrice de Corrélation")
@@ -222,4 +263,3 @@ with col2:
 
     st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
     st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
-
