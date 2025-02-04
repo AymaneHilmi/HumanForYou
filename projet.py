@@ -23,12 +23,12 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
 
 # 📌 CONFIGURATION DE L'INTERFACE
-st.set_page_config(page_title="Analyse RH", layout="wide")
+st.set_page_config(page_title="HumanForYou", layout="wide")
 
 # 📌 CHARGEMENT DES DONNÉES
 @st.cache_data
 def load_data():
-    # Chargement des données RH
+    # Chargement des données
     hr_data = pd.read_csv('./data/general_data.csv')
     survey_data = pd.read_csv('./data/employee_survey_data.csv')
     manager_data = pd.read_csv('./data/manager_survey_data.csv')
@@ -108,7 +108,7 @@ def load_data():
     return hr_data, absence_status, absence_days, normalized_df
 
 # Charger les données
-df, absence_status, absence_days = load_data()
+df, absence_status, absence_days, normalized_df = load_data()
 
 page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "Analyse Bivariée & Multivariée", "Analyse Avancée & Business Insights", "Prédiction"])
 
@@ -118,10 +118,9 @@ selected_features = st.sidebar.multiselect("Sélectionnez les variables à affic
                                            df.select_dtypes(include=['int', 'float64']).columns.tolist(),
                                            default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
 
-
 with page1 :
     # 📌 TITRE PRINCIPAL
-    st.title("📊 Analyse des Données RH - Dashboard Interactif")
+    st.title("📊 HumanForYou - Dashboard")
     st.subheader("🚀 Un projet avancé d'exploration et de visualisation des données")
 
     # 📝 Présentation du projet
@@ -280,7 +279,7 @@ with page3:
     st.subheader("📌 Matrice de Corrélation")
 
     # Filtrer les données selon les variables sélectionnées
-    correlation_matrix = df[selected_features].corr()
+    correlation_matrix = normalized_df[selected_features].corr()
 
     # Affichage de la heatmap
     fig, ax = plt.subplots(figsize=(12, 8))
@@ -341,8 +340,19 @@ with page4:
 
 with page5:
     # 📌 ONGLETS INTERACTIFS
-    tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest", "🌳 Decision Tree"])
 
+    # 📌 VARIABLES À UTILISER DANS LES MODÈLES
+    features = [
+        "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+        "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+        "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction",
+        "TrainingTimesLastYear",
+        "BusinessTravel",
+        "AbsenceDays",
+        "TotalWorkingYears",
+        "Department"
+    ]
     with tab1:
         # Import des bibliothèques nécessaires
         import pandas as pd
@@ -354,16 +364,6 @@ with page5:
         from sklearn.preprocessing import StandardScaler, OneHotEncoder
         from sklearn.linear_model import LogisticRegression
         from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-
-        # 📌 VARIABLES À UTILISER DANS LE MODÈLE
-        features = [
-            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
-            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
-            "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
-            "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
-            "DistanceFromHome", "AbsenceDays", "TotalWorkingYears", "Department",
-            "Education", "PerformanceRating", "JobInvolvement"
-        ]
 
         target = "Attrition"  # Variable cible (1 = Quitte l'entreprise, 0 = Reste)
 
@@ -582,5 +582,157 @@ with page5:
 
 
     with tab3:
-        #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
-        st.write(f"Random Forest")*
+        st.write(f"Random Forest")
+        # 📌 PRÉDICTION DE L'ATTRITION
+        categorical_columns = ['Departement', 'EducationField', 'JobRole']
+        binary_columns = ['Attrition', 'Gender']
+        numerical_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+        numerical_columns = [col for col in numerical_columns if col not in categorical_columns + binary_columns]
+        scaler = MinMaxScaler()
+        normalized_df = df.copy()
+        normalized_df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+        # 📌 PRÉPARATION DES DONNÉES
+        # Sélection des variables pour la prédiction
+        features = [
+            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+            "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction",
+            "TrainingTimesLastYear",
+            "BusinessTravel",
+            "AbsenceDays",
+            "TotalWorkingYears",
+            "Department"]
+        # Encodage des variables catégoriques
+        df_encoded = pd.get_dummies(df[features])
+        # Séparation des données en variables explicatives et cible
+        X = df_encoded
+        y = df['Attrition']
+        # Division des données en ensembles d'entraînement et de test
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # 📌 ENTRAÎNEMENT DES MODÈLES
+        # Initialisation des modèles
+        rf_model = RandomForestClassifier(random_state=42)
+        # Entraînement des modèles
+        rf_model.fit(X_train, y_train)
+        # 📌 ÉVALUATION DES MODÈLES
+        # Prédiction sur l'ensemble de test
+        rf_pred = rf_model.predict(X_test)
+        # Calcul de l'accuracy
+        rf_accuracy = accuracy_score(y_test, rf_pred)
+        # Affichage des résultats
+        st.subheader("📊 Résultats de la Prédiction"
+                     "\n🔴 0 : Non Attrition, 🟢 1 : Attrition")
+        st.write("### Random Forest Classifier")
+        st.write(f"Accuracy : {rf_accuracy:.2f}")
+        st.write("Prédiction sur l'ensemble de test :")
+        # Recall
+        st.write("Recall :")
+        st.write(recall_score(y_test, rf_pred))
+        st.write("Classification Report :")
+        st.write(classification_report(y_test, rf_pred))
+        st.write("Confusion Matrix :")
+        st.write(confusion_matrix(y_test, rf_pred))
+        # 📌 INTERPRÉTATION DES RÉSULTATS
+        st.subheader("📈 Importance des Variables"
+                     "\n🔍 Variables les plus influentes dans la prédiction de l'attrition")
+
+        # Importance des variables pour le modèle Random Forest
+        feature_importance = pd.Series(rf_model.feature_importances_, index=X.columns)
+        feature_importance = feature_importance.sort_values(ascending=False)
+        st.bar_chart(feature_importance.head(10))
+    with tab4:
+        st.subheader("🌳 Prédiction avec Decision Tree")
+
+        # Définition des features et de la target pour le Decision Tree
+        features = [
+            "JobRole",
+            "JobLevel",
+            "YearsAtCompany",
+            "YearsWithCurrManager",
+            "YearsSinceLastPromotion",
+            "NumCompaniesWorked",
+            "MonthlyIncome",
+            "PercentSalaryHike",
+            "JobSatisfaction",
+            "WorkLifeBalance",
+            "EnvironmentSatisfaction",
+            "TrainingTimesLastYear",
+            "BusinessTravel",
+            "AbsenceDays",
+            "TotalWorkingYears"
+        ]
+        target = "Attrition"
+
+        # Séparation des variables catégoriques et numériques
+        categorical_features = ["JobRole", "BusinessTravel", "Department"]
+        numerical_features = [col for col in features if col not in categorical_features]
+
+        # Création d'un préprocesseur avec ColumnTransformer
+        preprocessor = ColumnTransformer(transformers=[
+            ('cat', OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
+            ('num', StandardScaler(), numerical_features)
+        ])
+
+        # Transformation des données
+        df_transformed = pd.DataFrame(preprocessor.fit_transform(df[categorical_features + numerical_features]),
+                                      columns=preprocessor.get_feature_names_out(),
+                                      index=df.index)
+        # Combinaison avec la target
+        df_final = pd.concat([df_transformed, df[target]], axis=1)
+
+        # Division des données en ensembles d'entraînement et de test
+        X = df_final.drop(columns=[target])
+        y = df_final[target]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+        # Définition de la grille de recherche pour le Decision Tree
+        param_grid_dt = {
+            'max_depth': [None, 5, 10, 15],
+            'min_samples_split': [2, 5, 10],
+            'min_samples_leaf': [1, 2, 4],
+            'max_features': [None, 'sqrt', 'log2'],
+            'class_weight': [None, 'balanced']
+        }
+
+        grid_dt = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid_dt,
+                               cv=5, scoring='f1', n_jobs=-1)
+        grid_dt.fit(X_train, y_train)
+        best_dt = grid_dt.best_estimator_
+
+        st.write("### Meilleurs paramètres pour Decision Tree")
+        st.write(grid_dt.best_params_)
+
+        # Prédiction avec le meilleur modèle
+        y_pred = best_dt.predict(X_test)
+        accuracy_dt = accuracy_score(y_test, y_pred)
+
+        st.write(f"📌 **Précision du modèle Decision Tree optimisé :** {accuracy_dt * 100:.2f} %")
+
+        # Calcul de la matrice de confusion
+        conf_matrix = confusion_matrix(y_test, y_pred)
+
+        # Affichage de la matrice de confusion sous forme de heatmap
+        fig_cm, ax_cm = plt.subplots(figsize=(5, 3))
+        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Greens",
+                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"], ax=ax_cm)
+        ax_cm.set_xlabel("Prédiction")
+        ax_cm.set_ylabel("Réel")
+        ax_cm.set_title("Matrice de Confusion")
+        st.pyplot(fig_cm)
+
+
+        # Fonction pour afficher les statistiques du modèle
+        def display_metrics(y_true, y_pred, model_name="Decision Tree"):
+            st.subheader(f"📊 Performances du modèle : {model_name}")
+            class_report = classification_report(y_true, y_pred, output_dict=True, zero_division=1)
+            df_report = pd.DataFrame(class_report).transpose()
+            st.dataframe(df_report)
+            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
+            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
+            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
+            st.write(
+                f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
+
+
+        # Affichage des métriques
+        display_metrics(y_test, y_pred, model_name="Decision Tree Optimisé")
