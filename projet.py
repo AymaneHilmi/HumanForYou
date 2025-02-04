@@ -1,5 +1,6 @@
 # Import des bibliothèques principales
 import numpy as np
+import io
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -184,18 +185,110 @@ with page2 :
     # 📌 TITRE PRINCIPAL
     st.title("📊 Analyse des Données")
     # 📌 ONGLETS INTERACTIFS 
-    tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
+    tab1, tab2, tab3 = st.tabs(["📈 Statistiques Générales", "📊 Visualisation Dynamique", "📁 Données brutes"])
 
     with tab1:
-        st.subheader("📌 Détails des statistiques par variable")
-        st.dataframe(df.describe())
+        st.markdown("## 📊 Analyse Univariée")
+        st.markdown("#### Exploration des statistiques et répartition des données")
 
-        st.subheader("📌 Répartition des employés par département"
-                    )
-        st.write(df['Department'].value_counts())
+        # === Affichage des Statistiques Générales ===
+        st.subheader("📌 Statistiques Générales")
+        
+        col1, col2 = st.columns([1, 2])  # Séparation en 2 colonnes
+        with col1:
+            # 📌 Transformer df.info() en DataFrame
+            info_dict = {
+                "Column": df.columns,
+                "Non-Null Count": df.count().values,
+                "Dtype": [df[col].dtype for col in df.columns]
+            }
+            df_info = pd.DataFrame(info_dict)
+
+            # 📊 Affichage stylé
+            st.dataframe(df_info, height=500) 
+        with col2:
+            st.dataframe(df.describe(), height=300)  # Affichage des stats descriptives
+
+        st.markdown("---")
+
+        # === Répartition des employés par département ===
+        st.subheader("🏢 Répartition des employés par département")
+        department_counts = df['Department'].value_counts()
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write(department_counts)
+
+        with col2:
+            fig, ax = plt.subplots(figsize=(8, 4))
+            sns.barplot(y=department_counts.index, x=department_counts.values, palette="Blues_r", ax=ax)
+            ax.set_xlabel("Nombre d'employés")
+            ax.set_ylabel("Département")
+            ax.set_title("📊 Répartition par Département")
+            st.pyplot(fig)
 
 
-    with tab2:
+        # === Répartition des valeurs manquantes ===
+        st.subheader("🚨 Gestion des valeurs manquantes")
+
+        missing_values = df.isnull().sum()
+        missing_values = missing_values[missing_values > 0].sort_values(ascending=False)
+
+        if missing_values.empty:
+            st.success("✅ Aucune valeur manquante détectée ! Tout est propre 🎉")
+        else:
+            st.warning("⚠️ Certaines colonnes contiennent des valeurs manquantes.")
+
+            # Affichage des valeurs manquantes sous forme de barplot
+            st.subheader("📉 Distribution des valeurs manquantes")
+            fig, ax = plt.subplots(figsize=(8, 4))
+            sns.barplot(x=missing_values.index, y=missing_values.values, palette="Reds", ax=ax)
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+            ax.set_ylabel("Nombre de valeurs manquantes")
+            ax.set_title("🔍 Colonnes concernées")
+            st.pyplot(fig)
+
+            # Heatmap des valeurs manquantes
+            st.subheader("🗺️ Carte de chaleur des valeurs manquantes")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            sns.heatmap(df.isnull(), cmap="Reds", cbar=False, yticklabels=False, ax=ax)
+            ax.set_title("🔍 Heatmap des valeurs manquantes")
+            st.pyplot(fig)
+
+        st.markdown("---")
+
+        st.subheader("📌 Indicateurs de Performance et de Satisfaction")
+
+        # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
+        def display_metric(label, value, low_threshold, high_threshold):
+            """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
+            if value < low_threshold:
+                status = "🔴 Mauvais"
+            elif value < high_threshold:
+                status = "🟡 Moyen"
+            else:
+                status = "🟢 Bon"
+            st.metric(label, f"{value:.2f}", status)
+
+        # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
+            display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
+            display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
+
+        with col2:
+            display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
+            display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
+            display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
+
+        with col3:
+            display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
+            display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
+
+
+        # === Répartition des âges ===
         st.subheader("📊 Distribution des âges")
         st.write("📈 Répartition des âges des employés"
                 "\n🔴 18 - 25 ans, 🔵 26 - 35 ans, 🟢 36 - 45 ans, 🟡 46 - 55 ans, 🟣 56 - 65 ans")
@@ -205,15 +298,9 @@ with page2 :
         age_distribution.index = age_distribution.index.str.replace('[', '').str.replace(')', '').str.replace(',', ' -')
         st.bar_chart(age_distribution)
 
+        st.markdown("---")
 
-        # 📌 RÉPARTITION DES SALAIRES PAR TRANCHE
-        st.subheader("💰 Répartition des salaires par tranche")
-        salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
-        salary_bins_str = salary_bins.astype(str)
-        salary_distribution = salary_bins_str.value_counts().sort_index()
-        salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
-        st.bar_chart(salary_distribution)
-
+        # === Répartition des années d'ancienneté ===
         st.subheader("📈 Répartition des années d'ancienneté")
         # axe x : nombre d'années, axe y : nombre d'employés
         st.bar_chart(df['YearsAtCompany'].value_counts())
@@ -222,12 +309,90 @@ with page2 :
             'JobSatisfaction': 'Satisfaction du travail',
             'WorkLifeBalance': 'Équilibre travail-vie personnelle'
         }
-        st.subheader("📊 Répartition des niveaux de satisfaction"
-                    "\n🔴 0 : Bas, 🔵 4 : Haut")
+        st.markdown("---")
+
+
+        # === Répartition des salaires ===
+        st.subheader("💰 Répartition des salaires par tranche")
+        salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
+        salary_bins_str = salary_bins.astype(str)
+        salary_distribution = salary_bins_str.value_counts().sort_index()
+        salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write("💼 Distribution des salaires :")
+            st.dataframe(salary_distribution)
+
+        with col2:
+            st.bar_chart(salary_distribution)
+
+        st.markdown("---")
+
+        
+
+        # === Satisfaction des employés ===
+        satisfaction_mapping = {
+            'EnvironmentSatisfaction': 'Satisfaction de l\'environnement de travail',
+            'JobSatisfaction': 'Satisfaction du travail',
+            'WorkLifeBalance': 'Équilibre travail-vie personnelle'
+        }
+
+        st.subheader("😀 Satisfaction des employés")
+
         satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
+
         for col in satisfaction_cols:
-            st.write(f"### {satisfaction_mapping[col]}")
-            st.bar_chart(df[col].value_counts())
+            st.write(f"### 📊 {satisfaction_mapping[col]}")
+            
+            # Création des colonnes pour une meilleure disposition
+            col1, col2 = st.columns([1, 2])
+
+            with col1:
+                st.write("📋 Répartition des niveaux :")
+                st.dataframe(df[col].value_counts().rename_axis("Niveau").reset_index(name="Nombre d'employés"))
+
+            with col2:
+                st.write("📊 Distribution graphique :")
+                st.bar_chart(df[col].value_counts())
+        st.markdown("---")
+
+    with tab2:
+        st.subheader("2️⃣ Visualisation Dynamique des Variables")
+        # Sélection de la variable à explorer
+        selected_var = st.selectbox(
+            "📊 Sélectionnez une variable numérique à analyser :",
+            df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+        )
+
+        # Création des colonnes pour un affichage structuré
+        col1, col2 = st.columns([1, 2])
+
+        # Histogramme interactif
+        st.write("📏 **Distribution des valeurs (Histogramme)**")
+        fig, ax = plt.subplots(figsize=(8, 3))
+        sns.histplot(df[selected_var], kde=True, color="royalblue", ax=ax)
+        ax.set_xlabel(selected_var)
+        ax.set_ylabel("Fréquence")
+        st.pyplot(fig)
+
+        # Boxplot interactif
+
+        st.write("📦 **Diagramme a Moustache (Boxplot)**")
+        fig, ax = plt.subplots(figsize=(6, 3))
+        sns.boxplot(x=df[selected_var], color="lightcoral", ax=ax)
+        ax.set_xlabel(selected_var)
+        st.pyplot(fig)
+
+        # KDE Plot interactif (Courbe de densité)
+        st.write("📊 **Courbe de densité (KDE Plot)**")
+        fig, ax = plt.subplots(figsize=(8, 3))
+        sns.kdeplot(df[selected_var], shade=True, color="green", ax=ax)
+        ax.set_xlabel(selected_var)
+        ax.set_ylabel("Densité")
+        st.pyplot(fig)
+
+        st.markdown("---")
 
     with tab3:
         st.subheader("📂 Aperçu des données")
@@ -245,7 +410,6 @@ with page3:
                                                 "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
                                                 "DistanceFromHome", "AbsenceDays", "TotalWorkingYears",
                                                 "PerformanceRating", "JobInvolvement"])
-
 
     # 📌 MATRICE DE CORRÉLATION INTERACTIVE
     st.subheader("📌 Matrice de Corrélation Interactive")
