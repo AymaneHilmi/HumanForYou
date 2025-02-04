@@ -2,9 +2,13 @@
 import numpy as np
 import pandas as pd
 import streamlit as st
+import plotly.graph_objects as go
+import plotly.express as px
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.figure_factory as ff
+from imblearn.pipeline import Pipeline
+from sklearn.inspection import permutation_importance
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -381,92 +385,164 @@ with page5:
         "TotalWorkingYears",
         "Department"
     ]
+
+    target = "Attrition"
+
     with tab1:
-        # 📌 VARIABLES À UTILISER DANS LE MODÈLE
-        features = [
-            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
-            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
-            "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
-            "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
-            "DistanceFromHome", "AbsenceDays", "TotalWorkingYears", "Department",
-            "Education", "PerformanceRating", "JobInvolvement"
-        ]
-
-        target = "Attrition"  # Variable cible (1 = Quitte l'entreprise, 0 = Reste)
-
-        # 📌 PRÉPARATION DES DONNÉES
+        # Séparation des données catégoriques et numériques
         categorical_features = ["JobRole", "BusinessTravel", "Department"]
         numerical_features = [col for col in features if col not in categorical_features]
 
-        # Encoder les variables catégoriques
-        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
-        df_encoded = pd.DataFrame(encoder.fit_transform(df[categorical_features]),
-                                  columns=encoder.get_feature_names_out(categorical_features))
-        df_encoded.index = df.index
+        # Préparation des données
+        preprocessor = ColumnTransformer(transformers=[
+            ('cat', OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
+            ('num', StandardScaler(), numerical_features)
+        ])
 
-        # Normaliser les variables numériques
-        scaler = StandardScaler()
-        df_scaled = pd.DataFrame(scaler.fit_transform(df[numerical_features]),
-                                 columns=numerical_features)
-        df_scaled.index = df.index
+        # Pipeline de Modélisation
+        model = Pipeline(steps=[
+            ('preprocessor', preprocessor),
+            ('classifier', LogisticRegression(max_iter=500))
+        ])
 
-        # Combiner les données transformées
-        df_final = pd.concat([df_encoded, df_scaled, df[target]], axis=1)
-
-        # 📌 DIVISION DES DONNÉES EN TRAIN & TEST
-        X = df_final.drop(columns=[target])
-        y = df_final[target]
+        # Séparation en jeu de test et entraînement
+        X = df[features]
+        y = df[target]
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
-        model = LogisticRegression(max_iter=500)
+        # Entraînement du modèle
         model.fit(X_train, y_train)
 
-        # 📌 PRÉDICTION & AJUSTEMENT DU SEUIL
-        y_pred_proba = model.predict_proba(X_test)[:, 1]
-        threshold = 0.35  # Ajustement du seuil
-        y_pred = (y_pred_proba >= threshold).astype(int)
+        # Prédictions
+        y_pred = model.predict(X_test)
+        y_proba = model.predict_proba(X_test)[:, 1]
 
-        # 📌 ÉVALUATION DU MODÈLE
-        accuracy = accuracy_score(y_test, y_pred)
 
-        # 📌 AFFICHAGE DES RÉSULTATS DANS STREAMLIT
-        st.subheader("📊 Prédiction de l'attrition avec Régression Logistique")
-        st.write(f"📌 **Précision du modèle :** {accuracy * 100:.2f} %")
+        # 📌 **Affichage dans Streamlit**
+        st.title("📊 Analyse de l'Attrition - Régression Logistique")
 
-        # 📌 AFFICHAGE DE LA MATRICE DE CONFUSION
-        conf_matrix = confusion_matrix(y_test, y_pred)
-        fig, ax = plt.subplots(figsize=(5,3))
-        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
-                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"])
-        plt.xlabel("Prédiction")
-        plt.ylabel("Réel")
-        plt.title("Matrice de Confusion")
-        st.pyplot(fig)
+        ## 📊 Statistiques générales
+        st.subheader("📌 Statistiques du Modèle")
+        col1, col2, col3 = st.columns(3)
 
-        # 📌 FONCTION POUR AFFICHER LES STATISTIQUES DU MODÈLE
-        def display_metrics(y_test, y_pred, model_name="Régression Logistique"):
-            st.subheader(f"📊 Performances du modèle : {model_name}")
-            class_report = classification_report(y_test, y_pred, output_dict=True, zero_division=1)
-            df_report = pd.DataFrame(class_report).transpose()
-            st.dataframe(df_report)
-            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
-            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
-            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
-            st.write(f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
+        with col1:
+            st.metric("📊 Précision (Accuracy)", f"{accuracy_score(y_test, y_pred) * 100:.2f} %")
+        with col2:
+            st.metric("🎯 Rappel (Recall)",
+                      f"{classification_report(y_test, y_pred, output_dict=True)['1']['recall']:.2f}")
+        with col3:
+            st.metric("✅ Score F1", f"{classification_report(y_test, y_pred, output_dict=True)['1']['f1-score']:.2f}")
 
-            # Calcul et affichage des taux de faux positifs et faux négatifs
-            FP_rate = conf_matrix[0, 1] / (conf_matrix[0, 1] + conf_matrix[0, 0])
-            FN_rate = conf_matrix[1, 0] / (conf_matrix[1, 0] + conf_matrix[1, 1])
-            st.write(f"📌 **Taux de Faux Positifs (False Positive Rate) :** {FP_rate:.2f}")
-            st.write(f"📌 **Taux de Faux Négatifs (False Negative Rate) :** {FN_rate:.2f}")
+        # 📌 Calcul de la Matrice de Confusion
+        cm = confusion_matrix(y_test, y_pred)
 
-        # 📌 APPELER LA FONCTION POUR AFFICHER LES MÉTRIQUES
-        display_metrics(y_test, y_pred)
+        # 📌 Création d'une heatmap interactive avec Plotly
+        fig_cm = ff.create_annotated_heatmap(
+            z=cm[::-1],  # Inverser l'ordre des lignes pour correspondre au format
+            x=["Prédit : Non", "Prédit : Oui"],
+            y=["Réel : Oui", "Réel : Non"],  # Inversion pour correspondre à la diagonale correcte
+            colorscale="RdBu",  # Palette moderne
+            annotation_text=cm[::-1].astype(str),  # Ajouter les valeurs comme annotations
+            showscale=True,
+            reversescale=True
+        )
+
+        # 📌 Mise en page optimisée
+        st.subheader("📊 Matrice de confusion")
+        fig_cm.update_layout(
+            xaxis=dict(title="Classe Prédite"),
+            yaxis=dict(title="Classe Réelle"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500
+        )
+
+        # 📌 Affichage dans Streamlit
+        st.plotly_chart(fig_cm, use_container_width=True)
+
+        # 📌 Calcul des valeurs pour la courbe ROC
+        fpr, tpr, _ = roc_curve(y_test, y_proba)
+        roc_auc = roc_auc_score(y_test, y_proba)
+
+        # 📌 Création du graphique avec Plotly
+        fig_roc = go.Figure()
+
+        fig_roc.add_trace(
+            go.Scatter(
+                x=fpr,
+                y=tpr,
+                mode="lines",
+                name=f"ROC Curve (AUC = {roc_auc:.2f})",
+                line=dict(color="darkorange", width=2)
+            )
+        )
+
+        # 📌 Ajout de la ligne de référence (diagonale)
+        fig_roc.add_trace(
+            go.Scatter(
+                x=[0, 1],
+                y=[0, 1],
+                mode="lines",
+                name="Random Model",
+                line=dict(color="navy", dash="dash")
+            )
+        )
+
+        # 📌 Mise en page optimisée pour Streamlit
+        fig_roc.update_layout(
+            xaxis=dict(title="Taux de Faux Positifs (FPR)"),
+            yaxis=dict(title="Taux de Vrais Positifs (TPR)"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500
+        )
+
+        # 📌 Affichage dans Streamlit
+        st.subheader("📉 Courbe ROC - Capacité de Prédiction du Modèle")
+        st.plotly_chart(fig_roc, use_container_width=True)
+
+        # 📌 Ajout d'une analyse de l'importance des variables avec signe (positif/négatif)
+        st.subheader("📈 Importance des Variables - Impact sur l'Attrition")
+
+        # Récupérer les coefficients du modèle de régression logistique
+        coefficients = model.named_steps['classifier'].coef_[0]
+
+        # Associer les coefficients aux noms des features après transformation
+        feature_names = preprocessor.get_feature_names_out()
+
+        # Créer un DataFrame pour stocker les résultats
+        feature_importance_df = pd.DataFrame({"Feature": feature_names, "Coefficient": coefficients})
+
+        # Trier les coefficients par ordre décroissant d'importance absolue
+        feature_importance_df["Abs_Coefficient"] = feature_importance_df["Coefficient"].abs()
+        feature_importance_df = feature_importance_df.sort_values(by="Abs_Coefficient", ascending=False).head(10).drop(
+            columns=["Abs_Coefficient"])
+
+        # Création du graphique avec Plotly pour afficher l'effet positif ou négatif
+        fig_feature_imp = go.Figure()
+
+        fig_feature_imp.add_trace(
+            go.Bar(
+                x=feature_importance_df["Feature"],
+                y=feature_importance_df["Coefficient"],
+                marker=dict(
+                    color=feature_importance_df["Coefficient"],
+                    colorscale="RdBu",
+                    showscale=True
+                ),
+            )
+        )
+
+        # 📌 Mise en page optimisée
+        fig_feature_imp.update_layout(
+            yaxis=dict(title="Effet sur l'Attrition"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500
+        )
+
+        # 📌 Affichage dans Streamlit
+        st.plotly_chart(fig_feature_imp, use_container_width=True)
 
     with tab2:
-        # Partie mathys
-        st.write(f"SVM")
-        # ============================
+         # ============================
         # 📌 MODÈLE DE PRÉDICTION SVM 
         # ============================
 
@@ -488,18 +564,6 @@ with page5:
         df_svm["TravelFatigue"] = df_svm["BusinessTravel"] * df_svm["DistanceFromHome"]
         # Encoder BusinessTravel en tant que variable catégorielle
         df_svm["BusinessTravel"] = df_svm["BusinessTravel"].astype(str)
-
-        # --- Définition des features et de la variable cible ---
-        features = [
-            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager", "YearsSinceLastPromotion", "NumCompaniesWorked",
-            "MonthlyIncome", "PercentSalaryHike",
-            "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction", "TrainingTimesLastYear",
-            "BusinessTravel", "DistanceFromHome",
-            "AbsenceDays",
-            "TotalWorkingYears",
-            "Department"
-        ]
-        target = "Attrition"
 
         X = df_svm[features].copy()
         y = df_svm[target]
@@ -527,7 +591,6 @@ with page5:
 
         # --- Évaluation du modèle SVM ---
         conf_matrix = confusion_matrix(y_test, y_pred)
-        conf_matrix_df = pd.DataFrame(conf_matrix, index=["Actual No", "Actual Yes"], columns=["Predicted No", "Predicted Yes"])
 
         report_dict = classification_report(y_test, y_pred, output_dict=True)
         report_df = pd.DataFrame(report_dict).transpose()
@@ -536,77 +599,122 @@ with page5:
         roc_auc = roc_auc_score(y_test, y_proba)
         fpr, tpr, thresholds = roc_curve(y_test, y_proba)
 
-        # Affichage des résultats dans Streamlit avec une mise en forme pour une meilleure lisibilité
-        st.subheader("Résultats du Modèle SVM - Optimisé pour Attrition")
+        st.title("📊 Analyse de l'Attrition - SVM")
+        st.subheader("📌 Statistiques du Modèle")
+        col1, col2, col3 = st.columns(3)
 
-        st.markdown("**Matrice de Confusion :**")
-        st.table(conf_matrix_df)
+        with col1:
+            st.metric("📊 Précision (Accuracy)", f"{accuracy_score(y_test, y_pred) * 100:.2f} %")
+        with col2:
+            st.metric("🎯 Rappel (Recall)",
+                      f"{classification_report(y_test, y_pred, output_dict=True)['1']['recall']:.2f}")
+        with col3:
+            st.metric("✅ Score F1", f"{classification_report(y_test, y_pred, output_dict=True)['1']['f1-score']:.2f}")
 
-        st.markdown("**Rapport de Classification :**")
-        st.table(report_df)
+        fig_cm = ff.create_annotated_heatmap(
+            z=conf_matrix[::-1],  # Inversion des lignes pour le bon alignement
+            x=["Prédit : Non", "Prédit : Oui"],
+            y=["Réel : Oui", "Réel : Non"],
+            colorscale="RdBu",
+            annotation_text=conf_matrix[::-1].astype(str),
+            showscale=True,
+            reversescale=True
+        )
+        fig_cm.update_layout(
+            xaxis=dict(title="Classe Prédite"),
+            yaxis=dict(title="Classe Réelle"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500
+        )
+        st.subheader("📊 Matrice de confusion")
+        st.plotly_chart(fig_cm, use_container_width=True)
 
-        st.markdown(f"**AUC-ROC :** {roc_auc:.4f}")
+        fig_roc = go.Figure()
+        fig_roc.add_trace(go.Scatter(
+            x=fpr,
+            y=tpr,
+            mode="lines",
+            name=f"ROC Curve (AUC = {roc_auc:.2f})",
+            line=dict(color="darkorange", width=2)
+        ))
+        fig_roc.add_trace(go.Scatter(
+            x=[0, 1],
+            y=[0, 1],
+            mode="lines",
+            name="Random Model",
+            line=dict(color="navy", dash="dash")
+        ))
+        fig_roc.update_layout(
+            title="Courbe ROC - SVM Optimisé pour Attrition",
+            xaxis=dict(title="Taux de Faux Positifs (FPR)"),
+            yaxis=dict(title="Taux de Vrais Positifs (TPR)"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500,
+            template="plotly_white"
+        )
+        st.subheader("📉 Courbe ROC - Capacité de Prédiction du Modèle")
+        st.plotly_chart(fig_roc, use_container_width=True)
 
-        # Tracé de la courbe ROC
-        fig_roc, ax_roc = plt.subplots(figsize=(8, 6))
-        ax_roc.plot(fpr, tpr, label=f"SVM (AUC = {roc_auc:.2f})")
-        ax_roc.plot([0, 1], [0, 1], 'k--')
-        ax_roc.set_xlabel("Taux de faux positifs")
-        ax_roc.set_ylabel("Taux de vrais positifs")
-        ax_roc.set_title("Courbe ROC - SVM Optimisé pour Attrition")
-        ax_roc.legend(loc="lower right")
-        st.pyplot(fig_roc)
+        # Calcul de la corrélation entre chaque feature et la probabilité prédite d'attrition
+        importances = {}
+        for feature in X.columns:
+            # Calcul de la corrélation de Pearson entre la feature et y_proba
+            importances[feature] = np.corrcoef(X_test[feature], y_proba)[0, 1]
 
-        # Sélectionner uniquement les colonnes numériques du dataframe utilisé pour le modèle
-        df_corr = df_svm.select_dtypes(include=['number'])
-        fig_corr, ax_corr = plt.subplots(figsize=(12, 10))
-        sns.heatmap(df_corr.corr(), annot=True, fmt=".2f", cmap="coolwarm", ax=ax_corr)
+        importance_df = pd.DataFrame.from_dict(importances, orient='index', columns=['Correlation'])
+        importance_df = importance_df.sort_values(by='Correlation', ascending=False)
 
-        # --- Graphique des variables les plus corrélées avec l'Attrition ---
-        st.subheader("Variables les plus corrélées avec l'Attrition")
+        # 📌 Affichage de l'importance des variables sur l'attrition
+        st.subheader("📈 Importance des Variables - Impact sur l'Attrition")
 
-        # S'assurer que la colonne 'Attrition' est de type numérique
-        df_svm["Attrition"] = pd.to_numeric(df_svm["Attrition"], errors="coerce")
+        # Récupérer les coefficients des features après transformation
+        importances = {}
+        for feature in X.columns:
+            # Calcul de la corrélation de Pearson entre chaque feature et la probabilité d'attrition prédite
+            importances[feature] = np.corrcoef(X_test[feature], y_proba)[0, 1]
 
-        # Sélectionner uniquement les colonnes numériques du dataframe utilisé pour le modèle
-        df_corr = df_svm.select_dtypes(include=["number"])
+        # Création d'un DataFrame pour stocker les résultats
+        importance_df = pd.DataFrame.from_dict(importances, orient='index', columns=['Correlation'])
 
-        # Vérifier si 'Attrition' est présent dans df_corr
-        if "Attrition" not in df_corr.columns:
-            st.error("La colonne 'Attrition' n'est pas présente dans les données numériques.")
-        else:
-            # Calculer la matrice de corrélation et extraire la corrélation avec Attrition
-            corr_matrix = df_corr.corr()
-            corr_attrition = corr_matrix["Attrition"].drop("Attrition")
+        # Trier les features par ordre décroissant d'importance absolue
+        importance_df["Abs_Correlation"] = importance_df["Correlation"].abs()
+        importance_df = importance_df.sort_values(by="Abs_Correlation", ascending=False).head(10).drop(
+            columns=["Abs_Correlation"])
 
-            # Séparer les corrélations positives et négatives
-            positive_corr = corr_attrition[corr_attrition > 0].sort_values(ascending=False)
-            negative_corr = corr_attrition[corr_attrition < 0].sort_values()
+        # 📌 Création du graphique avec Plotly pour afficher l'effet positif ou négatif
+        fig_feature_imp = go.Figure()
 
-            # Graphique pour les variables positivement corrélées (vertical bar chart)
-            if not positive_corr.empty:
-                fig_pos, ax_pos = plt.subplots(figsize=(8, 4))
-                top_positive = positive_corr.head(5)
-                top_positive.plot(kind="bar", ax=ax_pos, color="green")
-                ax_pos.set_title("Top 5 variables positivement corrélées à l'Attrition")
-                ax_pos.set_xlabel("Variables")
-                ax_pos.set_ylabel("Coefficient de corrélation")
-                st.pyplot(fig_pos)
-            else:
-                st.write("Aucune corrélation positive trouvée.")
+        fig_feature_imp.add_trace(
+            go.Bar(
+                x=importance_df.index,
+                y=importance_df["Correlation"],
+                marker=dict(
+                    color=importance_df["Correlation"],
+                    colorscale="RdBu",
+                    showscale=True
+                ),
+            )
+        )
 
-            # Graphique pour les variables négativement corrélées (vertical bar chart)
-            if not negative_corr.empty:
-                fig_neg, ax_neg = plt.subplots(figsize=(8, 4))
-                top_negative = negative_corr.head(5)
-                top_negative.plot(kind="bar", ax=ax_neg, color="red")
-                ax_neg.set_title("Top 5 variables négativement corrélées à l'Attrition")
-                ax_neg.set_xlabel("Variables")
-                ax_neg.set_ylabel("Coefficient de corrélation")
-                st.pyplot(fig_neg)
-            else:
-                st.write("Aucune corrélation négative trouvée.")
+        # 📌 Mise en page optimisée
+        fig_feature_imp.update_layout(
+            title="📈 Top 10 Variables les Plus Influentes sur l'Attrition",
+            xaxis=dict(title="Variables", tickangle=-45),
+            yaxis=dict(title="Effet sur l'Attrition"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=500
+        )
 
+        # 📌 Affichage dans Streamlit
+        st.plotly_chart(fig_feature_imp, use_container_width=True)
+
+        # 📌 Explication
+        st.markdown("""
+       🔹 **Les valeurs positives** indiquent que la variable **augmente la probabilité d'attrition**  
+       🔹 **Les valeurs négatives** indiquent que la variable **réduit la probabilité d'attrition**  
+       🔹 **Plus la valeur absolue est grande, plus l'impact est fort**  
+       🔹 **Seules les 10 variables les plus influentes (positives ou négatives) sont affichées**
+       """)
 
     with tab3:
         # Titre de l'application
@@ -678,7 +786,7 @@ with page5:
         # 📌 Conclusion
         st.write("L'importance des variables montre quelles caractéristiques influencent le plus la prédiction d'attrition.")
         st.write("L'accuracy et le recall sont des métriques clés pour évaluer la performance du modèle.")
-        
+
     with tab4:
         st.subheader("🌳 Prédiction avec Decision Tree")
 
