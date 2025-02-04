@@ -5,17 +5,19 @@ import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.preprocessing import MinMaxScaler
 
 # 📌 CONFIGURATION DE L'INTERFACE
-st.set_page_config(page_title="Analyse RH", layout="wide")
+st.set_page_config(page_title="HumanForYou", layout="wide")
 
 # 📌 CHARGEMENT DES DONNÉES
 @st.cache_data
 def load_data():
-    # Chargement des données RH
+    # Chargement des données
     hr_data = pd.read_csv('./data/general_data.csv')
     survey_data = pd.read_csv('./data/employee_survey_data.csv')
     manager_data = pd.read_csv('./data/manager_survey_data.csv')
@@ -84,11 +86,18 @@ def load_data():
     hr_data["PerformanceInvolvementGap"] = hr_data["PerformanceRating"] - hr_data["JobInvolvement"]
     hr_data["AbsenceRate"] = hr_data["AbsenceDays"] / (hr_data["YearsAtCompany"] + 1)
     hr_data["TravelFatigue"] = hr_data["BusinessTravel"] * hr_data["DistanceFromHome"]
+    categorical_columns = ['Departement', 'EducationField', 'JobRole']
+    binary_columns = ['Attrition', 'Gender']
+    numerical_columns = hr_data.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    numerical_columns = [col for col in numerical_columns if col not in categorical_columns + binary_columns]
+    scaler = MinMaxScaler()
+    normalized_df = hr_data.copy()
+    normalized_df[numerical_columns] = scaler.fit_transform(hr_data[numerical_columns])
 
-    return hr_data, absence_status, absence_days
+    return hr_data, absence_status, absence_days, normalized_df
 
 # Charger les données
-df, absence_status, absence_days = load_data()
+df, absence_status, absence_days, normalized_df = load_data()
 
 page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "Analyse Bivariée & Multivariée", "Analyse Avancée & Business Insights", "Prédiction"])
 
@@ -101,7 +110,7 @@ selected_features = st.sidebar.multiselect("Sélectionnez les variables à affic
 
 with page1 :
     # 📌 TITRE PRINCIPAL
-    st.title("📊 Analyse des Données RH - Dashboard Interactif")
+    st.title("📊 HumanForYou - Dashboard")
     st.subheader("🚀 Un projet avancé d'exploration et de visualisation des données")
 
     # 📝 Présentation du projet
@@ -258,9 +267,8 @@ with page3:
 
     # 📌 MATRICE DE CORRÉLATION
     st.subheader("📌 Matrice de Corrélation")
-
     # Filtrer les données selon les variables sélectionnées
-    correlation_matrix = df[selected_features].corr()
+    correlation_matrix = normalized_df[selected_features].corr()
 
     # Affichage de la heatmap
     fig, ax = plt.subplots(figsize=(12, 8))
@@ -324,26 +332,17 @@ with page5:
     tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
 
     with tab1:
-        # Import des bibliothèques nécessaires
-        import pandas as pd
-        import numpy as np
-        import streamlit as st
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        from sklearn.model_selection import train_test_split
-        from sklearn.preprocessing import StandardScaler, OneHotEncoder
-        from sklearn.linear_model import LogisticRegression
-        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
         # 📌 VARIABLES À UTILISER DANS LE MODÈLE
         features = [
-            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
-            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
-            "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
-            "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
-            "DistanceFromHome", "AbsenceDays", "TotalWorkingYears", "Department",
-            "Education", "PerformanceRating", "JobInvolvement"
-        ]
+        "JobRole", "JobLevel", "YearsAtCompany","YearsWithCurrManager",
+        "YearsSinceLastPromotion","NumCompaniesWorked", "MonthlyIncome",
+        "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction",
+        "TrainingTimesLastYear",
+        "BusinessTravel",
+        "AbsenceDays",
+        "TotalWorkingYears",
+        "Department"]
 
         target = "Attrition"  # Variable cible (1 = Quitte l'entreprise, 0 = Reste)
 
@@ -420,5 +419,77 @@ with page5:
         # Partie mathys
         st.write(f"SVM")
     with tab3:
-        #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
         st.write(f"Random Forest")
+
+        # 📌 PRÉDICTION DE L'ATTRITION
+        categorical_columns = ['Departement', 'EducationField', 'JobRole']
+        binary_columns = ['Attrition', 'Gender']
+        numerical_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+        numerical_columns = [col for col in numerical_columns if col not in categorical_columns + binary_columns]
+        scaler = MinMaxScaler()
+        normalized_df = df.copy()
+        normalized_df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
+
+        # 📌 PRÉPARATION DES DONNÉES
+
+        # Sélection des variables pour la prédiction
+        features = [
+        "JobRole", "JobLevel", "YearsAtCompany","YearsWithCurrManager",
+        "YearsSinceLastPromotion","NumCompaniesWorked", "MonthlyIncome",
+        "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction",
+        "TrainingTimesLastYear",
+        "BusinessTravel",
+        "AbsenceDays",
+        "TotalWorkingYears",
+        "Department"]
+
+        # Encodage des variables catégoriques
+        df_encoded = pd.get_dummies(df[features])
+
+        # Séparation des données en variables explicatives et cible
+        X = df_encoded
+        y = df['Attrition']
+
+        # Division des données en ensembles d'entraînement et de test
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # 📌 ENTRAÎNEMENT DES MODÈLES
+
+        # Initialisation des modèles
+        rf_model = RandomForestClassifier(random_state=42)
+
+        # Entraînement des modèles
+        rf_model.fit(X_train, y_train)
+
+        # 📌 ÉVALUATION DES MODÈLES
+
+        # Prédiction sur l'ensemble de test
+        rf_pred = rf_model.predict(X_test)
+
+        # Calcul de l'accuracy
+        rf_accuracy = accuracy_score(y_test, rf_pred)
+
+        # Affichage des résultats
+        st.subheader("📊 Résultats de la Prédiction"
+                    "\n🔴 0 : Non Attrition, 🟢 1 : Attrition")
+        st.write("### Random Forest Classifier")
+        st.write(f"Accuracy : {rf_accuracy:.2f}")
+        st.write("Prédiction sur l'ensemble de test :")
+        # Recall
+        st.write("Recall :")
+        st.write(recall_score(y_test, rf_pred))
+        st.write("Classification Report :")
+        st.write(classification_report(y_test, rf_pred))
+        st.write("Confusion Matrix :")
+        st.write(confusion_matrix(y_test, rf_pred))
+
+        # 📌 INTERPRÉTATION DES RÉSULTATS
+        st.subheader("📈 Importance des Variables"
+                    "\n🔍 Variables les plus influentes dans la prédiction de l'attrition")
+        
+        # Importance des variables pour le modèle Random Forest
+        feature_importance = pd.Series(rf_model.feature_importances_, index=X.columns)
+        feature_importance = feature_importance.sort_values(ascending=False)
+        st.bar_chart(feature_importance.head(10))
+
+
