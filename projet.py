@@ -19,6 +19,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import roc_auc_score, roc_curve
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="HumanForYou", layout="wide")
@@ -109,13 +110,6 @@ def load_data():
 df, absence_status, absence_days, normalized_df = load_data()
 
 page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "Analyse Bivariée & Multivariée", "Analyse Avancée & Business Insights", "Prédiction"])
-
-
-# 📌 SIDEBAR INTERACTIVE
-st.sidebar.header("🔎 Options d'analyse")
-selected_features = st.sidebar.multiselect("Sélectionnez les variables à afficher dans la matrice de corrélation :", 
-                                           df.select_dtypes(include=['int', 'float64']).columns.tolist(),
-                                           default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
 
 with page1 :
     # 📌 TITRE PRINCIPAL
