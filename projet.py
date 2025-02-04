@@ -4,10 +4,15 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.linear_model import LogisticRegression,Perceptron
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, roc_curve, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.svm import SVC
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="Analyse RH", layout="wide")
@@ -95,7 +100,7 @@ page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "An
 # 📌 SIDEBAR INTERACTIVE
 st.sidebar.header("🔎 Options d'analyse")
 selected_features = st.sidebar.multiselect("Sélectionnez les variables à afficher dans la matrice de corrélation :", 
-                                           df.select_dtypes(include=['int64', 'float64']).columns.tolist(), 
+                                           df.select_dtypes(include=['int', 'float64']).columns.tolist(), 
                                            default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
 
 
