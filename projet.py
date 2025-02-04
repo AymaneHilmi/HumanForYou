@@ -4,10 +4,12 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.compose import ColumnTransformer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.tree import DecisionTreeClassifier
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="Analyse RH", layout="wide")
@@ -321,7 +323,7 @@ with page4:
 
 with page5:
     # 📌 ONGLETS INTERACTIFS
-    tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest", "🌳 Decision Tree"])
 
     with tab1:
         # Import des bibliothèques nécessaires
@@ -422,3 +424,100 @@ with page5:
     with tab3:
         #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
         st.write(f"Random Forest")
+
+    with tab4:
+        st.subheader("🌳 Prédiction avec Decision Tree")
+
+        # Définition des features et de la target pour le Decision Tree
+        features = [
+            "JobRole",
+            "JobLevel",
+            "YearsAtCompany",
+            "YearsWithCurrManager",
+            "YearsSinceLastPromotion",
+            "NumCompaniesWorked",
+            "MonthlyIncome",
+            "PercentSalaryHike",
+            "JobSatisfaction",
+            "WorkLifeBalance",
+            "EnvironmentSatisfaction",
+            "TrainingTimesLastYear",
+            "BusinessTravel",
+            "AbsenceDays",
+            "TotalWorkingYears"
+        ]
+        target = "Attrition"
+
+        # Séparation des variables catégoriques et numériques
+        categorical_features = ["JobRole", "BusinessTravel", "Department"]
+        numerical_features = [col for col in features if col not in categorical_features]
+
+        # Création d'un préprocesseur avec ColumnTransformer
+        preprocessor = ColumnTransformer(transformers=[
+            ('cat', OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
+            ('num', StandardScaler(), numerical_features)
+        ])
+
+        # Transformation des données
+        df_transformed = pd.DataFrame(preprocessor.fit_transform(df[categorical_features + numerical_features]),
+                                      columns=preprocessor.get_feature_names_out(),
+                                      index=df.index)
+        # Combinaison avec la target
+        df_final = pd.concat([df_transformed, df[target]], axis=1)
+
+        # Division des données en ensembles d'entraînement et de test
+        X = df_final.drop(columns=[target])
+        y = df_final[target]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+        # Définition de la grille de recherche pour le Decision Tree
+        param_grid_dt = {
+            'max_depth': [None, 5, 10, 15],
+            'min_samples_split': [2, 5, 10],
+            'min_samples_leaf': [1, 2, 4],
+            'max_features': [None, 'sqrt', 'log2'],
+            'class_weight': [None, 'balanced']
+        }
+
+        grid_dt = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid_dt,
+                               cv=5, scoring='f1', n_jobs=-1)
+        grid_dt.fit(X_train, y_train)
+        best_dt = grid_dt.best_estimator_
+
+        st.write("### Meilleurs paramètres pour Decision Tree")
+        st.write(grid_dt.best_params_)
+
+        # Prédiction avec le meilleur modèle
+        y_pred = best_dt.predict(X_test)
+        accuracy_dt = accuracy_score(y_test, y_pred)
+
+        st.write(f"📌 **Précision du modèle Decision Tree optimisé :** {accuracy_dt * 100:.2f} %")
+
+        # Calcul de la matrice de confusion
+        conf_matrix = confusion_matrix(y_test, y_pred)
+
+        # Affichage de la matrice de confusion sous forme de heatmap
+        fig_cm, ax_cm = plt.subplots(figsize=(5, 3))
+        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Greens",
+                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"], ax=ax_cm)
+        ax_cm.set_xlabel("Prédiction")
+        ax_cm.set_ylabel("Réel")
+        ax_cm.set_title("Matrice de Confusion")
+        st.pyplot(fig_cm)
+
+
+        # Fonction pour afficher les statistiques du modèle
+        def display_metrics(y_true, y_pred, model_name="Decision Tree"):
+            st.subheader(f"📊 Performances du modèle : {model_name}")
+            class_report = classification_report(y_true, y_pred, output_dict=True, zero_division=1)
+            df_report = pd.DataFrame(class_report).transpose()
+            st.dataframe(df_report)
+            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
+            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
+            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
+            st.write(
+                f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
+
+
+        # Affichage des métriques
+        display_metrics(y_test, y_pred, model_name="Decision Tree Optimisé")
