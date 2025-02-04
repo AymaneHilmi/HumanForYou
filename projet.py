@@ -419,6 +419,148 @@ with page5:
     with tab2:
         # Partie mathys
         st.write(f"SVM")
+        # ==============================================================
+        # 📌 MODÈLE DE PRÉDICTION SVM - OPTIMISÉ POUR ATTRITION
+        # ==============================================================
+
+        st.header("Modèle de Prédiction SVM - Optimisé pour détecter les départs")
+
+        # Créer une copie du dataframe pour le modèle SVM
+        df_svm = df.copy()
+
+        # Conversion des variables de satisfaction en entier
+        df_svm["JobSatisfaction"] = df_svm["JobSatisfaction"].astype(int)
+        df_svm["EnvironmentSatisfaction"] = df_svm["EnvironmentSatisfaction"].astype(int)
+        df_svm["WorkLifeBalance"] = df_svm["WorkLifeBalance"].astype(int)
+        df_svm["SatisfactionScore"] = (df_svm["JobSatisfaction"] + df_svm["EnvironmentSatisfaction"] + df_svm["WorkLifeBalance"]) / 3
+        df_svm["SalarySatisfactionGap"] = df_svm["MonthlyIncome"] / (df_svm["JobSatisfaction"] + 1)
+        # Calcul de la différence entre PerformanceRating et JobInvolvement
+        df_svm["PerformanceInvolvementGap"] = df_svm["PerformanceRating"].astype(int) - df_svm["JobInvolvement"].astype(int)
+        df_svm["AbsenceRate"] = df_svm["AbsenceDays"] / (df_svm["YearsAtCompany"] + 1)
+        # Calcul de TravelFatigue avant modification de BusinessTravel
+        df_svm["TravelFatigue"] = df_svm["BusinessTravel"] * df_svm["DistanceFromHome"]
+        # Encoder BusinessTravel en tant que variable catégorielle
+        df_svm["BusinessTravel"] = df_svm["BusinessTravel"].astype(str)
+
+        # --- Définition des features et de la variable cible ---
+        features = [
+            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager", "YearsSinceLastPromotion", "NumCompaniesWorked",
+            "MonthlyIncome", "PercentSalaryHike",
+            "JobSatisfaction", "WorkLifeBalance", "EnvironmentSatisfaction", "TrainingTimesLastYear",
+            "BusinessTravel", "DistanceFromHome",
+            "AbsenceDays",
+            "TotalWorkingYears",
+            "Department"
+        ]
+        target = "Attrition"
+
+        X = df_svm[features].copy()
+        y = df_svm[target]
+
+        # --- Encodage des variables catégorielles ---
+        # On encode "JobRole", "Department" et "BusinessTravel" via one-hot encoding
+        X = pd.get_dummies(X, columns=["JobRole", "Department", "BusinessTravel"], drop_first=True)
+
+        # --- Normalisation des données ---
+        scaler = StandardScaler()
+        X_scaled = scaler.fit_transform(X)
+        X = pd.DataFrame(X_scaled, columns=X.columns)
+
+        # --- Séparation en ensembles d'entraînement et de test ---
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # --- Initialisation et entraînement du modèle SVM ---
+        # On utilise 'class_weight' pour compenser le déséquilibre et se concentrer sur les départs (classe positive)
+        # Les paramètres sont fixés pour réduire le temps d'exécution
+        svm_model = SVC(probability=True, random_state=42, class_weight='balanced', kernel='rbf', C=1, gamma=0.1)
+        svm_model.fit(X_train, y_train)
+
+        # --- Prédictions ---
+        y_pred = svm_model.predict(X_test)
+
+        # --- Évaluation du modèle SVM ---
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        conf_matrix_df = pd.DataFrame(conf_matrix, index=["Actual No", "Actual Yes"], columns=["Predicted No", "Predicted Yes"])
+
+        report_dict = classification_report(y_test, y_pred, output_dict=True)
+        report_df = pd.DataFrame(report_dict).transpose()
+
+        y_proba = svm_model.predict_proba(X_test)[:, 1]
+        roc_auc = roc_auc_score(y_test, y_proba)
+        fpr, tpr, thresholds = roc_curve(y_test, y_proba)
+
+        # Affichage des résultats dans Streamlit avec une mise en forme pour une meilleure lisibilité
+        st.subheader("Résultats du Modèle SVM - Optimisé pour Attrition")
+
+        st.markdown("**Matrice de Confusion :**")
+        st.table(conf_matrix_df)
+
+        st.markdown("**Rapport de Classification :**")
+        st.table(report_df)
+
+        st.markdown(f"**AUC-ROC :** {roc_auc:.4f}")
+
+        # Tracé de la courbe ROC
+        fig_roc, ax_roc = plt.subplots(figsize=(8, 6))
+        ax_roc.plot(fpr, tpr, label=f"SVM (AUC = {roc_auc:.2f})")
+        ax_roc.plot([0, 1], [0, 1], 'k--')
+        ax_roc.set_xlabel("Taux de faux positifs")
+        ax_roc.set_ylabel("Taux de vrais positifs")
+        ax_roc.set_title("Courbe ROC - SVM Optimisé pour Attrition")
+        ax_roc.legend(loc="lower right")
+        st.pyplot(fig_roc)
+
+        # Sélectionner uniquement les colonnes numériques du dataframe utilisé pour le modèle
+        df_corr = df_svm.select_dtypes(include=['number'])
+        fig_corr, ax_corr = plt.subplots(figsize=(12, 10))
+        sns.heatmap(df_corr.corr(), annot=True, fmt=".2f", cmap="coolwarm", ax=ax_corr)
+
+        # --- Graphique des variables les plus corrélées avec l'Attrition ---
+        st.subheader("Variables les plus corrélées avec l'Attrition")
+
+        # S'assurer que la colonne 'Attrition' est de type numérique
+        df_svm["Attrition"] = pd.to_numeric(df_svm["Attrition"], errors="coerce")
+
+        # Sélectionner uniquement les colonnes numériques du dataframe utilisé pour le modèle
+        df_corr = df_svm.select_dtypes(include=["number"])
+
+        # Vérifier si 'Attrition' est présent dans df_corr
+        if "Attrition" not in df_corr.columns:
+            st.error("La colonne 'Attrition' n'est pas présente dans les données numériques.")
+        else:
+            # Calculer la matrice de corrélation et extraire la corrélation avec Attrition
+            corr_matrix = df_corr.corr()
+            corr_attrition = corr_matrix["Attrition"].drop("Attrition")
+
+            # Séparer les corrélations positives et négatives
+            positive_corr = corr_attrition[corr_attrition > 0].sort_values(ascending=False)
+            negative_corr = corr_attrition[corr_attrition < 0].sort_values()
+
+            # Graphique pour les variables positivement corrélées (vertical bar chart)
+            if not positive_corr.empty:
+                fig_pos, ax_pos = plt.subplots(figsize=(8, 4))
+                top_positive = positive_corr.head(5)
+                top_positive.plot(kind="bar", ax=ax_pos, color="green")
+                ax_pos.set_title("Top 5 variables positivement corrélées à l'Attrition")
+                ax_pos.set_xlabel("Variables")
+                ax_pos.set_ylabel("Coefficient de corrélation")
+                st.pyplot(fig_pos)
+            else:
+                st.write("Aucune corrélation positive trouvée.")
+
+            # Graphique pour les variables négativement corrélées (vertical bar chart)
+            if not negative_corr.empty:
+                fig_neg, ax_neg = plt.subplots(figsize=(8, 4))
+                top_negative = negative_corr.head(5)
+                top_negative.plot(kind="bar", ax=ax_neg, color="red")
+                ax_neg.set_title("Top 5 variables négativement corrélées à l'Attrition")
+                ax_neg.set_xlabel("Variables")
+                ax_neg.set_ylabel("Coefficient de corrélation")
+                st.pyplot(fig_neg)
+            else:
+                st.write("Aucune corrélation négative trouvée.")
+
+        
     with tab3:
         #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
         st.write(f"Random Forest")
