@@ -6,20 +6,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.figure_factory as ff
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score, roc_auc_score, roc_curve
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, MinMaxScaler
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.svm import SVC
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import MinMaxScaler
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.metrics import roc_auc_score, roc_curve
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="HumanForYou", layout="wide")
@@ -31,7 +24,7 @@ def load_data():
     hr_data = pd.read_csv('./data/general_data.csv')
     survey_data = pd.read_csv('./data/employee_survey_data.csv')
     manager_data = pd.read_csv('./data/manager_survey_data.csv')
-    
+
     # Fusion des datasets
     hr_data = hr_data.merge(survey_data, on='EmployeeID')
     hr_data = hr_data.merge(manager_data, on='EmployeeID')
@@ -49,7 +42,7 @@ def load_data():
     hr_data['Attrition'] = hr_data['Attrition'].map({'Yes': 1, 'No': 0})
     hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 1, 'Travel_Frequently': 2})
     hr_data['DistanceFromHome'] = hr_data['DistanceFromHome'].astype(int)
-    hr_data['Education'] = hr_data['Education'].astype('category')
+    hr_data['Education'] = hr_data['Education'].astype(int)
     hr_data['EducationField'] = hr_data['EducationField'].astype('category')
     hr_data['EmployeeID'] = hr_data['EmployeeID'].astype(int)
     hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
@@ -69,7 +62,9 @@ def load_data():
     hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype(int)
     hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype(int)
     hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype(int)
-
+    print(hr_data['MonthlyIncome'])
+    hr_data["MonthlyIncome"] = hr_data["MonthlyIncome"].apply(lambda x: round(x, -3)) 
+    print(hr_data['MonthlyIncome'])
     # Chargement des données d'absentéisme
     in_time_data = pd.read_csv('./data/in_time.csv')
     out_time_data = pd.read_csv('./data/out_time.csv')
@@ -309,36 +304,46 @@ with page3:
 
     # Affichage dans Streamlit
     st.plotly_chart(fig, use_container_width=True)
-    # 📌 ANALYSE DES DÉPARTS
 
-    # Appliquer les transformations aux colonnes nécessaires
+    # 📌 ANALYSE DES DÉPARTS (Comparaison Employés Partis vs. Restants)
+    st.subheader("📌 Comparaison des Employés Partis vs. Restants")
+
+    # Transformation des colonnes pour une meilleure lisibilité
     df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
     df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
 
-    # Calcul des taux d'attrition
-    age_attrition = df.groupby("Age")["Attrition"].mean() * 100
-    gender_attrition = df.groupby("Gender")["Attrition"].mean() * 100
-    marital_attrition = df.groupby("MaritalStatus")["Attrition"].mean() * 100
+    # 📌 COMPARAISON PAR FACTEUR CLÉ
+    attrition_comparison = {
+        "💰 Salaire Moyen": df.groupby("Attrition")["MonthlyIncome"].mean(),
+        "🏢 Années dans l'Entreprise": df.groupby("Attrition")["YearsAtCompany"].mean(),
+        "🚀 Dernière Augmentation (%)": df.groupby("Attrition")["PercentSalaryHike"].mean(),
+        "🔄 Nombre d'Entreprises Précédentes": df.groupby("Attrition")["NumCompaniesWorked"].mean(),
+        "📈 Niveau Hiérarchique": df.groupby("Attrition")["JobLevel"].mean(),
+        "🏠 Distance Domicile-Travail (km)": df.groupby("Attrition")["DistanceFromHome"].mean(),
+        "📊 Score Satisfaction": df.groupby("Attrition")["SatisfactionScore"].mean(),
+        "📈 Taux de Promotion": df.groupby("Attrition")["PromotionRate"].mean(),
+        "🚪 Taux d'Absence": df.groupby("Attrition")["AbsenceRate"].mean(),
+    }
 
-    # Sélection du graphique à afficher
-    option = st.selectbox("Choisissez l'analyse à afficher :", ["📈 Taux d'attrition par âge", "📊 Taux d'attrition par genre", "📉 Taux d'attrition par état matrimonial"])
+    # 📌 Sélection du critère de comparaison
+    option = st.selectbox(
+        "Choisissez un critère d'analyse :", 
+        list(attrition_comparison.keys())
+    )
 
-    # Fonction pour afficher un graphique
-    def plot_bar_chart(data, xlabel, title):
+    # 📊 Fonction pour afficher le graphique comparatif
+    def plot_attrition_chart(data, title):
         st.subheader(title)
         st.bar_chart(data)
 
-    # Affichage du graphique en fonction de la sélection
-    if option == "📈 Taux d'attrition par âge":
-        # Groupement des tranches d'âge
-        age_attrition = df.groupby("Age")["Attrition"].mean() * 100
-        plot_bar_chart(age_attrition, "Âge", "Taux d'attrition par âge")
+    # 📌 Affichage du graphique sélectionné
+    plot_attrition_chart(attrition_comparison[option], option)
 
-    elif option == "📊 Taux d'attrition par genre":
-        plot_bar_chart(gender_attrition, "Genre", "Taux d'attrition par genre")
+    # 📌 INTERPRÉTATION DES RÉSULTATS
+    st.subheader("📌 Interprétation des Résultats")
 
-    elif option == "📉 Taux d'attrition par état matrimonial":
-        plot_bar_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
+    st.write("📌 **Employés Partis (Attrition = 1)**")
+    st.write("📌 **Employés Restants (Attrition = 0)**")
 
     st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
     col1, col2 = st.columns(2)
@@ -377,18 +382,6 @@ with page5:
         "Department"
     ]
     with tab1:
-        # Import des bibliothèques nécessaires
-        import pandas as pd
-        import numpy as np
-        import streamlit as st
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        from sklearn.model_selection import train_test_split
-        from sklearn.preprocessing import StandardScaler, OneHotEncoder
-        from sklearn.linear_model import LogisticRegression
-        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
-
-
         # 📌 VARIABLES À UTILISER DANS LE MODÈLE
         features = [
             "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
@@ -473,9 +466,9 @@ with page5:
     with tab2:
         # Partie mathys
         st.write(f"SVM")
-        # ==============================================================
-        # 📌 MODÈLE DE PRÉDICTION SVM - OPTIMISÉ POUR ATTRITION
-        # ==============================================================
+        # ============================
+        # 📌 MODÈLE DE PRÉDICTION SVM 
+        # ============================
 
         st.header("Modèle de Prédiction SVM - Optimisé pour détecter les départs")
 
@@ -616,8 +609,10 @@ with page5:
 
 
     with tab3:
-        st.write(f"Random Forest")
-        # 📌 PRÉDICTION DE L'ATTRITION
+        # Titre de l'application
+        st.title("Prédiction de l'Attrition avec Random Forest")
+        st.markdown("Ce modèle utilise un Random Forest pour prédire si un employé quittera l'entreprise (attrition).")
+        # Préparation des données
         categorical_columns = ['Departement', 'EducationField', 'JobRole']
         binary_columns = ['Attrition', 'Gender']
         numerical_columns = df.select_dtypes(include=['int64', 'float64']).columns.tolist()
@@ -625,7 +620,7 @@ with page5:
         scaler = MinMaxScaler()
         normalized_df = df.copy()
         normalized_df[numerical_columns] = scaler.fit_transform(df[numerical_columns])
-        # 📌 PRÉPARATION DES DONNÉES
+
         # Sélection des variables pour la prédiction
         features = [
             "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
@@ -636,44 +631,54 @@ with page5:
             "AbsenceDays",
             "TotalWorkingYears",
             "Department"]
-        # Encodage des variables catégoriques
+
         df_encoded = pd.get_dummies(df[features])
-        # Séparation des données en variables explicatives et cible
+
         X = df_encoded
         y = df['Attrition']
-        # Division des données en ensembles d'entraînement et de test
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        # 📌 ENTRAÎNEMENT DES MODÈLES
-        # Initialisation des modèles
-        rf_model = RandomForestClassifier(random_state=42)
-        # Entraînement des modèles
-        rf_model.fit(X_train, y_train)
-        # 📌 ÉVALUATION DES MODÈLES
-        # Prédiction sur l'ensemble de test
-        rf_pred = rf_model.predict(X_test)
-        # Calcul de l'accuracy
-        rf_accuracy = accuracy_score(y_test, rf_pred)
-        # Affichage des résultats
-        st.subheader("📊 Résultats de la Prédiction"
-                     "\n🔴 0 : Non Attrition, 🟢 1 : Attrition")
-        st.write("### Random Forest Classifier")
-        st.write(f"Accuracy : {rf_accuracy:.2f}")
-        st.write("Prédiction sur l'ensemble de test :")
-        # Recall
-        st.write("Recall :")
-        st.write(recall_score(y_test, rf_pred))
-        st.write("Classification Report :")
-        st.write(classification_report(y_test, rf_pred))
-        st.write("Confusion Matrix :")
-        st.write(confusion_matrix(y_test, rf_pred))
-        # 📌 INTERPRÉTATION DES RÉSULTATS
-        st.subheader("📈 Importance des Variables"
-                     "\n🔍 Variables les plus influentes dans la prédiction de l'attrition")
 
-        # Importance des variables pour le modèle Random Forest
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+        # 📌 Entraînement du modèle
+        rf_model = RandomForestClassifier(random_state=42)
+        rf_model.fit(X_train, y_train)
+
+        # 📌 Évaluation du modèle
+        rf_pred = rf_model.predict(X_test)
+        rf_accuracy = accuracy_score(y_test, rf_pred)
+
+        # Affichage des résultats
+        st.subheader("📊 Résultats de la Prédiction")
+        st.write(f"**Accuracy :** {rf_accuracy}")
+        st.write("Prédiction sur l'ensemble de test :")
+        st.write("🔴 0 : Non Attrition, 🟢 1 : Attrition")
+
+        # Recall
+        st.write("**Recall :**", recall_score(y_test, rf_pred))
+        st.write("**Classification Report :**")
+        st.text(classification_report(y_test, rf_pred))
+
+        # Matrice de confusion
+        st.write("**Confusion Matrix :**")
+        cm = confusion_matrix(y_test, rf_pred)
+        fig, ax = plt.subplots()
+        ax.matshow(cm, cmap='Blues', alpha=0.7)
+        for (i, j), val in np.ndenumerate(cm):
+            ax.text(j, i, val, ha='center', va='center', color='black')
+        plt.xlabel('Prédictions')
+        plt.ylabel('Réel')
+        st.pyplot(fig)
+
+        # 📌 Importance des Variables
+        st.subheader("📈 Importance des Variables")
         feature_importance = pd.Series(rf_model.feature_importances_, index=X.columns)
         feature_importance = feature_importance.sort_values(ascending=False)
         st.bar_chart(feature_importance.head(10))
+
+        # 📌 Conclusion
+        st.write("L'importance des variables montre quelles caractéristiques influencent le plus la prédiction d'attrition.")
+        st.write("L'accuracy et le recall sont des métriques clés pour évaluer la performance du modèle.")
+        
     with tab4:
         st.subheader("🌳 Prédiction avec Decision Tree")
 
