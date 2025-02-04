@@ -92,12 +92,6 @@ df, absence_status, absence_days = load_data()
 
 page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "Analyse Bivariée & Multivariée", "Analyse Avancée & Business Insights", "Prédiction"])
 
-# 📌 SIDEBAR INTERACTIVE
-st.sidebar.header("🔎 Options d'analyse")
-selected_features = st.sidebar.multiselect("Sélectionnez les variables à afficher dans la matrice de corrélation :", 
-                                           df.select_dtypes(include=['int64', 'float64']).columns.tolist(), 
-                                           default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
-
 
 with page1 :
     # 📌 TITRE PRINCIPAL
@@ -255,6 +249,16 @@ with page2 :
             display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
 with page3:
+    with st.expander("🔎 Options d'analyse", expanded=False):
+        selected_features = st.multiselect("Sélectionnez les variables à afficher dans la matrice de corrélation :", 
+                                       df.select_dtypes(include=['int64', 'float64']).columns.tolist(), 
+                                       default=["Attrition","JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+                                                "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+                                                "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
+                                                "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
+                                                "DistanceFromHome", "AbsenceDays", "TotalWorkingYears",
+                                                "PerformanceRating", "JobInvolvement"])
+
 
     # 📌 MATRICE DE CORRÉLATION
     st.subheader("📌 Matrice de Corrélation")
@@ -324,16 +328,7 @@ with page5:
     tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
 
     with tab1:
-        # Import des bibliothèques nécessaires
-        import pandas as pd
-        import numpy as np
-        import streamlit as st
-        import matplotlib.pyplot as plt
-        import seaborn as sns
-        from sklearn.model_selection import train_test_split
-        from sklearn.preprocessing import StandardScaler, OneHotEncoder
-        from sklearn.linear_model import LogisticRegression
-        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
 
         # 📌 VARIABLES À UTILISER DANS LE MODÈLE
         features = [
