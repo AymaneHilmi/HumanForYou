@@ -14,6 +14,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
+import time
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="HumanForYou", layout="wide")
@@ -118,6 +119,8 @@ with page1 :
     with col1:
         st.metric("🌍 Nombre total d'employés", df.shape[0])
         st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
+        st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+
         
     with col2:
         st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
@@ -126,6 +129,7 @@ with page1 :
     with col3:
         st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
         st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
+
 
 
     # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
@@ -157,29 +161,16 @@ with page1 :
         display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
         display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
-    # 📌 STATISTIQUES D'ABSENTÉISME
-    st.subheader("📌 Statistiques d'Absentéisme")
-    col1, col2 = st.columns(2)
+    # # 📌 STATISTIQUES D'ABSENTÉISME
+    # st.subheader("📌 Statistiques d'Absentéisme")
+    # col1, col2 = st.columns(2)
 
-    with col1:
-        st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+    # with col1:
+    #     st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
 
-    with col2:
-        max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
-        st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
-
-    # 👥 Présentation des contributeurs
-    st.subheader("👨‍💻 Équipe Projet")
-    
-    team_members = [
-        {"name": "🔹 **Aymane Hilmi**"},
-        {"name": "🔹 **Clement FORNES**"},
-        {"name": "🔹 **Teo EMIROT**"},
-        {"name": "🔹 **Mathys MICHEL**"}
-    ]
-
-    for member in team_members:
-        st.markdown(f"{member['name']}")
+    # with col2:
+    #     max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
+    #     st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
 
 with page2 :
     # 📌 TITRE PRINCIPAL
@@ -256,36 +247,6 @@ with page2 :
             st.pyplot(fig)
 
         st.markdown("---")
-
-        st.subheader("📌 Indicateurs de Performance et de Satisfaction")
-
-        # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
-        def display_metric(label, value, low_threshold, high_threshold):
-            """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
-            if value < low_threshold:
-                status = "🔴 Mauvais"
-            elif value < high_threshold:
-                status = "🟡 Moyen"
-            else:
-                status = "🟢 Bon"
-            st.metric(label, f"{value:.2f}", status)
-
-        # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
-            display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
-            display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
-
-        with col2:
-            display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
-            display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
-            display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
-
-        with col3:
-            display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
-            display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
 
         # === Répartition des âges ===
@@ -398,7 +359,6 @@ with page2 :
         st.subheader("📂 Aperçu des données")
         st.dataframe(df.head(20))
 
-    # 📌 TAB 4 : INDICATEURS DE PERFORMANCE
 
 with page3:
     with st.expander("🔎 Options d'analyse", expanded=False):
@@ -506,7 +466,7 @@ with page4:
 
 with page5:
     # 📌 ONGLETS INTERACTIFS
-    tab1, tab2, tab3, tab4 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest", "🌳 Decision Tree"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest", "🔮 Aide à la Décision"])
 
     # 📌 VARIABLES À UTILISER DANS LES MODÈLES
     features = [
@@ -600,6 +560,10 @@ with page5:
 
         # 📌 APPELER LA FONCTION POUR AFFICHER LES MÉTRIQUES
         display_metrics(y_test, y_pred)
+
+        # Save results in a variable
+        results_logistic = classification_report(y_test, y_pred, output_dict=True)
+
 
     with tab2:
         # Partie mathys
@@ -744,6 +708,7 @@ with page5:
                 st.pyplot(fig_neg)
             else:
                 st.write("Aucune corrélation négative trouvée.")
+        results_svm = classification_report(y_test, y_pred, output_dict=True)
 
 
     with tab3:
@@ -807,6 +772,23 @@ with page5:
         plt.ylabel('Réel')
         st.pyplot(fig)
 
+        # Courbe ROC
+        y_pred_proba = rf_model.predict_proba(X_test)[:, 1]
+        fpr, tpr, _ = roc_curve(y_test, y_pred_proba)
+        roc_auc = roc_auc_score(y_test, y_pred_proba)
+
+        fig, ax = plt.subplots()
+        ax.plot(fpr, tpr, color='darkorange', lw=2, label='ROC curve (area = %0.2f)' % roc_auc)
+        ax.plot([0, 1], [0, 1], color='navy', lw=2, linestyle='--')
+        ax.set_xlim([0.0, 1.0])
+        ax.set_ylim([0.0, 1.05])
+        ax.set_xlabel('Taux de Faux Positifs')
+        ax.set_ylabel('Taux de Vrais Positifs')
+        ax.set_title('Courbe ROC')
+        ax.legend(loc="lower right")
+        st.pyplot(fig)
+
+
         # 📌 Importance des Variables
         st.subheader("📈 Importance des Variables")
         feature_importance = pd.Series(rf_model.feature_importances_, index=X.columns)
@@ -816,100 +798,30 @@ with page5:
         # 📌 Conclusion
         st.write("L'importance des variables montre quelles caractéristiques influencent le plus la prédiction d'attrition.")
         st.write("L'accuracy et le recall sont des métriques clés pour évaluer la performance du modèle.")
+
+        results_rf = classification_report(y_test, rf_pred, output_dict=True)
         
     with tab4:
-        st.subheader("🌳 Prédiction avec Decision Tree")
-
-        # Définition des features et de la target pour le Decision Tree
-        features = [
-            "JobRole",
-            "JobLevel",
-            "YearsAtCompany",
-            "YearsWithCurrManager",
-            "YearsSinceLastPromotion",
-            "NumCompaniesWorked",
-            "MonthlyIncome",
-            "PercentSalaryHike",
-            "JobSatisfaction",
-            "WorkLifeBalance",
-            "EnvironmentSatisfaction",
-            "TrainingTimesLastYear",
-            "BusinessTravel",
-            "AbsenceDays",
-            "TotalWorkingYears"
-        ]
-        target = "Attrition"
-
-        # Séparation des variables catégoriques et numériques
-        categorical_features = ["JobRole", "BusinessTravel", "Department"]
-        numerical_features = [col for col in features if col not in categorical_features]
-
-        # Création d'un préprocesseur avec ColumnTransformer
-        preprocessor = ColumnTransformer(transformers=[
-            ('cat', OneHotEncoder(handle_unknown="ignore", sparse_output=False), categorical_features),
-            ('num', StandardScaler(), numerical_features)
-        ])
-
-        # Transformation des données
-        df_transformed = pd.DataFrame(preprocessor.fit_transform(df[categorical_features + numerical_features]),
-                                      columns=preprocessor.get_feature_names_out(),
-                                      index=df.index)
-        # Combinaison avec la target
-        df_final = pd.concat([df_transformed, df[target]], axis=1)
-
-        # Division des données en ensembles d'entraînement et de test
-        X = df_final.drop(columns=[target])
-        y = df_final[target]
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
-
-        # Définition de la grille de recherche pour le Decision Tree
-        param_grid_dt = {
-            'max_depth': [None, 5, 10, 15],
-            'min_samples_split': [2, 5, 10],
-            'min_samples_leaf': [1, 2, 4],
-            'max_features': [None, 'sqrt', 'log2'],
-            'class_weight': [None, 'balanced']
-        }
-
-        grid_dt = GridSearchCV(DecisionTreeClassifier(random_state=42), param_grid_dt,
-                               cv=5, scoring='f1', n_jobs=-1)
-        grid_dt.fit(X_train, y_train)
-        best_dt = grid_dt.best_estimator_
-
-        st.write("### Meilleurs paramètres pour Decision Tree")
-        st.write(grid_dt.best_params_)
-
-        # Prédiction avec le meilleur modèle
-        y_pred = best_dt.predict(X_test)
-        accuracy_dt = accuracy_score(y_test, y_pred)
-
-        st.write(f"📌 **Précision du modèle Decision Tree optimisé :** {accuracy_dt * 100:.2f} %")
-
-        # Calcul de la matrice de confusion
-        conf_matrix = confusion_matrix(y_test, y_pred)
-
-        # Affichage de la matrice de confusion sous forme de heatmap
-        fig_cm, ax_cm = plt.subplots(figsize=(5, 3))
-        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Greens",
-                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"], ax=ax_cm)
-        ax_cm.set_xlabel("Prédiction")
-        ax_cm.set_ylabel("Réel")
-        ax_cm.set_title("Matrice de Confusion")
-        st.pyplot(fig_cm)
-
-
-        # Fonction pour afficher les statistiques du modèle
-        def display_metrics(y_true, y_pred, model_name="Decision Tree"):
-            st.subheader(f"📊 Performances du modèle : {model_name}")
-            class_report = classification_report(y_true, y_pred, output_dict=True, zero_division=1)
-            df_report = pd.DataFrame(class_report).transpose()
-            st.dataframe(df_report)
-            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
-            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
-            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
-            st.write(
-                f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
-
-
-        # Affichage des métriques
-        display_metrics(y_test, y_pred, model_name="Decision Tree Optimisé")
+        # 📌 TITRE PRINCIPAL
+        col1, col2 = st.columns(2)
+        with col1:
+            # Création d'un DataFrame pour stocker les résultats (accuracy, recall, f1-score, etc.)
+            df_results = pd.DataFrame({
+                "Logistic Regression": results_logistic["1"],
+                "SVM": results_svm["1"],
+                "Random Forest": results_rf["1"]
+            })
+            # 📌 INTERPRÉTATION DES RÉSULTATS
+            st.subheader("📊 Résultats des Modèles de Prédiction")
+            st.dataframe(df_results)
+        with col2:
+            st.subheader("Lancer l'aide à la décision")
+            st.write("Cliquez sur le bouton ci-dessous pour obtenir les résultats.")
+            if st.button("🚀 Lancer l'aide à la décision"):
+                # Animation de chargement
+                with st.spinner("Calcul des résultats..."):
+                    time.sleep(3)
+                    best_model = df_results.idxmax(axis=1).value_counts().idxmax()
+                    st.subheader("🏆 Meilleur Modèle de Prédiction")
+                st.success(f"Le meilleur modèle est : **{best_model}**")
+        
