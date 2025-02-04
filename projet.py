@@ -1,8 +1,13 @@
 # Import des bibliothèques principales
+import numpy as np
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 # 📌 CONFIGURATION DE L'INTERFACE
 st.set_page_config(page_title="Analyse RH", layout="wide")
@@ -25,7 +30,7 @@ def load_data():
 
     # Remplacement des valeurs manquantes
     for col in ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']:
-        hr_data[col].fillna(hr_data[col].median(), inplace=True)
+        hr_data[col] = hr_data[col].fillna(hr_data[col].median())
 
     # Transformation des variables catégoriques
     hr_data['Age'] = hr_data['Age'].astype(int)
@@ -48,10 +53,10 @@ def load_data():
     hr_data['YearsAtCompany'] = hr_data['YearsAtCompany'].astype(int)
     hr_data['YearsSinceLastPromotion'] = hr_data['YearsSinceLastPromotion'].astype(int)
     hr_data['YearsWithCurrManager'] = hr_data['YearsWithCurrManager'].astype(int)
-    hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype('category')
-    hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype('category')
-    hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype('category')
-    hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype('category')
+    hr_data['JobInvolvement'] = hr_data['JobInvolvement'].astype(int)
+    hr_data['PerformanceRating'] = hr_data['PerformanceRating'].astype(int)
+    hr_data['EnvironmentSatisfaction'] = hr_data['EnvironmentSatisfaction'].astype(int)
+    hr_data['WorkLifeBalance'] = hr_data['WorkLifeBalance'].astype(int)
 
     # Chargement des données d'absentéisme
     in_time_data = pd.read_csv('./data/in_time.csv')
@@ -71,10 +76,21 @@ def load_data():
     
     hr_data = hr_data.merge(absence_days, on='EmployeeID', how='left')  # Ajouter le nombre de jours d'absence
 
+    hr_data["CareerGrowthRate"] = hr_data["JobLevel"] / (hr_data["TotalWorkingYears"] + 1)
+    hr_data["PromotionRate"] = hr_data["YearsSinceLastPromotion"] / (hr_data["YearsAtCompany"] + 1)
+    hr_data["ManagerChangeRate"] = hr_data["YearsAtCompany"] / (hr_data["YearsWithCurrManager"] + 1)
+    hr_data["SatisfactionScore"] = (hr_data["JobSatisfaction"] + hr_data["EnvironmentSatisfaction"] + hr_data["WorkLifeBalance"]) / 3
+    hr_data["SalarySatisfactionGap"] = hr_data["MonthlyIncome"] / (hr_data["JobSatisfaction"] + 1)
+    hr_data["PerformanceInvolvementGap"] = hr_data["PerformanceRating"] - hr_data["JobInvolvement"]
+    hr_data["AbsenceRate"] = hr_data["AbsenceDays"] / (hr_data["YearsAtCompany"] + 1)
+    hr_data["TravelFatigue"] = hr_data["BusinessTravel"] * hr_data["DistanceFromHome"]
+
     return hr_data, absence_status, absence_days
 
 # Charger les données
 df, absence_status, absence_days = load_data()
+
+page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "Analyse Bivariée & Multivariée", "Analyse Avancée & Business Insights", "Prédiction"])
 
 # 📌 SIDEBAR INTERACTIVE
 st.sidebar.header("🔎 Options d'analyse")
@@ -82,144 +98,327 @@ selected_features = st.sidebar.multiselect("Sélectionnez les variables à affic
                                            df.select_dtypes(include=['int64', 'float64']).columns.tolist(), 
                                            default=['Age', 'Attrition', 'MonthlyIncome', 'YearsAtCompany', 'JobSatisfaction'])
 
-st.sidebar.write("💡 Astuce : Sélectionnez des variables pertinentes pour une meilleure lecture.")
 
-# 📌 TITRE PRINCIPAL
-st.title("📊 Analyse des Données")
+with page1 :
+    # 📌 TITRE PRINCIPAL
+    st.title("📊 Analyse des Données RH - Dashboard Interactif")
+    st.subheader("🚀 Un projet avancé d'exploration et de visualisation des données")
 
-# 📌 STATISTIQUES GÉNÉRALES
-st.subheader("📌 Statistiques Clés")
-col1, col2, col3 = st.columns(3)
+    # 📝 Présentation du projet
+    st.markdown(
+        """
+        Ce tableau de bord a été conçu pour **analyser en profondeur les données RH** d’une entreprise et fournir des insights clés sur l’attrition, l’absentéisme et les facteurs influençant la satisfaction des employés.  
+        
+        💡 **Objectifs du projet** :
+        - Explorer et comprendre les tendances des données RH.
+        - Identifier les facteurs clés influençant le départ des employés.
+        - Proposer des recommandations stratégiques basées sur une analyse avancée.
+        
+        📊 Grâce à des **visualisations interactives et dynamiques**, ce dashboard permet d’extraire des informations pertinentes pour une meilleure prise de décision.
+        """
+    )
 
-with col1:
-    st.metric("🌍 Nombre total d'employés", df.shape[0])
-    st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
+    # 👥 Présentation des contributeurs
+    st.subheader("👨‍💻 Équipe Projet")
     
-with col2:
-    st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
-    st.metric("📅 Ancienneté moyenne", f"{df['YearsAtCompany'].mean():.1f} ans")
-    
-with col3:
-    st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
-    st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
+    team_members = [
+        {"name": "🔹 **Aymane Hilmi**", "role": "Data Analyst & Développeur Streamlit"},
+        {"name": "🔹 **[Nom 2]**", "role": "Expert en Modélisation Statistique"},
+        {"name": "🔹 **[Nom 3]**", "role": "Spécialiste en RH & Business Insights"}
+    ]
 
-# 📌 STATISTIQUES D'ABSENTÉISME
-st.subheader("📌 Statistiques d'Absentéisme")
-col1, col2 = st.columns(2)
+    for member in team_members:
+        st.markdown(f"{member['name']} - *{member['role']}*")
 
-with col1:
-    st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+    # 🚀 Points forts du projet
+    st.subheader("🔥 Pourquoi ce Dashboard est Innovant ?")
+    st.markdown(
+        """
+        ✅ **Interface Interactive** : Navigation fluide et expérience utilisateur optimisée.  
+        ✅ **Visualisations Avancées** : Graphiques détaillés pour une meilleure compréhension des données.  
+        ✅ **Insights Stratégiques** : Analyse approfondie avec recommandations business.  
+        ✅ **Technologies Modernes** : Utilisation de *Streamlit, Matplotlib, Seaborn, Pandas, et Scikit-Learn* pour des analyses puissantes.  
+        """
+    )
 
-with col2:
-    max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
-    st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+with page2 :
+    # 📌 TITRE PRINCIPAL
+    st.title("📊 Analyse des Données")
 
-# 📌 ONGLETS INTERACTIFS 
-tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
+    # 📌 STATISTIQUES GÉNÉRALES
+    st.subheader("📌 Statistiques Clés")
+    col1, col2, col3 = st.columns(3)
 
-with tab1:
-    st.subheader("📌 Détails des statistiques par variable")
-    st.dataframe(df.describe())
+    with col1:
+        st.metric("🌍 Nombre total d'employés", df.shape[0])
+        st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
+        
+    with col2:
+        st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
+        st.metric("📅 Ancienneté moyenne", f"{df['YearsAtCompany'].mean():.1f} ans")
+        
+    with col3:
+        st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
+        st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
-    st.subheader("📌 Répartition des employés par département"
-                 )
-    st.write(df['Department'].value_counts())
+    # 📌 STATISTIQUES D'ABSENTÉISME
+    st.subheader("📌 Statistiques d'Absentéisme")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+
+    with col2:
+        max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
+        st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+
+    # 📌 ONGLETS INTERACTIFS 
+    tab1, tab2, tab3, tab4 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes", "📌 Indicateurs de Performance"])
+
+    with tab1:
+        st.subheader("📌 Détails des statistiques par variable")
+        st.dataframe(df.describe())
+
+        st.subheader("📌 Répartition des employés par département"
+                    )
+        st.write(df['Department'].value_counts())
 
 
-with tab2:
-    st.subheader("📊 Distribution des âges")
-    st.write("📈 Répartition des âges des employés"
-             "\n🔴 18 - 25 ans, 🔵 26 - 35 ans, 🟢 36 - 45 ans, 🟡 46 - 55 ans, 🟣 56 - 65 ans")
-    age_bins = pd.cut(df['Age'], bins=[18, 25, 35, 45, 55, 65], precision=0, right=False)
-    age_bins_str = age_bins.astype(str)
-    age_distribution = age_bins_str.value_counts().sort_index()
-    age_distribution.index = age_distribution.index.str.replace('[', '').str.replace(')', '').str.replace(',', ' -')
-    st.bar_chart(age_distribution)
+    with tab2:
+        st.subheader("📊 Distribution des âges")
+        st.write("📈 Répartition des âges des employés"
+                "\n🔴 18 - 25 ans, 🔵 26 - 35 ans, 🟢 36 - 45 ans, 🟡 46 - 55 ans, 🟣 56 - 65 ans")
+        age_bins = pd.cut(df['Age'], bins=[18, 25, 35, 45, 55, 65], precision=0, right=False)
+        age_bins_str = age_bins.astype(str)
+        age_distribution = age_bins_str.value_counts().sort_index()
+        age_distribution.index = age_distribution.index.str.replace('[', '').str.replace(')', '').str.replace(',', ' -')
+        st.bar_chart(age_distribution)
 
 
-    # 📌 RÉPARTITION DES SALAIRES PAR TRANCHE
-    st.subheader("💰 Répartition des salaires par tranche")
-    salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
-    salary_bins_str = salary_bins.astype(str)
-    salary_distribution = salary_bins_str.value_counts().sort_index()
-    salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
-    st.bar_chart(salary_distribution)
+        # 📌 RÉPARTITION DES SALAIRES PAR TRANCHE
+        st.subheader("💰 Répartition des salaires par tranche")
+        salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
+        salary_bins_str = salary_bins.astype(str)
+        salary_distribution = salary_bins_str.value_counts().sort_index()
+        salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
+        st.bar_chart(salary_distribution)
 
-    st.subheader("📈 Répartition des années d'ancienneté")
-    # axe x : nombre d'années, axe y : nombre d'employés
-    st.bar_chart(df['YearsAtCompany'].value_counts())
-    satisfaction_mapping = {
-        'EnvironmentSatisfaction': 'Satisfaction de l\'environnement de travail',
-        'JobSatisfaction': 'Satisfaction du travail',
-        'WorkLifeBalance': 'Équilibre travail-vie personnelle'
-    }
-    st.subheader("📊 Répartition des niveaux de satisfaction"
-                 "\n🔴 0 : Bas, 🔵 4 : Haut")
-    satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
-    for col in satisfaction_cols:
-        st.write(f"### {satisfaction_mapping[col]}")
-        st.bar_chart(df[col].value_counts())
+        st.subheader("📈 Répartition des années d'ancienneté")
+        # axe x : nombre d'années, axe y : nombre d'employés
+        st.bar_chart(df['YearsAtCompany'].value_counts())
+        satisfaction_mapping = {
+            'EnvironmentSatisfaction': 'Satisfaction de l\'environnement de travail',
+            'JobSatisfaction': 'Satisfaction du travail',
+            'WorkLifeBalance': 'Équilibre travail-vie personnelle'
+        }
+        st.subheader("📊 Répartition des niveaux de satisfaction"
+                    "\n🔴 0 : Bas, 🔵 4 : Haut")
+        satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
+        for col in satisfaction_cols:
+            st.write(f"### {satisfaction_mapping[col]}")
+            st.bar_chart(df[col].value_counts())
 
-with tab3:
-    st.subheader("📂 Aperçu des données")
-    st.dataframe(df.head(20))
+    with tab3:
+        st.subheader("📂 Aperçu des données")
+        st.dataframe(df.head(20))
 
-# 📌 MATRICE DE CORRÉLATION
-st.subheader("📌 Matrice de Corrélation")
+    # 📌 TAB 4 : INDICATEURS DE PERFORMANCE
+    with tab4:
+        st.subheader("📌 Indicateurs de Performance et de Satisfaction")
 
-# Filtrer les données selon les variables sélectionnées
-correlation_matrix = df[selected_features].corr()
+        # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
+        def display_metric(label, value, low_threshold, high_threshold):
+            """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
+            if value < low_threshold:
+                status = "🔴 Mauvais"
+            elif value < high_threshold:
+                status = "🟡 Moyen"
+            else:
+                status = "🟢 Bon"
+            st.metric(label, f"{value:.2f}", status)
 
-# Affichage de la heatmap
-fig, ax = plt.subplots(figsize=(12, 8))
-sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, ax=ax)
-st.pyplot(fig)
+        # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
+            display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
+            display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
 
-# 📌 ANALYSE DES DÉPARTS
+        with col2:
+            display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
+            display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
+            display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
 
-# Appliquer les transformations aux colonnes nécessaires
-df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
-df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
+        with col3:
+            display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
+            display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
-# Calcul des taux d'attrition
-age_attrition = df.groupby("Age")["Attrition"].mean() * 100
-gender_attrition = df.groupby("Gender")["Attrition"].mean() * 100
-marital_attrition = df.groupby("MaritalStatus")["Attrition"].mean() * 100
+with page3:
 
-# Sélection du graphique à afficher
-option = st.selectbox("Choisissez l'analyse à afficher :", ["📈 Taux d'attrition par âge", "📊 Taux d'attrition par genre", "📉 Taux d'attrition par état matrimonial"])
+    # 📌 MATRICE DE CORRÉLATION
+    st.subheader("📌 Matrice de Corrélation")
 
-# Fonction pour afficher un graphique
-def plot_bar_chart(data, xlabel, title):
-    st.subheader(title)
-    st.bar_chart(data)
+    # Filtrer les données selon les variables sélectionnées
+    correlation_matrix = df[selected_features].corr()
 
-# Affichage du graphique en fonction de la sélection
-if option == "📈 Taux d'attrition par âge":
-    # Groupement des tranches d'âge
+    # Affichage de la heatmap
+    fig, ax = plt.subplots(figsize=(12, 8))
+    sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, ax=ax)
+    st.pyplot(fig)
+
+    # 📌 ANALYSE DES DÉPARTS
+
+    # Appliquer les transformations aux colonnes nécessaires
+    df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
+    df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
+
+    # Calcul des taux d'attrition
     age_attrition = df.groupby("Age")["Attrition"].mean() * 100
-    plot_bar_chart(age_attrition, "Âge", "Taux d'attrition par âge")
+    gender_attrition = df.groupby("Gender")["Attrition"].mean() * 100
+    marital_attrition = df.groupby("MaritalStatus")["Attrition"].mean() * 100
 
-elif option == "📊 Taux d'attrition par genre":
-    plot_bar_chart(gender_attrition, "Genre", "Taux d'attrition par genre")
+    # Sélection du graphique à afficher
+    option = st.selectbox("Choisissez l'analyse à afficher :", ["📈 Taux d'attrition par âge", "📊 Taux d'attrition par genre", "📉 Taux d'attrition par état matrimonial"])
 
-elif option == "📉 Taux d'attrition par état matrimonial":
-    plot_bar_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
+    # Fonction pour afficher un graphique
+    def plot_bar_chart(data, xlabel, title):
+        st.subheader(title)
+        st.bar_chart(data)
 
-st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
-col1, col2 = st.columns(2)
+    # Affichage du graphique en fonction de la sélection
+    if option == "📈 Taux d'attrition par âge":
+        # Groupement des tranches d'âge
+        age_attrition = df.groupby("Age")["Attrition"].mean() * 100
+        plot_bar_chart(age_attrition, "Âge", "Taux d'attrition par âge")
 
-with col1:
-    st.write("📌 **Moyenne d'âge des employés ayant quitté :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['Age'].mean():.1f} ans")
+    elif option == "📊 Taux d'attrition par genre":
+        plot_bar_chart(gender_attrition, "Genre", "Taux d'attrition par genre")
 
-    st.write("📌 **Salaire moyen des employés ayant quitté :**")
-    st.write(f"➡️ ${df[df['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
+    elif option == "📉 Taux d'attrition par état matrimonial":
+        plot_bar_chart(marital_attrition, "État matrimonial", "Taux d'attrition par état matrimonial")
 
-with col2:
-    st.write("📌 **Nombre moyen d'années dans l'entreprise avant de partir :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['YearsAtCompany'].mean():.1f} ans")
+    st.subheader("📉 Analyse des employés ayant quitté l'entreprise")
+    col1, col2 = st.columns(2)
 
+    with col1:
+        st.write("📌 **Moyenne d'âge des employés ayant quitté :**")
+        st.write(f"➡️ {df[df['Attrition'] == 1]['Age'].mean():.1f} ans")
+
+        st.write("📌 **Salaire moyen des employés ayant quitté :**")
+        st.write(f"➡️ ${df[df['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
+
+    with col2:
+        st.write("📌 **Nombre moyen d'années dans l'entreprise avant de partir :**")
+        st.write(f"➡️ {df[df['Attrition'] == 1]['YearsAtCompany'].mean():.1f} ans")
+
+        st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
+        st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
+
+with page4:
+    #page 4
     st.write("📌 **Niveau moyen de satisfaction des employés ayant quitté :**")
-    st.write(f"➡️ {df[df['Attrition'] == 1]['JobSatisfaction'].mean():.1f} / 4")
 
+with page5:
+    # 📌 ONGLETS INTERACTIFS
+    tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
+
+    with tab1:
+        # Import des bibliothèques nécessaires
+        import pandas as pd
+        import numpy as np
+        import streamlit as st
+        import matplotlib.pyplot as plt
+        import seaborn as sns
+        from sklearn.model_selection import train_test_split
+        from sklearn.preprocessing import StandardScaler, OneHotEncoder
+        from sklearn.linear_model import LogisticRegression
+        from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+        # 📌 VARIABLES À UTILISER DANS LE MODÈLE
+        features = [
+            "JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+            "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+            "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
+            "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
+            "DistanceFromHome", "AbsenceDays", "TotalWorkingYears", "Department",
+            "Education", "PerformanceRating", "JobInvolvement"
+        ]
+
+        target = "Attrition"  # Variable cible (1 = Quitte l'entreprise, 0 = Reste)
+
+        # 📌 PRÉPARATION DES DONNÉES
+        categorical_features = ["JobRole", "BusinessTravel", "Department"]
+        numerical_features = [col for col in features if col not in categorical_features]
+
+        # Encoder les variables catégoriques
+        encoder = OneHotEncoder(handle_unknown="ignore", sparse_output=False)
+        df_encoded = pd.DataFrame(encoder.fit_transform(df[categorical_features]),
+                                  columns=encoder.get_feature_names_out(categorical_features))
+        df_encoded.index = df.index
+
+        # Normaliser les variables numériques
+        scaler = StandardScaler()
+        df_scaled = pd.DataFrame(scaler.fit_transform(df[numerical_features]),
+                                 columns=numerical_features)
+        df_scaled.index = df.index
+
+        # Combiner les données transformées
+        df_final = pd.concat([df_encoded, df_scaled, df[target]], axis=1)
+
+        # 📌 DIVISION DES DONNÉES EN TRAIN & TEST
+        X = df_final.drop(columns=[target])
+        y = df_final[target]
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+        model = LogisticRegression(max_iter=500)
+        model.fit(X_train, y_train)
+
+        # 📌 PRÉDICTION & AJUSTEMENT DU SEUIL
+        y_pred_proba = model.predict_proba(X_test)[:, 1]
+        threshold = 0.35  # Ajustement du seuil
+        y_pred = (y_pred_proba >= threshold).astype(int)
+
+        # 📌 ÉVALUATION DU MODÈLE
+        accuracy = accuracy_score(y_test, y_pred)
+
+        # 📌 AFFICHAGE DES RÉSULTATS DANS STREAMLIT
+        st.subheader("📊 Prédiction de l'attrition avec Régression Logistique")
+        st.write(f"📌 **Précision du modèle :** {accuracy * 100:.2f} %")
+
+        # 📌 AFFICHAGE DE LA MATRICE DE CONFUSION
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        fig, ax = plt.subplots(figsize=(5,3))
+        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues",
+                    xticklabels=["Reste", "Part"], yticklabels=["Reste", "Part"])
+        plt.xlabel("Prédiction")
+        plt.ylabel("Réel")
+        plt.title("Matrice de Confusion")
+        st.pyplot(fig)
+
+        # 📌 FONCTION POUR AFFICHER LES STATISTIQUES DU MODÈLE
+        def display_metrics(y_test, y_pred, model_name="Régression Logistique"):
+            st.subheader(f"📊 Performances du modèle : {model_name}")
+            class_report = classification_report(y_test, y_pred, output_dict=True, zero_division=1)
+            df_report = pd.DataFrame(class_report).transpose()
+            st.dataframe(df_report)
+            st.write(f"📌 **Précision globale (Accuracy) :** {class_report['accuracy'] * 100:.2f} %")
+            st.write(f"📌 **Score F1 (moyenne pondérée) :** {class_report['weighted avg']['f1-score']:.2f}")
+            st.write(f"📌 **Rappel (Recall, capacité à détecter les partants) :** {class_report['1']['recall']:.2f}")
+            st.write(f"📌 **Précision (Précision sur les employés réellement partants) :** {class_report['1']['precision']:.2f}")
+
+            # Calcul et affichage des taux de faux positifs et faux négatifs
+            FP_rate = conf_matrix[0, 1] / (conf_matrix[0, 1] + conf_matrix[0, 0])
+            FN_rate = conf_matrix[1, 0] / (conf_matrix[1, 0] + conf_matrix[1, 1])
+            st.write(f"📌 **Taux de Faux Positifs (False Positive Rate) :** {FP_rate:.2f}")
+            st.write(f"📌 **Taux de Faux Négatifs (False Negative Rate) :** {FN_rate:.2f}")
+
+        # 📌 APPELER LA FONCTION POUR AFFICHER LES MÉTRIQUES
+        display_metrics(y_test, y_pred)
+
+    with tab2:
+        # Partie mathys
+        st.write(f"SVM")
+    with tab3:
+        #Mon ptit Clement CODE TA PARTIE ICIIIIIIIIIIIII
+        st.write(f"Random Forest")
