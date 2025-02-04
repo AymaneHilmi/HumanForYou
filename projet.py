@@ -4,6 +4,7 @@ import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.figure_factory as ff
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, confusion_matrix, classification_report, recall_score
 from sklearn.model_selection import train_test_split
@@ -265,16 +266,37 @@ with page2 :
 
 with page3:
 
-    # 📌 MATRICE DE CORRÉLATION
-    st.subheader("📌 Matrice de Corrélation")
+    # 📌 MATRICE DE CORRÉLATION INTERACTIVE
+    st.subheader("📌 Matrice de Corrélation Interactive")
+
     # Filtrer les données selon les variables sélectionnées
     correlation_matrix = normalized_df[selected_features].corr()
 
-    # Affichage de la heatmap
-    fig, ax = plt.subplots(figsize=(12, 8))
-    sns.heatmap(correlation_matrix, annot=True, fmt=".2f", cmap="coolwarm", linewidths=0.5, ax=ax)
-    st.pyplot(fig)
+    # ✅ **Correction de l'ordre des indices pour la diagonale correcte**
+    correlation_matrix = correlation_matrix.iloc[::-1]  # Inverser l'ordre des lignes pour la bonne orientation
 
+    # Création de la figure Plotly avec des couleurs modernes
+    fig = ff.create_annotated_heatmap(
+        z=correlation_matrix.values,
+        x=list(correlation_matrix.columns),
+        y=list(correlation_matrix.index)[::-1],  # Inverser l'ordre des colonnes pour correspondre
+        colorscale="RdBu",  # Palette de couleurs moderne
+        annotation_text=np.round(correlation_matrix.values, 2),
+        showscale=True,
+        reversescale=True
+    )
+
+    # Mise en page optimisée
+    fig.update_layout(
+        title="Matrice de Corrélation",
+        xaxis=dict(title="Variables"),
+        yaxis=dict(title="Variables"),
+        margin=dict(l=100, r=100, t=50, b=50),
+        height=700
+    )
+
+    # Affichage dans Streamlit
+    st.plotly_chart(fig, use_container_width=True)
     # 📌 ANALYSE DES DÉPARTS
 
     # Appliquer les transformations aux colonnes nécessaires
