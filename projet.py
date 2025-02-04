@@ -109,48 +109,6 @@ page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "An
 with page1 :
     # 📌 TITRE PRINCIPAL
     st.title("📊 HumanForYou - Dashboard")
-    st.subheader("🚀 Un projet avancé d'exploration et de visualisation des données")
-
-    # 📝 Présentation du projet
-    st.markdown(
-        """
-        Ce tableau de bord a été conçu pour **analyser en profondeur les données RH** d’une entreprise et fournir des insights clés sur l’attrition, l’absentéisme et les facteurs influençant la satisfaction des employés.  
-        
-        💡 **Objectifs du projet** :
-        - Explorer et comprendre les tendances des données RH.
-        - Identifier les facteurs clés influençant le départ des employés.
-        - Proposer des recommandations stratégiques basées sur une analyse avancée.
-        
-        📊 Grâce à des **visualisations interactives et dynamiques**, ce dashboard permet d’extraire des informations pertinentes pour une meilleure prise de décision.
-        """
-    )
-
-    # 👥 Présentation des contributeurs
-    st.subheader("👨‍💻 Équipe Projet")
-    
-    team_members = [
-        {"name": "🔹 **Aymane Hilmi**", "role": "Data Analyst & Développeur Streamlit"},
-        {"name": "🔹 **[Nom 2]**", "role": "Expert en Modélisation Statistique"},
-        {"name": "🔹 **[Nom 3]**", "role": "Spécialiste en RH & Business Insights"}
-    ]
-
-    for member in team_members:
-        st.markdown(f"{member['name']} - *{member['role']}*")
-
-    # 🚀 Points forts du projet
-    st.subheader("🔥 Pourquoi ce Dashboard est Innovant ?")
-    st.markdown(
-        """
-        ✅ **Interface Interactive** : Navigation fluide et expérience utilisateur optimisée.  
-        ✅ **Visualisations Avancées** : Graphiques détaillés pour une meilleure compréhension des données.  
-        ✅ **Insights Stratégiques** : Analyse approfondie avec recommandations business.  
-        ✅ **Technologies Modernes** : Utilisation de *Streamlit, Matplotlib, Seaborn, Pandas, et Scikit-Learn* pour des analyses puissantes.  
-        """
-    )
-
-with page2 :
-    # 📌 TITRE PRINCIPAL
-    st.title("📊 Analyse des Données")
 
     # 📌 STATISTIQUES GÉNÉRALES
     st.subheader("📌 Statistiques Clés")
@@ -168,6 +126,36 @@ with page2 :
         st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
         st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
+
+    # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
+    def display_metric(label, value, low_threshold, high_threshold):
+        """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
+        if value < low_threshold:
+            status = "🔴 Mauvais"
+        elif value < high_threshold:
+            status = "🟡 Moyen"
+        else:
+            status = "🟢 Bon"
+        st.metric(label, f"{value:.2f}", status)
+    st.subheader("📌 Indicateurs de Performance et de Satisfaction")
+
+    # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
+        display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
+        display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
+
+    with col2:
+        display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
+        display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
+        display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
+
+    with col3:
+        display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
+        display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
+
     # 📌 STATISTIQUES D'ABSENTÉISME
     st.subheader("📌 Statistiques d'Absentéisme")
     col1, col2 = st.columns(2)
@@ -179,8 +167,24 @@ with page2 :
         max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
         st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
 
+    # 👥 Présentation des contributeurs
+    st.subheader("👨‍💻 Équipe Projet")
+    
+    team_members = [
+        {"name": "🔹 **Aymane Hilmi**"},
+        {"name": "🔹 **Clement FORNES**"},
+        {"name": "🔹 **Teo EMIROT**"},
+        {"name": "🔹 **Mathys MICHEL**"}
+    ]
+
+    for member in team_members:
+        st.markdown(f"{member['name']}")
+
+with page2 :
+    # 📌 TITRE PRINCIPAL
+    st.title("📊 Analyse des Données")
     # 📌 ONGLETS INTERACTIFS 
-    tab1, tab2, tab3, tab4 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes", "📌 Indicateurs de Performance"])
+    tab1, tab2, tab3 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes"])
 
     with tab1:
         st.subheader("📌 Détails des statistiques par variable")
@@ -230,36 +234,6 @@ with page2 :
         st.dataframe(df.head(20))
 
     # 📌 TAB 4 : INDICATEURS DE PERFORMANCE
-    with tab4:
-        st.subheader("📌 Indicateurs de Performance et de Satisfaction")
-
-        # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
-        def display_metric(label, value, low_threshold, high_threshold):
-            """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
-            if value < low_threshold:
-                status = "🔴 Mauvais"
-            elif value < high_threshold:
-                status = "🟡 Moyen"
-            else:
-                status = "🟢 Bon"
-            st.metric(label, f"{value:.2f}", status)
-
-        # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
-            display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
-            display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
-
-        with col2:
-            display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
-            display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
-            display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
-
-        with col3:
-            display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
-            display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
 with page3:
     with st.expander("🔎 Options d'analyse", expanded=False):
