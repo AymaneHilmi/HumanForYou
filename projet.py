@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
-
+import plotly.express as px
 from imblearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
@@ -496,40 +496,103 @@ with page3:
         height=700
     )
     st.plotly_chart(fig_corr, use_container_width=True)
-    
-    st.subheader("📌 Comparaison des Employés Partis vs. Restants")
-    # Transformation des variables pour une meilleure lisibilité
-    df_comparison = df.copy()
-    df_comparison["Gender"] = df_comparison["Gender"].map({1: "Homme", 0: "Femme"})
-    df_comparison["MaritalStatus"] = df_comparison["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
-    
-    attrition_comparison = {
-        "💰 Salaire Moyen": df_comparison.groupby("Attrition")["MonthlyIncome"].mean(),
-        "🏢 Années dans l'Entreprise": df_comparison.groupby("Attrition")["YearsAtCompany"].mean(),
-        "🚀 Dernière Augmentation (%)": df_comparison.groupby("Attrition")["PercentSalaryHike"].mean(),
-        "🔄 Nombre d'Entreprises Précédentes": df_comparison.groupby("Attrition")["NumCompaniesWorked"].mean(),
-        "📈 Niveau Hiérarchique": df_comparison.groupby("Attrition")["JobLevel"].mean(),
-        "🏠 Distance Domicile-Travail": df_comparison.groupby("Attrition")["DistanceFromHome"].mean(),
-        "📊 Score Satisfaction": df_comparison.groupby("Attrition")["SatisfactionScore"].mean(),
-        "📈 Taux de Promotion": df_comparison.groupby("Attrition")["PromotionRate"].mean(),
-        "🚪 Taux d'Absence": df_comparison.groupby("Attrition")["AbsenceRate"].mean()
-    }
-    
-    option = st.selectbox("Choisissez un critère :", list(attrition_comparison.keys()))
-    st.subheader(option)
-    st.bar_chart(attrition_comparison[option])
-    
-    st.subheader("Interprétation des Résultats")
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write("📌 **Employés Partis (Attrition = 1)**")
-        st.write(f"➡️ Moyenne d'âge : {df_comparison[df_comparison['Attrition'] == 1]['Age'].mean():.1f} ans")
-        st.write(f"➡️ Salaire moyen : ₹{df_comparison[df_comparison['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
-    with col2:
-        st.write("📌 **Employés Restants (Attrition = 0)**")
-        st.write(f"➡️ Années moyennes dans l'entreprise : {df_comparison[df_comparison['Attrition'] == 0]['YearsAtCompany'].mean():.1f} ans")
-        st.write(f"➡️ Satisfaction moyenne : {df_comparison[df_comparison['Attrition'] == 0]['JobSatisfaction'].mean():.1f} / 4")
 
+    st.subheader("📈 Relation entre l’ancienneté et le salaire")
+
+    # Création des colonnes pour structurer l'affichage
+    col1, col2 = st.columns([1, 2])
+
+   
+    st.write("📊 **Visualisation avec Scatter Plot**")
+    st.scatter_chart(df, x="YearsAtCompany", y="MonthlyIncome", color="YearsAtCompany")
+
+    st.markdown("---")
+
+    st.subheader("📊 Comparaisons selon l'Attrition")
+
+    # 📌 Boxplot : Attrition vs Salaire
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.write("💰 **Comparaison des salaires selon l'attrition**")
+        st.dataframe(df[['Attrition', 'MonthlyIncome']].head(10))
+
+    with col2:
+        st.write("📦 **Boxplot : Salaire vs Attrition**")
+        fig, ax = plt.subplots(figsize=(4, 2))  # Ajuste la taille selon ton besoin
+        sns.boxplot(x=df["Attrition"], y=df["MonthlyIncome"], palette="coolwarm", ax=ax)
+        ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
+        ax.set_ylabel("Salaire Mensuel")
+        st.pyplot(fig)
+
+    st.markdown("---")
+
+    # 📌 Violin Plot : Satisfaction vs Attrition
+    col1, col2 = st.columns([1, 2])
+    with col1:
+        st.write("😀 **Satisfaction au travail vs Attrition**")
+        st.dataframe(df[['Attrition', 'JobSatisfaction']].head(10))
+
+    with col2:
+        st.write("🎻 **Violin Plot : Satisfaction au travail vs Attrition**")
+        fig, ax = plt.subplots()
+        sns.violinplot(x=df["Attrition"], y=df["JobSatisfaction"], palette="coolwarm", ax=ax)
+        ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
+        ax.set_ylabel("Niveau de Satisfaction")
+        st.pyplot(fig)
+
+    st.markdown("---")
+
+    # 📌 Grouped Bar Chart & Comparaison Attrition
+    st.subheader("📊 Analyse de l'Attrition")
+
+    # Sélecteur de catégorie pour la répartition de l'attrition et la comparaison
+    category = st.selectbox("📍 Choisir une catégorie d'analyse :", 
+                            ["Department", "Gender", "MaritalStatus", 
+                            "Salaire Moyen", "Années dans l'Entreprise", 
+                            "Dernière Augmentation (%)", "Nombre d'Entreprises Précédentes",
+                            "Niveau Hiérarchique", "Distance Domicile-Travail",
+                            "Score Satisfaction", "Taux de Promotion", "Taux d'Absence"])
+
+    # Mapping des variables catégoriques
+    df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
+    df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
+
+    # Transformation des données pour la comparaison
+    df_comparison = df.copy()
+    attrition_comparison = {
+        "Salaire Moyen": df_comparison.groupby("Attrition")["MonthlyIncome"].mean(),
+        "Années dans l'Entreprise": df_comparison.groupby("Attrition")["YearsAtCompany"].mean(),
+        "Dernière Augmentation (%)": df_comparison.groupby("Attrition")["PercentSalaryHike"].mean(),
+        "Nombre d'Entreprises Précédentes": df_comparison.groupby("Attrition")["NumCompaniesWorked"].mean(),
+        "Niveau Hiérarchique": df_comparison.groupby("Attrition")["JobLevel"].mean(),
+        "Distance Domicile-Travail": df_comparison.groupby("Attrition")["DistanceFromHome"].mean(),
+        "Score Satisfaction": df_comparison.groupby("Attrition")["SatisfactionScore"].mean(),
+        "Taux de Promotion": df_comparison.groupby("Attrition")["PromotionRate"].mean(),
+        "Taux d'Absence": df_comparison.groupby("Attrition")["AbsenceRate"].mean()
+    }
+
+    # Affichage des graphiques
+    if category in ["Department", "Gender", "MaritalStatus"]:
+        # Répartition de l'attrition
+        st.subheader(f"📌 Répartition de l'Attrition par {category}")
+        st.bar_chart(df.groupby(category)["Attrition"].value_counts().unstack())
+    else:
+        # Comparaison des employés partis vs restants
+        st.subheader(f"📌 Comparaison des Employés Partis vs. Restants ({category})")
+        st.bar_chart(attrition_comparison[category])
+    
+    # Créer le graphique 3D
+    fig = px.scatter_3d(df, x='YearsAtCompany', y='MonthlyIncome', z='Attrition',
+                        color='Attrition', 
+                        labels={'Attrition': 'Attrition (0 = Non, 1 = Oui)', 'YearsAtCompany': 'Ancienneté (années)', 'MonthlyIncome': 'Salaire (€)'}, 
+                        title="Ancienneté, Salaire et Attrition dans un espace 3D")
+
+    # Affichage dans Streamlit
+    st.title('Graphique 3D - Ancienneté, Salaire et Attrition')
+    st.plotly_chart(fig)
+
+    
+        
 # -----------------------------------------------------------------------------
 # Page 4 : Analyse Avancée & Business Insights
 # -----------------------------------------------------------------------------
