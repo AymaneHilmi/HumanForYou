@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+import plotly.express as px
 
 from imblearn.pipeline import Pipeline
 from sklearn.linear_model import LogisticRegression
@@ -85,7 +86,8 @@ def load_data():
 
     # Mappings pour les variables catégoriques
     hr_data['Attrition'] = hr_data['Attrition'].map({'Yes': 1, 'No': 0})
-    hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 1, 'Travel_Frequently': 2})
+    hr_data['BusinessTravel'] = hr_data['BusinessTravel'].map({'Non-Travel': 0, 'Travel_Rarely': 0.5, 'Travel_Frequently': 1})
+
     hr_data['Gender'] = hr_data['Gender'].map({'Male': 1, 'Female': 0})
     hr_data['MaritalStatus'] = hr_data['MaritalStatus'].map({'Single': 0, 'Married': 1, 'Divorced': 2})
     hr_data['EducationField'] = hr_data['EducationField'].astype('category')
@@ -139,7 +141,7 @@ def load_data():
     # Normalisation des colonnes pour la matrice de corrélation
     categorical_columns = ['Department', 'EducationField', 'JobRole']
     binary_columns = ['Attrition', 'Gender']
-    numerical_columns = hr_data.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    numerical_columns = hr_data.select_dtypes(include=['int', 'float64']).columns.tolist()
     numerical_columns = [col for col in numerical_columns if col not in categorical_columns + binary_columns]
     scaler = MinMaxScaler()
     normalized_df = hr_data.copy()
@@ -246,7 +248,7 @@ def prepare_data_model(df, features, target, encode_cols=None, scaler=StandardSc
     df_model = df[features + [target]].copy()
     if encode_cols:
         df_model = pd.get_dummies(df_model, columns=encode_cols, drop_first=True)
-    num_cols = df_model.select_dtypes(include=['int64', 'float64']).columns.tolist()
+    num_cols = df_model.select_dtypes(include=['int', 'float64']).columns.tolist()
     if target in num_cols:
         num_cols.remove(target)
     df_model[num_cols] = scaler.fit_transform(df_model[num_cols])
@@ -425,7 +427,7 @@ with page2:
     # Onglet 2 : Graphiques
     with tab2:
         st.subheader("Visualisation Dynamique des Variables")
-        selected_var = st.selectbox("Sélectionnez une variable numérique :", df.select_dtypes(include=['int64', 'float64']).columns.tolist())
+        selected_var = st.selectbox("Sélectionnez une variable numérique :", df.select_dtypes(include=['int', 'float64']).columns.tolist())
         # Visualisation dynamique de la variable sélectionnée
         st.subheader("Visualisation de la variable sélectionnée : **{}**".format(selected_var))
 
@@ -465,7 +467,7 @@ with page3:
     with st.expander("🔎 Options d'analyse", expanded=False):
         selected_features = st.multiselect(
             "Sélectionnez les variables pour la matrice de corrélation :",
-            df.select_dtypes(include=['int64', 'float64']).columns.tolist(),
+            df.select_dtypes(include=['int', 'float64']).columns.tolist(),
             default=["Attrition","JobLevel", "YearsAtCompany", "YearsWithCurrManager",
                      "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
                      "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
@@ -620,7 +622,6 @@ with page5:
 # Page 5 : Aide à la Décision
 # -----------------------------------------------------------------------------
 with page6:
-    st.subheader("Aide à la Décision")
     col1, col2 = st.columns(2)
     with col1:
         df_results = pd.DataFrame({
@@ -633,3 +634,76 @@ with page6:
         best_model = df_results.idxmax(axis=1).value_counts().idxmax()
         st.subheader("🏆 Meilleur Modèle de Prédiction")
         st.success(f"Le meilleur modèle est : **{best_model}**")
+
+    st.subheader("Simulation d'un Employé")
+    with st.form("simulation_form"):
+        col1, col2 = st.columns(2)
+        with col1:
+            jobrole = st.selectbox("Job Role", sorted(df["JobRole"].cat.categories))
+            joblevel = st.number_input("Job Level", min_value=1, max_value=int(df["JobLevel"].max()), value=int(df["JobLevel"].median()))
+            years_at_company = st.number_input("Années dans l'entreprise", min_value=0, max_value=int(df["YearsAtCompany"].max()), value=int(df["YearsAtCompany"].median()))
+            years_with_manager = st.number_input("Années avec le manager", min_value=0, max_value=int(df["YearsWithCurrManager"].max()), value=int(df["YearsWithCurrManager"].median()))
+            years_since_promotion = st.number_input("Années depuis la dernière promotion", min_value=0, max_value=int(df["YearsSinceLastPromotion"].max()), value=int(df["YearsSinceLastPromotion"].median()))
+            num_companies_worked = st.number_input("Nombre d'entreprises précédentes", min_value=0, max_value=int(df["NumCompaniesWorked"].max()), value=int(df["NumCompaniesWorked"].median()))
+            monthly_income = st.number_input("Salaire mensuel", min_value=0, max_value=int(df["MonthlyIncome"].max()), value=int(df["MonthlyIncome"].median()))
+            percent_salary_hike = st.number_input("Augmentation salariale (%)", min_value=0.0, max_value=100.0, value=float(df["PercentSalaryHike"].median()*100))
+        with col2:
+            job_satisfaction = st.number_input("Satisfaction au travail (1-4)", min_value=1, max_value=4, value=int(df["JobSatisfaction"].median()))
+            work_life_balance = st.number_input("Équilibre vie pro/perso (1-4)", min_value=1, max_value=4, value=int(df["WorkLifeBalance"].median()))
+            environment_satisfaction = st.number_input("Satisfaction environnement (1-4)", min_value=1, max_value=4, value=int(df["EnvironmentSatisfaction"].median()))
+            training_times_last_year = st.number_input("Nombre de formations l'année dernière", min_value=0, max_value=int(df["TrainingTimesLastYear"].max()), value=int(df["TrainingTimesLastYear"].median()))
+            # Pour BusinessTravel, on garde la modalité textuelle
+            business_travel_choice = st.selectbox("Business Travel", options=["Non-Travel", "Travel_Rarely", "Travel_Frequently"])
+            absence_days_input = st.number_input("Nombre de jours d'absence", min_value=0, max_value=int(df["AbsenceDays"].max()), value=int(df["AbsenceDays"].median()))
+            total_working_years = st.number_input("Total des années de travail", min_value=0, max_value=int(df["TotalWorkingYears"].max()), value=int(df["TotalWorkingYears"].median()))
+            department = st.selectbox("Département", sorted(df["Department"].cat.categories))
+        submitted = st.form_submit_button("Calculer la probabilité")
+
+    if submitted:
+        # Conversion de l'augmentation salariale en fraction
+        percent_salary_hike = percent_salary_hike / 100
+
+        new_employee_dict = {
+            "JobRole": jobrole,
+            "JobLevel": joblevel,
+            "YearsAtCompany": years_at_company,
+            "YearsWithCurrManager": years_with_manager,
+            "YearsSinceLastPromotion": years_since_promotion,
+            "NumCompaniesWorked": num_companies_worked,
+            "MonthlyIncome": monthly_income,
+            "PercentSalaryHike": percent_salary_hike,
+            "JobSatisfaction": job_satisfaction,
+            "WorkLifeBalance": work_life_balance,
+            "EnvironmentSatisfaction": environment_satisfaction,
+            "TrainingTimesLastYear": training_times_last_year,
+            "BusinessTravel": business_travel_choice,
+            "AbsenceDays": absence_days_input,
+            "TotalWorkingYears": total_working_years,
+            "Department": department
+        }
+        new_employee = pd.DataFrame(new_employee_dict, index=[0])
+
+        # Préparation des données pour le modèle Random Forest via one-hot encoding
+        features_rf = ["JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+                       "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+                       "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance",
+                       "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
+                       "AbsenceDays", "TotalWorkingYears", "Department"]
+        df_encoded = pd.get_dummies(df[features_rf], drop_first=True)
+        X_rf_columns = df_encoded.columns
+        new_employee_encoded = pd.get_dummies(new_employee, drop_first=True).reindex(columns=X_rf_columns, fill_value=0)
+
+        rf_model_sim = RandomForestClassifier(random_state=42)
+        rf_model_sim.fit(df_encoded, df["Attrition"])
+
+        proba = rf_model_sim.predict_proba(new_employee_encoded)[0]
+        # La classe 0 correspond à "rester dans l'entreprise"
+        proba_rester = proba[0]
+        pourcentage = proba_rester * 100
+
+        if pourcentage >= 70:
+            st.success(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+        elif pourcentage >= 40:
+            st.warning(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+        else:
+            st.error(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
