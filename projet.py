@@ -708,14 +708,6 @@ with page5:
         # 📌 Affichage dans Streamlit
         st.plotly_chart(fig_feature_imp, use_container_width=True)
 
-        # 📌 Explication
-        st.markdown("""
-       🔹 **Les valeurs positives** indiquent que la variable **augmente la probabilité d'attrition**  
-       🔹 **Les valeurs négatives** indiquent que la variable **réduit la probabilité d'attrition**  
-       🔹 **Plus la valeur absolue est grande, plus l'impact est fort**  
-       🔹 **Seules les 10 variables les plus influentes (positives ou négatives) sont affichées**
-       """)
-
     with tab3:
         # Titre de l'application
         st.title("Prédiction de l'Attrition avec Random Forest")
