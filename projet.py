@@ -616,7 +616,9 @@ with page5:
         display_model_results(rf_model, X_test, y_test, rf_pred, rf_proba, "Random Forest")
         results_rf = classification_report(y_test, rf_pred, output_dict=True)
     
-# --- Onglet Aide à la Décision ---
+# -----------------------------------------------------------------------------
+# Page 5 : Aide à la Décision
+# -----------------------------------------------------------------------------
 with page6:
     st.subheader("Aide à la Décision")
     col1, col2 = st.columns(2)
