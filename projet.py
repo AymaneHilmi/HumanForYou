@@ -20,6 +20,7 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
+from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
 # -----------------------------------------------------------------------------
 # Configuration de la page Streamlit
@@ -265,7 +266,7 @@ page1, page2, page3, page4, page5, page6 = st.tabs([
     "Analyse Univariée",
     "Analyse Bivariée & Multivariée",
     "Analyse Avancée & Business Insights",
-    "Prédiction",
+    "Modélisation & Prédiction",
     "🔮 Aide à la Décision"
 ])
 
@@ -282,7 +283,7 @@ with page1:
         st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
         st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
     with col2:
-        st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
+        st.metric("📈 Salaire moyen", f"₹{df['MonthlyIncome'].mean():,.2f}")
         st.metric("📅 Ancienneté moyenne", f"{df['YearsAtCompany'].mean():.1f} ans")
     with col3:
         st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
@@ -523,7 +524,7 @@ with page3:
     with col1:
         st.write("📌 **Employés Partis (Attrition = 1)**")
         st.write(f"➡️ Moyenne d'âge : {df_comparison[df_comparison['Attrition'] == 1]['Age'].mean():.1f} ans")
-        st.write(f"➡️ Salaire moyen : ${df_comparison[df_comparison['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
+        st.write(f"➡️ Salaire moyen : ₹{df_comparison[df_comparison['Attrition'] == 1]['MonthlyIncome'].mean():,.2f}")
     with col2:
         st.write("📌 **Employés Restants (Attrition = 0)**")
         st.write(f"➡️ Années moyennes dans l'entreprise : {df_comparison[df_comparison['Attrition'] == 0]['YearsAtCompany'].mean():.1f} ans")
@@ -540,11 +541,12 @@ with page4:
 # Page 5 : Prédiction
 # -----------------------------------------------------------------------------
 with page5:
-    tab_lr, tab_svm, tab_rf = st.tabs([
+    tab_lr, tab_svm, tab_rf, tab_hyper = st.tabs([
         "📊 Régression Logistique",
         "🧠 SVM",
-        "🌲 Random Forest"
-    ])
+        "🌲 Random Forest",
+        "⚙️ Hyperparamètres"
+            ])
     
     # Variables pour la modélisation
     features = [
@@ -615,21 +617,188 @@ with page5:
         
         display_model_results(rf_model, X_test, y_test, rf_pred, rf_proba, "Random Forest")
         results_rf = classification_report(y_test, rf_pred, output_dict=True)
-    
+    # --- Onglet hyperparamètres ---
+    with tab_hyper:
+        st.subheader("Recherche d'hyperparamètres pour les 3 modèles")
+        
+        # Sélection de la méthode de recherche (grid ou random)
+        search_method = st.selectbox(
+            "Méthode de recherche :",
+            ["random", "grid"]
+        )
+        
+        # Dictionnaire qui contiendra les résultats de chaque modèle
+        results_dict = {}
+
+        ############################################################################
+        # 1. Régression Logistique
+        ############################################################################
+        st.markdown("### Régression Logistique")
+        grid_params_lr = {
+            "C": [0.01, 0.1, 1, 10, 100],
+            "penalty": ["l1", "l2"],
+            "solver" : ["liblinear", "saga", "lbfgs"],
+            "max_iter": [100, 200, 300, 400, 500]
+        }
+        encode_cols_lr = ["JobRole", "BusinessTravel", "Department"]
+        # Préparation des données avec prepare_data_model() pour LR
+        X_train_lr, X_test_lr, y_train_lr, y_test_lr = prepare_data_model(
+            df, features, target, encode_cols=encode_cols_lr, scaler=StandardScaler()
+        )
+        model_lr = LogisticRegression(random_state=42)
+        
+        if search_method == "random":
+            search_lr = RandomizedSearchCV(
+                estimator=model_lr,
+                param_distributions=grid_params_lr,
+                n_iter=50,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1,
+                random_state=42
+            )
+        else:
+            search_lr = GridSearchCV(
+                estimator=model_lr,
+                param_grid=grid_params_lr,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1
+            )
+        search_lr.fit(X_train_lr, y_train_lr)
+        st.write("**Régression Logistique – Meilleurs paramètres :**")
+        st.write(search_lr.best_params_)
+        st.write("**Régression Logistique – Meilleur F1 Score :**")
+        st.write(f"{search_lr.best_score_ * 100:.2f} %")
+        results_dict["Régression Logistique"] = {
+            "best_params": search_lr.best_params_,
+            "best_score": search_lr.best_score_
+        }
+        
+        ############################################################################
+        # 2. SVM
+        ############################################################################
+        st.markdown("### SVM")
+        grid_params_svm = {
+            "C": [0.1, 1, 10, 100, 1000],
+            "gamma": [1e-3, 1e-2, 1e-1, 1],
+            "kernel": ["rbf"]
+        }
+        encode_cols_svm = ["JobRole", "Department", "BusinessTravel"]
+        X_train_svm, X_test_svm, y_train_svm, y_test_svm = prepare_data_model(
+            df, features, target, encode_cols=encode_cols_svm, scaler=StandardScaler()
+        )
+        model_svm = SVC(probability=True, random_state=42, class_weight='balanced')
+        
+        if search_method == "random":
+            search_svm = RandomizedSearchCV(
+                estimator=model_svm,
+                param_distributions=grid_params_svm,
+                n_iter=50,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1,
+                random_state=42
+            )
+        else:
+            search_svm = GridSearchCV(
+                estimator=model_svm,
+                param_grid=grid_params_svm,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1
+            )
+        search_svm.fit(X_train_svm, y_train_svm)
+        st.write("**SVM – Meilleurs paramètres :**")
+        st.write(search_svm.best_params_)
+        st.write("**SVM – Meilleur F1 Score :**")
+        st.write(f"{search_svm.best_score_ * 100:.2f} %")
+        results_dict["SVM"] = {
+            "best_params": search_svm.best_params_,
+            "best_score": search_svm.best_score_
+        }
+        
+        ############################################################################
+        # 3. Random Forest
+        ############################################################################
+        st.markdown("### Random Forest")
+        grid_params_rf = {
+            "n_estimators": [100, 200, 300, 400],
+            "max_depth": [None, 5, 10, 15, 20],
+            "min_samples_split": [2, 5, 10],
+            "min_samples_leaf": [1, 2, 4],
+            "max_features": ["sqrt", "log2", None],
+            "bootstrap": [True, False],
+            "class_weight": ["balanced", None]
+        }
+        df_encoded_rf = pd.get_dummies(df[features], drop_first=True)
+        X_rf = df_encoded_rf
+        y_rf = df[target]
+        X_train_rf, X_test_rf, y_train_rf, y_test_rf = train_test_split(
+            X_rf, y_rf, test_size=0.2, random_state=42, stratify=y_rf
+        )
+        model_rf = RandomForestClassifier(random_state=42)
+        
+        if search_method == "random":
+            search_rf = RandomizedSearchCV(
+                estimator=model_rf,
+                param_distributions=grid_params_rf,
+                n_iter=100,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1,
+                random_state=42
+            )
+        else:
+            search_rf = GridSearchCV(
+                estimator=model_rf,
+                param_grid=grid_params_rf,
+                cv=5,
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                refit='f1',
+                n_jobs=-1
+            )
+        search_rf.fit(X_train_rf, y_train_rf)
+        st.write("**Random Forest – Meilleurs paramètres :**")
+        st.write(search_rf.best_params_)
+        st.write("**Random Forest – Meilleur F1 Score :**")
+        st.write(f"{search_rf.best_score_ * 100:.2f} %")
+        results_dict["Random Forest"] = {
+            "best_params": search_rf.best_params_,
+            "best_score": search_rf.best_score_
+        }
+        
+        ############################################################################
+        # Affichage du récapitulatif pour les 3 modèles
+        ############################################################################
+        st.subheader("Récapitulatif des résultats")
+        df_results = pd.DataFrame.from_dict(results_dict, orient='index')
+        df_results.index.name = "Modèle"
+        st.dataframe(df_results)
+
+        
+        st.subheader("Comparaison des modèles")
+
+        # Appliquer le thème Streamlit via Seaborn
+        sns.set_theme(style="whitegrid", palette="viridis")
+
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.barplot(
+            x=df_results.index,
+            y=df_results["best_score"] * 100,
+            ax=ax
+        )
+        ax.set_ylabel("F1 Score (%)")
+        ax.set_title("📊 Comparaison des modèles")
+        st.pyplot(fig)
+        st.success(f"Le meilleur modèle est {df_results['best_score'].idxmax()} avec un F1 Score de {df_results['best_score'].max() * 100:.2f} %")
 # -----------------------------------------------------------------------------
-# Page 5 : Aide à la Décision
+# Page 6 : Predire un départ d'employé
 # -----------------------------------------------------------------------------
 with page6:
-    st.subheader("Aide à la Décision")
-    col1, col2 = st.columns(2)
-    with col1:
-        df_results = pd.DataFrame({
-            "Régression Logistique": results_logistic["1"],
-            "SVM": results_svm["1"],
-            "Random Forest": results_rf["1"]
-        })
-        st.dataframe(df_results)
-    with col2:
-        best_model = df_results.idxmax(axis=1).value_counts().idxmax()
-        st.subheader("🏆 Meilleur Modèle de Prédiction")
-        st.success(f"Le meilleur modèle est : **{best_model}**")
+    st.title("🔮 Aide à la Décision")
