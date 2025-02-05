@@ -260,12 +260,13 @@ def prepare_data_model(df, features, target, encode_cols=None, scaler=StandardSc
 df, absence_status, absence_days, normalized_df = load_data()
 
 # Création des onglets principaux
-page1, page2, page3, page4, page5 = st.tabs([
+page1, page2, page3, page4, page5, page6 = st.tabs([
     "Accueil",
     "Analyse Univariée",
     "Analyse Bivariée & Multivariée",
     "Analyse Avancée & Business Insights",
-    "Prédiction"
+    "Prédiction",
+    "🔮 Aide à la Décision"
 ])
 
 # -----------------------------------------------------------------------------
@@ -539,11 +540,10 @@ with page4:
 # Page 5 : Prédiction
 # -----------------------------------------------------------------------------
 with page5:
-    tab_lr, tab_svm, tab_rf, tab_decision = st.tabs([
+    tab_lr, tab_svm, tab_rf = st.tabs([
         "📊 Régression Logistique",
         "🧠 SVM",
-        "🌲 Random Forest",
-        "🔮 Aide à la Décision"
+        "🌲 Random Forest"
     ])
     
     # Variables pour la modélisation
@@ -616,18 +616,18 @@ with page5:
         display_model_results(rf_model, X_test, y_test, rf_pred, rf_proba, "Random Forest")
         results_rf = classification_report(y_test, rf_pred, output_dict=True)
     
-    # --- Onglet Aide à la Décision ---
-    with tab_decision:
-        st.subheader("Aide à la Décision")
-        col1, col2 = st.columns(2)
-        with col1:
-            df_results = pd.DataFrame({
-                "Régression Logistique": results_logistic["1"],
-                "SVM": results_svm["1"],
-                "Random Forest": results_rf["1"]
-            })
-            st.dataframe(df_results)
-        with col2:
-            best_model = df_results.idxmax(axis=1).value_counts().idxmax()
-            st.subheader("🏆 Meilleur Modèle de Prédiction")
-            st.success(f"Le meilleur modèle est : **{best_model}**")
+# --- Onglet Aide à la Décision ---
+with page6:
+    st.subheader("Aide à la Décision")
+    col1, col2 = st.columns(2)
+    with col1:
+        df_results = pd.DataFrame({
+            "Régression Logistique": results_logistic["1"],
+            "SVM": results_svm["1"],
+            "Random Forest": results_rf["1"]
+        })
+        st.dataframe(df_results)
+    with col2:
+        best_model = df_results.idxmax(axis=1).value_counts().idxmax()
+        st.subheader("🏆 Meilleur Modèle de Prédiction")
+        st.success(f"Le meilleur modèle est : **{best_model}**")
