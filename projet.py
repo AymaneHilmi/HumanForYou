@@ -115,48 +115,6 @@ page1, page2, page3, page4, page5 = st.tabs(["Accueil","Analyse Univariée", "An
 with page1 :
     # 📌 TITRE PRINCIPAL
     st.title("📊 HumanForYou - Dashboard")
-    st.subheader("🚀 Un projet avancé d'exploration et de visualisation des données")
-
-    # 📝 Présentation du projet
-    st.markdown(
-        """
-        Ce tableau de bord a été conçu pour **analyser en profondeur les données RH** d’une entreprise et fournir des insights clés sur l’attrition, l’absentéisme et les facteurs influençant la satisfaction des employés.  
-        
-        💡 **Objectifs du projet** :
-        - Explorer et comprendre les tendances des données RH.
-        - Identifier les facteurs clés influençant le départ des employés.
-        - Proposer des recommandations stratégiques basées sur une analyse avancée.
-        
-        📊 Grâce à des **visualisations interactives et dynamiques**, ce dashboard permet d’extraire des informations pertinentes pour une meilleure prise de décision.
-        """
-    )
-
-    # 👥 Présentation des contributeurs
-    st.subheader("👨‍💻 Équipe Projet")
-    
-    team_members = [
-        {"name": "🔹 **Aymane Hilmi**", "role": "Data Analyst & Développeur Streamlit"},
-        {"name": "🔹 **[Nom 2]**", "role": "Expert en Modélisation Statistique"},
-        {"name": "🔹 **[Nom 3]**", "role": "Spécialiste en RH & Business Insights"}
-    ]
-
-    for member in team_members:
-        st.markdown(f"{member['name']} - *{member['role']}*")
-
-    # 🚀 Points forts du projet
-    st.subheader("🔥 Pourquoi ce Dashboard est Innovant ?")
-    st.markdown(
-        """
-        ✅ **Interface Interactive** : Navigation fluide et expérience utilisateur optimisée.  
-        ✅ **Visualisations Avancées** : Graphiques détaillés pour une meilleure compréhension des données.  
-        ✅ **Insights Stratégiques** : Analyse approfondie avec recommandations business.  
-        ✅ **Technologies Modernes** : Utilisation de *Streamlit, Matplotlib, Seaborn, Pandas, et Scikit-Learn* pour des analyses puissantes.  
-        """
-    )
-
-with page2 :
-    # 📌 TITRE PRINCIPAL
-    st.title("📊 Analyse des Données")
 
     # 📌 STATISTIQUES GÉNÉRALES
     st.subheader("📌 Statistiques Clés")
@@ -165,6 +123,8 @@ with page2 :
     with col1:
         st.metric("🌍 Nombre total d'employés", df.shape[0])
         st.metric("🚀 Taux d'attrition", f"{df['Attrition'].mean() * 100:.2f} %")
+        st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+
         
     with col2:
         st.metric("📈 Salaire moyen", f"${df['MonthlyIncome'].mean():,.2f}")
@@ -174,30 +134,125 @@ with page2 :
         st.metric("👨‍💼 % Hommes", f"{df[df['Gender'] == 1].shape[0] / df.shape[0] * 100:.1f} %")
         st.metric("👩 % Femmes", f"{df[df['Gender'] == 0].shape[0] / df.shape[0] * 100:.1f} %")
 
-    # 📌 STATISTIQUES D'ABSENTÉISME
-    st.subheader("📌 Statistiques d'Absentéisme")
-    col1, col2 = st.columns(2)
 
+
+    # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
+    def display_metric(label, value, low_threshold, high_threshold):
+        """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
+        if value < low_threshold:
+            status = "🔴 Mauvais"
+        elif value < high_threshold:
+            status = "🟡 Moyen"
+        else:
+            status = "🟢 Bon"
+        st.metric(label, f"{value:.2f}", status)
+    st.subheader("📌 Indicateurs de Performance et de Satisfaction")
+
+    # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
+    col1, col2, col3 = st.columns(3)
+    
     with col1:
-        st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+        display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
+        display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
+        display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
 
     with col2:
-        max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
-        st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+        display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
+        display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
+        display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
 
+    with col3:
+        display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
+        display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
+
+    # # 📌 STATISTIQUES D'ABSENTÉISME
+    # st.subheader("📌 Statistiques d'Absentéisme")
+    # col1, col2 = st.columns(2)
+
+    # with col1:
+    #     st.metric("📊 Absence moyenne par employé", f"{absence_days['AbsenceDays'].mean():.1f} jours")
+
+    # with col2:
+    #     max_absences_employee = absence_days.loc[absence_days['AbsenceDays'].idxmax()]
+    #     st.metric("👥 Employé avec le plus d'absences", f"ID :{max_absences_employee['EmployeeID']} avec {max_absences_employee['AbsenceDays']} jours")
+
+with page2 :
+    # 📌 TITRE PRINCIPAL
+    st.title("📊 Analyse des Données")
     # 📌 ONGLETS INTERACTIFS 
     tab1, tab2, tab3, tab4 = st.tabs(["📈 Statistiques détaillées", "📊 Graphiques", "📁 Données brutes", "📌 Indicateurs de Performance"])
-
     with tab1:
-        st.subheader("📌 Détails des statistiques par variable")
-        st.dataframe(df.describe())
+        st.markdown("## 📊 Analyse Univariée")
+        st.markdown("#### Exploration des statistiques et répartition des données")
 
-        st.subheader("📌 Répartition des employés par département"
-                    )
-        st.write(df['Department'].value_counts())
+        # === Affichage des Statistiques Générales ===
+        st.subheader("📌 Statistiques Générales")
+        
+        col1, col2 = st.columns([1, 2])  # Séparation en 2 colonnes
+        with col1:
+            # 📌 Transformer df.info() en DataFrame
+            info_dict = {
+                "Column": df.columns,
+                "Non-Null Count": df.count().values,
+                "Dtype": [df[col].dtype for col in df.columns]
+            }
+            df_info = pd.DataFrame(info_dict)
+
+            # 📊 Affichage stylé
+            st.dataframe(df_info, height=500) 
+        with col2:
+            st.dataframe(df.describe(), height=300)  # Affichage des stats descriptives
+
+        st.markdown("---")
+
+        # === Répartition des employés par département ===
+        st.subheader("🏢 Répartition des employés par département")
+        department_counts = df['Department'].value_counts()
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write(department_counts)
+
+        with col2:
+            fig, ax = plt.subplots(figsize=(8, 4))
+            sns.barplot(y=department_counts.index, x=department_counts.values, palette="Blues_r", ax=ax)
+            ax.set_xlabel("Nombre d'employés")
+            ax.set_ylabel("Département")
+            ax.set_title("📊 Répartition par Département")
+            st.pyplot(fig)
 
 
-    with tab2:
+        # === Répartition des valeurs manquantes ===
+        st.subheader("🚨 Gestion des valeurs manquantes")
+
+        missing_values = df.isnull().sum()
+        missing_values = missing_values[missing_values > 0].sort_values(ascending=False)
+
+        if missing_values.empty:
+            st.success("✅ Aucune valeur manquante détectée ! Tout est propre 🎉")
+        else:
+            st.warning("⚠️ Certaines colonnes contiennent des valeurs manquantes.")
+
+            # Affichage des valeurs manquantes sous forme de barplot
+            st.subheader("📉 Distribution des valeurs manquantes")
+            fig, ax = plt.subplots(figsize=(8, 4))
+            sns.barplot(x=missing_values.index, y=missing_values.values, palette="Reds", ax=ax)
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=45, ha='right')
+            ax.set_ylabel("Nombre de valeurs manquantes")
+            ax.set_title("🔍 Colonnes concernées")
+            st.pyplot(fig)
+
+            # Heatmap des valeurs manquantes
+            st.subheader("🗺️ Carte de chaleur des valeurs manquantes")
+            fig, ax = plt.subplots(figsize=(10, 6))
+            sns.heatmap(df.isnull(), cmap="Reds", cbar=False, yticklabels=False, ax=ax)
+            ax.set_title("🔍 Heatmap des valeurs manquantes")
+            st.pyplot(fig)
+
+        st.markdown("---")
+
+
+        # === Répartition des âges ===
         st.subheader("📊 Distribution des âges")
         st.write("📈 Répartition des âges des employés"
                 "\n🔴 18 - 25 ans, 🔵 26 - 35 ans, 🟢 36 - 45 ans, 🟡 46 - 55 ans, 🟣 56 - 65 ans")
@@ -207,15 +262,9 @@ with page2 :
         age_distribution.index = age_distribution.index.str.replace('[', '').str.replace(')', '').str.replace(',', ' -')
         st.bar_chart(age_distribution)
 
+        st.markdown("---")
 
-        # 📌 RÉPARTITION DES SALAIRES PAR TRANCHE
-        st.subheader("💰 Répartition des salaires par tranche")
-        salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
-        salary_bins_str = salary_bins.astype(str)
-        salary_distribution = salary_bins_str.value_counts().sort_index()
-        salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
-        st.bar_chart(salary_distribution)
-
+        # === Répartition des années d'ancienneté ===
         st.subheader("📈 Répartition des années d'ancienneté")
         # axe x : nombre d'années, axe y : nombre d'employés
         st.bar_chart(df['YearsAtCompany'].value_counts())
@@ -224,48 +273,94 @@ with page2 :
             'JobSatisfaction': 'Satisfaction du travail',
             'WorkLifeBalance': 'Équilibre travail-vie personnelle'
         }
-        st.subheader("📊 Répartition des niveaux de satisfaction"
-                    "\n🔴 0 : Bas, 🔵 4 : Haut")
+        st.markdown("---")
+
+
+        # === Répartition des salaires ===
+        st.subheader("💰 Répartition des salaires par tranche")
+        salary_bins = pd.cut(df['MonthlyIncome'], bins=5, precision=0)
+        salary_bins_str = salary_bins.astype(str)
+        salary_distribution = salary_bins_str.value_counts().sort_index()
+        salary_distribution.index = salary_distribution.index.str.replace('(', '').str.replace(']', '').str.replace(',', ' -')
+
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write("💼 Distribution des salaires :")
+            st.dataframe(salary_distribution)
+
+        with col2:
+            st.bar_chart(salary_distribution)
+
+        st.markdown("---")
+
+        
+
+        # === Satisfaction des employés ===
+        satisfaction_mapping = {
+            'EnvironmentSatisfaction': 'Satisfaction de l\'environnement de travail',
+            'JobSatisfaction': 'Satisfaction du travail',
+            'WorkLifeBalance': 'Équilibre travail-vie personnelle'
+        }
+
+        st.subheader("😀 Satisfaction des employés")
+
         satisfaction_cols = ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']
+
         for col in satisfaction_cols:
-            st.write(f"### {satisfaction_mapping[col]}")
-            st.bar_chart(df[col].value_counts())
+            st.write(f"### 📊 {satisfaction_mapping[col]}")
+            
+            # Création des colonnes pour une meilleure disposition
+            col1, col2 = st.columns([1, 2])
+
+            with col1:
+                st.write("📋 Répartition des niveaux :")
+                st.dataframe(df[col].value_counts().rename_axis("Niveau").reset_index(name="Nombre d'employés"))
+
+            with col2:
+                st.write("📊 Distribution graphique :")
+                st.bar_chart(df[col].value_counts())
+        st.markdown("---")
+
+    with tab2:
+        st.subheader("2️⃣ Visualisation Dynamique des Variables")
+        # Sélection de la variable à explorer
+        selected_var = st.selectbox(
+            "📊 Sélectionnez une variable numérique à analyser :",
+            df.select_dtypes(include=['int64', 'float64']).columns.tolist()
+        )
+
+        # Création des colonnes pour un affichage structuré
+        col1, col2 = st.columns([1, 2])
+
+        # Histogramme interactif
+        st.write("📏 **Distribution des valeurs (Histogramme)**")
+        fig, ax = plt.subplots(figsize=(8, 3))
+        sns.histplot(df[selected_var], kde=True, color="royalblue", ax=ax)
+        ax.set_xlabel(selected_var)
+        ax.set_ylabel("Fréquence")
+        st.pyplot(fig)
+
+        # Boxplot interactif
+
+        st.write("📦 **Diagramme a Moustache (Boxplot)**")
+        fig, ax = plt.subplots(figsize=(6, 3))
+        sns.boxplot(x=df[selected_var], color="lightcoral", ax=ax)
+        ax.set_xlabel(selected_var)
+        st.pyplot(fig)
+
+        # KDE Plot interactif (Courbe de densité)
+        st.write("📊 **Courbe de densité (KDE Plot)**")
+        fig, ax = plt.subplots(figsize=(8, 3))
+        sns.kdeplot(df[selected_var], shade=True, color="green", ax=ax)
+        ax.set_xlabel(selected_var)
+        ax.set_ylabel("Densité")
+        st.pyplot(fig)
+
+        st.markdown("---")
 
     with tab3:
         st.subheader("📂 Aperçu des données")
         st.dataframe(df.head(20))
-
-    # 📌 TAB 4 : INDICATEURS DE PERFORMANCE
-    with tab4:
-        st.subheader("📌 Indicateurs de Performance et de Satisfaction")
-
-        # 📌 FONCTION POUR AFFICHER LES INDICATEURS AVEC LABELS VISUELS
-        def display_metric(label, value, low_threshold, high_threshold):
-            """Affiche un KPI avec une évaluation visuelle : 🔴 Mauvais, 🟡 Moyen, 🟢 Bon"""
-            if value < low_threshold:
-                status = "🔴 Mauvais"
-            elif value < high_threshold:
-                status = "🟡 Moyen"
-            else:
-                status = "🟢 Bon"
-            st.metric(label, f"{value:.2f}", status)
-
-        # 📌 AFFICHAGE DES MÉTRIQUES AVEC INDICATEURS
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            display_metric("📈 Taux de Croissance de Carrière", df['CareerGrowthRate'].mean(), 0.1, 0.5)
-            display_metric("📊 Taux de Promotion", df['PromotionRate'].mean(), 0.05, 0.2)
-            display_metric("🔄 Changement de Manager", df['ManagerChangeRate'].mean(), 0.2, 0.8)
-
-        with col2:
-            display_metric("😊 Score Satisfaction", df['SatisfactionScore'].mean(), 2.0, 3.5)
-            display_metric("💰 Écart Salaire/Satisfaction", df['SalarySatisfactionGap'].mean(), 3000, 8000)
-            display_metric("📉 Performance - Implication", df['PerformanceInvolvementGap'].mean(), -1, 1)
-
-        with col3:
-            display_metric("🚪 Taux d'Absence", df['AbsenceRate'].mean(), 0.05, 0.2)
-            display_metric("✈️ Fatigue liée au Voyage", df['TravelFatigue'].mean(), 5, 20)
 
 with page3:
     with st.expander("🔎 Options d'analyse", expanded=False):
@@ -374,7 +469,7 @@ with page4:
 
 with page5:
     # 📌 ONGLETS INTERACTIFS
-    tab1, tab2, tab3 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest"])
+    tab1, tab2, tab3, tab4 = st.tabs(["📊 Régression Logistique", "🧠 SVM", "🌲 Random Forest", "🔮 Aide à la Décision"])
 
     # 📌 VARIABLES À UTILISER DANS LES MODÈLES
     features = [
@@ -541,6 +636,8 @@ with page5:
         accuracy = accuracy_score(y_test, y_pred)
 
         display_model_results(model, X_test, y_test, y_pred, y_proba, "Régression Logistique")
+        results_logistic = classification_report(y_test, y_pred, output_dict=True)
+
     with tab2:
         # ============================
         # 📌 MODÈLE DE PRÉDICTION SVM 
@@ -595,6 +692,7 @@ with page5:
 
         y_proba = svm_model.predict_proba(X_test)[:, 1]
         display_model_results(svm_model, X_test, y_test, y_pred, y_proba, "SVM")
+        results_svm = classification_report(y_test, y_pred, output_dict=True)
 
     with tab3:
         # Préparation des données
@@ -623,3 +721,29 @@ with page5:
 
         # 📌 Appel correct de display_model_results pour la Random Forest
         display_model_results(rf_model, X_test, y_test, rf_pred, rf_proba, "Random Forest")
+        results_rf = classification_report(y_test, rf_pred, output_dict=True)
+
+    with tab4:
+        # 📌 TITRE PRINCIPAL
+        col1, col2 = st.columns(2)
+        with col1:
+            # Création d'un DataFrame pour stocker les résultats (accuracy, recall, f1-score, etc.)
+            df_results = pd.DataFrame({
+                "Logistic Regression": results_logistic["1"],
+                "SVM": results_svm["1"],
+                "Random Forest": results_rf["1"]
+            })
+            # 📌 INTERPRÉTATION DES RÉSULTATS
+            st.subheader("📊 Résultats des Modèles de Prédiction")
+            st.dataframe(df_results)
+        with col2:
+            st.subheader("Lancer l'aide à la décision")
+            st.write("Cliquez sur le bouton ci-dessous pour obtenir les résultats.")
+            if st.button("🚀 Lancer l'aide à la décision"):
+                # Animation de chargement
+                with st.spinner("Calcul des résultats..."):
+                    time.sleep(3)
+                    best_model = df_results.idxmax(axis=1).value_counts().idxmax()
+                    st.subheader("🏆 Meilleur Modèle de Prédiction")
+                st.success(f"Le meilleur modèle est : **{best_model}**")
+        
