@@ -61,7 +61,7 @@ def load_data():
     for col in ['EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance']:
         hr_data[col] = hr_data[col].fillna(hr_data[col].median())
 
-    # Transformation des colonnes numériques et catégoriques
+    # Transformation des colonnes
     numeric_transformations = {
         'Age': int,
         'DistanceFromHome': int,
@@ -103,14 +103,12 @@ def load_data():
     in_time_data = pd.read_csv('./data/in_time.csv').rename(columns={"Unnamed: 0": "EmployeeID"})
     out_time_data = pd.read_csv('./data/out_time.csv').rename(columns={"Unnamed: 0": "EmployeeID"})
 
-    # Calcul de l'état d'absence : 
-    # Si l'une des dates a une valeur manquante (NaN) dans in_time ou out_time, l'employé est considéré absent ce jour-là
+    # Calcul de l'absence : 
     absence_bool = (in_time_data.iloc[:, 1:].isna() | out_time_data.iloc[:, 1:].isna())
     # Supprimer les colonnes (dates) pour lesquelles TOUS les employés sont absents
-    # La méthode .all(axis=0) vérifie pour chaque colonne (en ignorant l'en-tête) si toutes les valeurs sont True
     absence_bool = absence_bool.loc[:, ~absence_bool.all(axis=0)]
 
-    # Remplacer les valeurs booléennes par des chaînes de caractères pour faciliter l'affichage
+    # Remplacer les valeurs booléennes par 'Absent' ou 'Présent'
     absence_status = absence_bool.replace({True: 'Absent', False: 'Present'})
 
     # Réinsérer la colonne 'EmployeeID' en première position
@@ -344,7 +342,7 @@ with page2:
             sns.barplot(
             x=department_counts.values,
             y=department_counts.index,
-            hue=department_counts.index,  # Assigner la variable 'y' à hue
+            hue=department_counts.index,
             palette="Blues_r",
             ax=ax,
             dodge=False )
@@ -716,7 +714,7 @@ with page5:
                 param_distributions=grid_params_lr,
                 n_iter=50,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1,
                 random_state=42
@@ -726,7 +724,7 @@ with page5:
                 estimator=model_lr,
                 param_grid=grid_params_lr,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1
             )
@@ -735,9 +733,18 @@ with page5:
         st.write(search_lr.best_params_)
         st.write("**Régression Logistique – Meilleur F1 Score :**")
         st.write(f"{search_lr.best_score_ * 100:.2f} %")
+        st.write("**Régression Logistique – Meilleur precision :**")
+        st.write(f"{search_lr.cv_results_['mean_test_precision'][search_lr.best_index_] * 100:.2f} %")
+        st.write("**Régression Logistique – Meilleur recall :**")
+        st.write(f"{search_lr.cv_results_['mean_test_recall'][search_lr.best_index_] * 100:.2f} %")
+        st.write("**Régression Logistique – Meilleur accuracy :**")
+        st.write(f"{search_lr.cv_results_['mean_test_accuracy'][search_lr.best_index_] * 100:.2f} %")
         results_dict["Régression Logistique"] = {
             "best_params": search_lr.best_params_,
-            "best_score": search_lr.best_score_
+            "best_score": search_lr.best_score_,
+            "best_precision": search_lr.cv_results_['mean_test_precision'][search_lr.best_index_],
+            "best_recall": search_lr.cv_results_['mean_test_recall'][search_lr.best_index_],
+            "best_accuracy": search_lr.cv_results_['mean_test_accuracy'][search_lr.best_index_]
         }
 
         ############################################################################
@@ -759,9 +766,9 @@ with page5:
             search_svm = RandomizedSearchCV(
                 estimator=model_svm,
                 param_distributions=grid_params_svm,
-                n_iter=50,
+                n_iter=100,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1,
                 random_state=42
@@ -771,7 +778,7 @@ with page5:
                 estimator=model_svm,
                 param_grid=grid_params_svm,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1
             )
@@ -780,9 +787,18 @@ with page5:
         st.write(search_svm.best_params_)
         st.write("**SVM – Meilleur F1 Score :**")
         st.write(f"{search_svm.best_score_ * 100:.2f} %")
+        st.write("**SVM – Meilleur precision :**")
+        st.write(f"{search_svm.cv_results_['mean_test_precision'][search_svm.best_index_] * 100:.2f} %")
+        st.write("**SVM – Meilleur recall :**")
+        st.write(f"{search_svm.cv_results_['mean_test_recall'][search_svm.best_index_] * 100:.2f} %")
+        st.write("**SVM – Meilleur accuracy :**")
+        st.write(f"{search_svm.cv_results_['mean_test_accuracy'][search_svm.best_index_] * 100:.2f} %")
         results_dict["SVM"] = {
             "best_params": search_svm.best_params_,
-            "best_score": search_svm.best_score_
+            "best_score": search_svm.best_score_,
+            "best_precision": search_svm.cv_results_['mean_test_precision'][search_svm.best_index_],
+            "best_recall": search_svm.cv_results_['mean_test_recall'][search_svm.best_index_],
+            "best_accuracy": search_svm.cv_results_['mean_test_accuracy'][search_svm.best_index_]
         }
 
         ############################################################################
@@ -810,9 +826,9 @@ with page5:
             search_rf = RandomizedSearchCV(
                 estimator=model_rf,
                 param_distributions=grid_params_rf,
-                n_iter=100,
+                n_iter=20,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1,
                 random_state=42
@@ -822,7 +838,7 @@ with page5:
                 estimator=model_rf,
                 param_grid=grid_params_rf,
                 cv=5,
-                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall'},
+                scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
                 n_jobs=-1
             )
@@ -831,116 +847,146 @@ with page5:
         st.write(search_rf.best_params_)
         st.write("**Random Forest – Meilleur F1 Score :**")
         st.write(f"{search_rf.best_score_ * 100:.2f} %")
+        st.write("**Random Forest – Meilleur précision :**")
+        st.write(f"{search_rf.cv_results_['mean_test_precision'][search_rf.best_index_] * 100:.2f} %")
+        st.write("**Random Forest – Meilleur recall :**")
+        st.write(f"{search_rf.cv_results_['mean_test_recall'][search_rf.best_index_] * 100:.2f} %")
+        st.write ("**Random Forest – Meilleur accuracy :**")
+        st.write(f"{search_rf.cv_results_['mean_test_accuracy'][search_rf.best_index_] * 100:.2f} %")
         results_dict["Random Forest"] = {
             "best_params": search_rf.best_params_,
-            "best_score": search_rf.best_score_
+            "best_score": search_rf.best_score_,
+            "best_precision": search_rf.cv_results_['mean_test_precision'][search_rf.best_index_],
+            "best_recall": search_rf.cv_results_['mean_test_recall'][search_rf.best_index_],
+            "best_accuracy": search_rf.cv_results_['mean_test_accuracy'][search_rf.best_index_]
         }
 
         ############################################################################
         # Affichage du récapitulatif pour les 3 modèles
         ############################################################################
-        st.subheader("Récapitulatif des résultats")
-        df_results = pd.DataFrame.from_dict(results_dict, orient='index')
-        df_results.index.name = "Modèle"
+        df_results = pd.DataFrame(results_dict).T
+
+        # S'assurer que les colonnes contenant les scores sont de type float
+        df_results["best_score"] = df_results["best_score"].astype(float)
+        df_results["best_precision"] = df_results["best_precision"].astype(float)
+        df_results["best_recall"] = df_results["best_recall"].astype(float)
+        df_results["best_accuracy"] = df_results["best_accuracy"].astype(float)
+
         st.dataframe(df_results)
 
+        st.subheader("Comparaison des modèles par rapport au F1 Score")
 
-        st.subheader("Comparaison des modèles")
-
-        # Appliquer le thème Streamlit via Seaborn
         sns.set_theme(style="whitegrid", palette="viridis")
-
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(
-            x=df_results.index,
-            y=df_results["best_score"] * 100,
-            ax=ax
-        )
-        ax.set_ylabel("F1 Score (%)")
-        ax.set_title("📊 Comparaison des modèles")
+        fig, ax = plt.subplots(figsize=(8, 4))
+        sns.barplot(x=df_results.index, y=df_results["best_score"], palette="viridis", ax=ax)
+        ax.set_xlabel("Modèle")
+        ax.set_ylabel("F1 Score")
+        ax.set_title("Comparaison des modèles par rapport au F1 Score")
         st.pyplot(fig)
-        st.success(f"Le meilleur modèle est {df_results['best_score'].idxmax()} avec un F1 Score de {df_results['best_score'].max() * 100:.2f} %")
+
+
+        # Calcul du meilleur modèle pour chaque métrique
+        best_f1_model = df_results["best_score"].idxmax()
+        best_precision_model = df_results["best_precision"].idxmax()
+        best_recall_model = df_results["best_recall"].idxmax()
+        best_accuracy_model = df_results["best_accuracy"].idxmax()
+
+        st.write("**Meilleur modèle par rapport au F1 Score :**", best_f1_model)
+        st.write("**Meilleur modèle par rapport à la précision :**", best_precision_model)
+        st.write("**Meilleur modèle par rapport au recall :**", best_recall_model)
+        st.write("**Meilleur modèle par rapport à l'accuracy :**", best_accuracy_model)
+
+        # Pour déterminer un meilleur modèle global, on calcule la moyenne des scores
+        df_results["mean_metric"] = df_results[["best_score", "best_precision", "best_recall", "best_accuracy"]].mean(axis=1)
+        global_best_model = df_results["mean_metric"].idxmax()
+        st.write("**Meilleur modèle global :**", global_best_model)
+
+        # Sauvegarde des résultats dans st.session_state pour une utilisation ultérieure
+        st.session_state["hyper_results"] = results_dict
+
+
 # -----------------------------------------------------------------------------
 # Page 5 : Aide à la Décision
 # -----------------------------------------------------------------------------
 with page6:
-    st.subheader("Aide à la Décision")
-    col1, col2 = st.columns(2)
-    with col1:
-        df_results = pd.DataFrame({
-            "Régression Logistique": results_logistic["1"],
-            "SVM": results_svm["1"],
-            "Random Forest": results_rf["1"]
-        })
-        st.dataframe(df_results)
-    with col2:
-        best_model = df_results.idxmax(axis=1).value_counts().idxmax()
-        st.subheader("🏆 Meilleur Modèle de Prédiction")
-        st.success(f"Le meilleur modèle est : **{best_model}**")
-
-    st.subheader("Simulation d'un Employé")
-    with st.form("simulation_form"):
-        col1, col2 = st.columns(2)
-        with col1:
-            jobrole = st.selectbox("Job Role", sorted(df["JobRole"].cat.categories))
-            joblevel = st.number_input("Job Level", min_value=1, max_value=int(df["JobLevel"].max()), value=int(df["JobLevel"].median()))
-            years_at_company = st.number_input("Années dans l'entreprise", min_value=0, max_value=int(df["YearsAtCompany"].max()), value=int(df["YearsAtCompany"].median()))
-            years_with_manager = st.number_input("Années avec le manager", min_value=0, max_value=int(df["YearsWithCurrManager"].max()), value=int(df["YearsWithCurrManager"].median()))
-            years_since_promotion = st.number_input("Années depuis la dernière promotion", min_value=0, max_value=int(df["YearsSinceLastPromotion"].max()), value=int(df["YearsSinceLastPromotion"].median()))
-            num_companies_worked = st.number_input("Nombre d'entreprises précédentes", min_value=0, max_value=int(df["NumCompaniesWorked"].max()), value=int(df["NumCompaniesWorked"].median()))
-            monthly_income = st.number_input("Salaire mensuel", min_value=0, max_value=int(df["MonthlyIncome"].max()), value=int(df["MonthlyIncome"].median()))
-            percent_salary_hike = st.number_input("Augmentation salariale (%)", min_value=0.0, max_value=100.0, value=float(df["PercentSalaryHike"].median()*100))
-        with col2:
-            job_satisfaction = st.number_input("Satisfaction au travail (1-4)", min_value=1, max_value=4, value=int(df["JobSatisfaction"].median()))
-            work_life_balance = st.number_input("Équilibre vie pro/perso (1-4)", min_value=1, max_value=4, value=int(df["WorkLifeBalance"].median()))
-            environment_satisfaction = st.number_input("Satisfaction environnement (1-4)", min_value=1, max_value=4, value=int(df["EnvironmentSatisfaction"].median()))
-            training_times_last_year = st.number_input("Nombre de formations l'année dernière", min_value=0, max_value=int(df["TrainingTimesLastYear"].max()), value=int(df["TrainingTimesLastYear"].median()))
-            # Pour BusinessTravel, on garde la modalité textuelle
-            business_travel_choice = st.selectbox("Business Travel", options=["Non-Travel", "Travel_Rarely", "Travel_Frequently"])
-            absence_days_input = st.number_input("Nombre de jours d'absence", min_value=0, max_value=int(df["AbsenceDays"].max()), value=int(df["AbsenceDays"].median()))
-            total_working_years = st.number_input("Total des années de travail", min_value=0, max_value=int(df["TotalWorkingYears"].max()), value=int(df["TotalWorkingYears"].median()))
-            department = st.selectbox("Département", sorted(df["Department"].cat.categories))
-        submitted = st.form_submit_button("Calculer la probabilité")
-
-    if submitted:
-        # Conversion de l'augmentation salariale en fraction
-        percent_salary_hike = percent_salary_hike / 100
-
-        new_employee_dict = {
-            "JobRole": jobrole,
-            "JobLevel": joblevel,
-            "YearsAtCompany": years_at_company,
-            "YearsWithCurrManager": years_with_manager,
-            "YearsSinceLastPromotion": years_since_promotion,
-            "NumCompaniesWorked": num_companies_worked,
-            "MonthlyIncome": monthly_income,
-            "PercentSalaryHike": percent_salary_hike,
-            "JobSatisfaction": job_satisfaction,
-            "WorkLifeBalance": work_life_balance,
-            "EnvironmentSatisfaction": environment_satisfaction,
-            "TrainingTimesLastYear": training_times_last_year,
-            "BusinessTravel": business_travel_choice,
-            "AbsenceDays": absence_days_input,
-            "TotalWorkingYears": total_working_years,
-            "Department": department
-        }
-        new_employee = pd.DataFrame(new_employee_dict, index=[0])
-
-        df_encoded = pd.get_dummies(df[features], drop_first=True)
-        X_rf_columns = df_encoded.columns
-        new_employee_encoded = pd.get_dummies(new_employee, drop_first=True).reindex(columns=X_rf_columns, fill_value=0)
-
-        rf_model_sim = RandomForestClassifier(random_state=42)
-        rf_model_sim.fit(df_encoded, df["Attrition"])
-
-        proba = rf_model_sim.predict_proba(new_employee_encoded)[0]
-        # La classe 0 correspond à "rester dans l'entreprise"
-        proba_rester = proba[0]
-        pourcentage = proba_rester * 100
-
-        if pourcentage >= 70:
-            st.success(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
-        elif pourcentage >= 40:
-            st.warning(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+    hyper_results = st.session_state.get("hyper_results", None)
+    st.title("🔮 Aide à la Décision")
+    st.subheader("Prédiction individuelle de l'attrition")
+    st.write("Entrez les informations de l'employé et cliquez sur le bouton pour obtenir la probabilité de départ.")
+    
+    # Regrouper les widgets dans un formulaire pour que le calcul ne se lance qu'à la soumission
+    with st.form(key="prediction_form"):
+        job_role = st.selectbox(
+            "Job Role", 
+            df["JobRole"].cat.categories.tolist() if "JobRole" in df.columns and pd.api.types.is_categorical_dtype(df["JobRole"])
+            else ["Sales Executive", "Research Scientist", "Laboratory Technician"]
+        )
+        department = st.selectbox(
+            "Department", 
+            df["Department"].cat.categories.tolist() if "Department" in df.columns and pd.api.types.is_categorical_dtype(df["Department"])
+            else ["Sales", "Research & Development", "Human Resources"]
+        )
+        business_travel = st.selectbox("Business Travel", ["Non-Travel", "Travel_Rarely", "Travel_Frequently"])
+        
+        job_level = st.number_input("Job Level", min_value=1, max_value=10, value=1)
+        years_at_company = st.number_input("Years at Company", min_value=0.0, max_value=50.0, value=3.0, step=0.1)
+        years_with_curr_manager = st.number_input("Years with Current Manager", min_value=0.0, max_value=50.0, value=2.0, step=0.1)
+        years_since_last_promotion = st.number_input("Years Since Last Promotion", min_value=0.0, max_value=50.0, value=1.0, step=0.1)
+        num_companies_worked = st.number_input("Number of Companies Worked", min_value=0, max_value=20, value=1)
+        monthly_income = st.number_input("Monthly Income", min_value=0.0, max_value=100000.0, value=5000.0, step=100.0)
+        percent_salary_hike = st.number_input("Percent Salary Hike (0-1)", min_value=0.0, max_value=1.0, value=0.05, step=0.01)
+        job_satisfaction = st.number_input("Job Satisfaction (1-4)", min_value=1, max_value=4, value=3)
+        work_life_balance = st.number_input("Work-Life Balance (1-4)", min_value=1, max_value=4, value=3)
+        environment_satisfaction = st.number_input("Environment Satisfaction (1-4)", min_value=1, max_value=4, value=3)
+        training_times_last_year = st.number_input("Training Times Last Year", min_value=0, max_value=10, value=2)
+        absence_days = st.number_input("Absence Days", min_value=0, max_value=365, value=5)
+        total_working_years = st.number_input("Total Working Years", min_value=0, max_value=50, value=10)
+        
+        submit_button = st.form_submit_button(label="Prédire l'attrition")
+    
+    if submit_button:
+        # Créer un DataFrame à partir des données saisies
+        new_employee_df = pd.DataFrame([{
+            "JobRole": job_role,
+            "Department": department,
+            "BusinessTravel": business_travel,
+            "JobLevel": int(job_level),
+            "YearsAtCompany": float(years_at_company),
+            "YearsWithCurrManager": float(years_with_curr_manager),
+            "YearsSinceLastPromotion": float(years_since_last_promotion),
+            "NumCompaniesWorked": int(num_companies_worked),
+            "MonthlyIncome": float(monthly_income),
+            "PercentSalaryHike": float(percent_salary_hike),
+            "JobSatisfaction": int(job_satisfaction),
+            "WorkLifeBalance": int(work_life_balance),
+            "EnvironmentSatisfaction": int(environment_satisfaction),
+            "TrainingTimesLastYear": int(training_times_last_year),
+            "AbsenceDays": int(absence_days),
+            "TotalWorkingYears": int(total_working_years)
+        }])
+        
+        # Utilisation de RandomForestClassifier avec les meilleurs hyperparamètres
+        if hyper_results and "Random Forest" in hyper_results:
+            best_params = hyper_results["Random Forest"]["best_params"]
+            model_rf = RandomForestClassifier(random_state=42, **best_params)
         else:
-            st.error(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+            model_rf = RandomForestClassifier(random_state=42)
+        
+        # Préparer l'ensemble complet d'entraînement avec encodage one-hot
+        df_encoded_full = pd.get_dummies(df[features], drop_first=True)
+        X_full = df_encoded_full
+        y_full = df[target]
+        model_rf.fit(X_full, y_full)
+        
+        # Prétraiter les nouvelles données de la même manière
+        new_employee_encoded = pd.get_dummies(new_employee_df, drop_first=True)
+        new_employee_encoded = new_employee_encoded.reindex(columns=X_full.columns, fill_value=0)
+        
+        probability = model_rf.predict_proba(new_employee_encoded)[:, 1][0]
+        st.write(f"Probabilité de départ : **{probability * 100:.2f}%**")
+        if probability >= 0.8:
+            st.error("Le modèle prédit que l'employé quittera l'entreprise.")
+        elif probability >= 0.5:
+            st.warning("L'employé pourrait quitter l'entreprise.")
+        else:
+            st.success("L'employé devrait rester dans l'entreprise.")
