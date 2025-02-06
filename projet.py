@@ -347,7 +347,8 @@ with page2:
             hue=department_counts.index,  # Assigner la variable 'y' à hue
             palette="Blues_r",
             ax=ax,
-            dodge=False )
+            dodge=False,
+            legend=False)
             ax.set_xlabel("Nombre d'employés")
             ax.set_ylabel("Département")
             ax.set_title("📊 Répartition par Département")
@@ -843,7 +844,7 @@ with page5:
         df_results = pd.DataFrame.from_dict(results_dict, orient='index')
         df_results.index.name = "Modèle"
         st.dataframe(df_results)
-
+        print(df_results)
 
         st.subheader("Comparaison des modèles")
 
@@ -860,6 +861,32 @@ with page5:
         ax.set_title("📊 Comparaison des modèles")
         st.pyplot(fig)
         st.success(f"Le meilleur modèle est {df_results['best_score'].idxmax()} avec un F1 Score de {df_results['best_score'].max() * 100:.2f} %")
+
+# -----------------------------------------------------------------------------
+# 🚀 📌 Charger le modèle une seule fois après avoir trouvé les hyperparamètres
+# -----------------------------------------------------------------------------
+
+@st.cache_resource
+def train_best_model():
+    """Entraîne le modèle avec les meilleurs hyperparamètres trouvés."""
+    best_model_name = df_results["best_score"].idxmax()
+    best_hyperparameters = results_dict[best_model_name]["best_params"]
+
+    if best_model_name == "Régression Logistique":
+        b_model = LogisticRegression(**best_hyperparameters, random_state=42)
+        b_model.fit(X_rf, y_rf)
+    elif best_model_name == "SVM":
+        b_model = SVC(**best_hyperparameters, probability=True, random_state=42)
+        b_model.fit(X_rf, y_rf)
+    elif best_model_name == "Random Forest":
+        b_model = RandomForestClassifier(**best_hyperparameters, random_state=42)
+        b_model.fit(X_rf, y_rf)
+
+    return b_model
+
+# Charger et stocker le modèle
+rf_model_sim = train_best_model()
+
 # -----------------------------------------------------------------------------
 # Page 5 : Aide à la Décision
 # -----------------------------------------------------------------------------
@@ -878,30 +905,133 @@ with page6:
         st.subheader("🏆 Meilleur Modèle de Prédiction")
         st.success(f"Le meilleur modèle est : **{best_model}**")
 
+    st.markdown("---")
+
+    st.subheader("📊 Variables les plus importantes")
+
+    # Récupération des colonnes numériques du DataFrame df
+    numeric_cols = df.select_dtypes(include=['int', 'float64']).columns.tolist()
+    # Exclure les colonnes spécifiques
+    cols_to_exclude = ['Age', 'EnvironmentSatisfaction', 'JobSatisfaction', 'WorkLifeBalance', 'CareerGrowthRate']
+    numeric_cols = [col for col in numeric_cols if col not in cols_to_exclude]
+
+    # Extraire le DataFrame numérique filtré
+    df_numeric = df[numeric_cols]
+
+    # Calcul de la corrélation entre chaque variable numérique et 'Attrition'
+    corr_attrition = df_numeric.corr()['Attrition'].drop('Attrition')
+
+    # Filtrer pour ne conserver que les variables avec |corrélation| >= 0.05
+    filtered_corr = corr_attrition[(corr_attrition > 0.05) | (corr_attrition < -0.05)]
+
+    # Création d'un bar chart vertical
+    fig, ax = plt.subplots(figsize=(10, 6))
+    colors = ['green' if val >= 0 else 'red' for val in filtered_corr]
+    ax.bar(filtered_corr.index, filtered_corr.values, color=colors)
+    ax.set_xlabel("Variables")
+    ax.set_ylabel("Coefficient de corrélation")
+    ax.set_title("Corrélation des Variables avec l'Attrition")
+    ax.tick_params(axis='x', rotation=45)
+    st.pyplot(fig)
+
+    st.markdown("---")
+
+    # Simulation de probabilité de départ
     st.subheader("Simulation d'un Employé")
     with st.form("simulation_form"):
         col1, col2 = st.columns(2)
         with col1:
             jobrole = st.selectbox("Job Role", sorted(df["JobRole"].cat.categories))
-            joblevel = st.number_input("Job Level", min_value=1, max_value=int(df["JobLevel"].max()), value=int(df["JobLevel"].median()))
-            years_at_company = st.number_input("Années dans l'entreprise", min_value=0, max_value=int(df["YearsAtCompany"].max()), value=int(df["YearsAtCompany"].median()))
-            years_with_manager = st.number_input("Années avec le manager", min_value=0, max_value=int(df["YearsWithCurrManager"].max()), value=int(df["YearsWithCurrManager"].median()))
-            years_since_promotion = st.number_input("Années depuis la dernière promotion", min_value=0, max_value=int(df["YearsSinceLastPromotion"].max()), value=int(df["YearsSinceLastPromotion"].median()))
-            num_companies_worked = st.number_input("Nombre d'entreprises précédentes", min_value=0, max_value=int(df["NumCompaniesWorked"].max()), value=int(df["NumCompaniesWorked"].median()))
-            monthly_income = st.number_input("Salaire mensuel", min_value=0, max_value=int(df["MonthlyIncome"].max()), value=int(df["MonthlyIncome"].median()))
-            percent_salary_hike = st.number_input("Augmentation salariale (%)", min_value=0.0, max_value=100.0, value=float(df["PercentSalaryHike"].median()*100))
+            joblevel = st.number_input(
+                "Job Level",
+                min_value=int(df["JobLevel"].min()),
+                max_value=int(df["JobLevel"].max()),
+                value=int(df["JobLevel"].median())
+            )
+            years_at_company = st.number_input(
+                "Années dans l'entreprise",
+                min_value=int(df["YearsAtCompany"].min()),
+                max_value=int(df["YearsAtCompany"].max()),
+                value=int(df["YearsAtCompany"].median())
+            )
+            years_with_manager = st.number_input(
+                "Années avec le manager",
+                min_value=int(df["YearsWithCurrManager"].min()),
+                max_value=int(df["YearsWithCurrManager"].max()),
+                value=int(df["YearsWithCurrManager"].median())
+            )
+            years_since_promotion = st.number_input(
+                "Années depuis la dernière promotion",
+                min_value=int(df["YearsSinceLastPromotion"].min()),
+                max_value=int(df["YearsSinceLastPromotion"].max()),
+                value=int(df["YearsSinceLastPromotion"].median())
+            )
+            num_companies_worked = st.number_input(
+                "Nombre d'entreprises précédentes",
+                min_value=int(df["NumCompaniesWorked"].min()),
+                max_value=int(df["NumCompaniesWorked"].max()),
+                value=int(df["NumCompaniesWorked"].median())
+            )
+            monthly_income = st.number_input(
+                "Salaire mensuel",
+                min_value=int(df["MonthlyIncome"].min()),
+                max_value=int(df["MonthlyIncome"].max()),
+                value=int(df["MonthlyIncome"].median())
+            )
+            percent_salary_hike = st.number_input(
+                "Augmentation salariale (%)",
+                min_value=float(df["PercentSalaryHike"].min() * 100),
+                max_value=float(df["PercentSalaryHike"].max() * 100),
+                value=float(df["PercentSalaryHike"].median() * 100)
+            )
+
         with col2:
-            job_satisfaction = st.number_input("Satisfaction au travail (1-4)", min_value=1, max_value=4, value=int(df["JobSatisfaction"].median()))
-            work_life_balance = st.number_input("Équilibre vie pro/perso (1-4)", min_value=1, max_value=4, value=int(df["WorkLifeBalance"].median()))
-            environment_satisfaction = st.number_input("Satisfaction environnement (1-4)", min_value=1, max_value=4, value=int(df["EnvironmentSatisfaction"].median()))
-            training_times_last_year = st.number_input("Nombre de formations l'année dernière", min_value=0, max_value=int(df["TrainingTimesLastYear"].max()), value=int(df["TrainingTimesLastYear"].median()))
+            job_satisfaction = st.number_input(
+                "Satisfaction au travail (1-4)",
+                min_value=int(df["JobSatisfaction"].min()),
+                max_value=int(df["JobSatisfaction"].max()),
+                value=int(df["JobSatisfaction"].median())
+            )
+            work_life_balance = st.number_input(
+                "Équilibre vie pro/perso (1-4)",
+                min_value=int(df["WorkLifeBalance"].min()),
+                max_value=int(df["WorkLifeBalance"].max()),
+                value=int(df["WorkLifeBalance"].median())
+            )
+            environment_satisfaction = st.number_input(
+                "Satisfaction environnement (1-4)",
+                min_value=int(df["EnvironmentSatisfaction"].min()),
+                max_value=int(df["EnvironmentSatisfaction"].max()),
+                value=int(df["EnvironmentSatisfaction"].median())
+            )
+            training_times_last_year = st.number_input(
+                "Nombre de formations l'année dernière",
+                min_value=int(df["TrainingTimesLastYear"].min()),
+                max_value=int(df["TrainingTimesLastYear"].max()),
+                value=int(df["TrainingTimesLastYear"].median())
+            )
             # Pour BusinessTravel, on garde la modalité textuelle
-            business_travel_choice = st.selectbox("Business Travel", options=["Non-Travel", "Travel_Rarely", "Travel_Frequently"])
-            absence_days_input = st.number_input("Nombre de jours d'absence", min_value=0, max_value=int(df["AbsenceDays"].max()), value=int(df["AbsenceDays"].median()))
-            total_working_years = st.number_input("Total des années de travail", min_value=0, max_value=int(df["TotalWorkingYears"].max()), value=int(df["TotalWorkingYears"].median()))
+            business_travel_choice = st.selectbox(
+                "Business Travel",
+                options=["Non-Travel", "Travel_Rarely", "Travel_Frequently"]
+            )
+            absence_days_input = st.number_input(
+                "Nombre de jours d'absence",
+                min_value=int(df["AbsenceDays"].min()),
+                max_value=int(df["AbsenceDays"].max()),
+                value=int(df["AbsenceDays"].median())
+            )
+            total_working_years = st.number_input(
+                "Total des années de travail",
+                min_value=int(df["TotalWorkingYears"].min()),
+                max_value=int(df["TotalWorkingYears"].max()),
+                value=int(df["TotalWorkingYears"].median())
+            )
             department = st.selectbox("Département", sorted(df["Department"].cat.categories))
+
         submitted = st.form_submit_button("Calculer la probabilité")
 
+    # Simulation d'un Employé avec le modèle déjà entraîné
     if submitted:
         # Conversion de l'augmentation salariale en fraction
         percent_salary_hike = percent_salary_hike / 100
@@ -926,21 +1056,67 @@ with page6:
         }
         new_employee = pd.DataFrame(new_employee_dict, index=[0])
 
-        df_encoded = pd.get_dummies(df[features], drop_first=True)
-        X_rf_columns = df_encoded.columns
-        new_employee_encoded = pd.get_dummies(new_employee, drop_first=True).reindex(columns=X_rf_columns, fill_value=0)
+        # Encodage de l'employé simulé
+        new_employee_encoded = pd.get_dummies(new_employee, drop_first=True).reindex(columns=X_rf.columns, fill_value=0)
 
-        rf_model_sim = RandomForestClassifier(random_state=42)
-        rf_model_sim.fit(df_encoded, df["Attrition"])
-
+        # Prédiction avec le modèle déjà chargé
         proba = rf_model_sim.predict_proba(new_employee_encoded)[0]
-        # La classe 0 correspond à "rester dans l'entreprise"
-        proba_rester = proba[0]
-        pourcentage = proba_rester * 100
+        proba_rester = proba[0] * 100
 
-        if pourcentage >= 70:
-            st.success(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
-        elif pourcentage >= 40:
-            st.warning(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+        if proba_rester >= 70:
+            st.success(f"✅ Probabilité que l'employé reste : {proba_rester:.2f}%")
+        elif proba_rester >= 50:
+            st.warning(f"⚠️ Probabilité que l'employé reste : {proba_rester:.2f}%")
         else:
-            st.error(f"Probabilité que l'employé reste dans l'entreprise : {pourcentage:.2f} %")
+            st.error(f"🚨 Probabilité que l'employé reste : {proba_rester:.2f}%")
+
+
+# Analyse des raisons basée sur les différences par rapport aux médianes et aux taux globaux
+
+overall_attrition_rate = df["Attrition"].mean()
+reasons = []
+
+# Analyse numérique
+if monthly_income >= df["MonthlyIncome"].median():
+    reasons.append("Salaire mensuel est élevé, ce qui favorise la rétention.")
+else:
+    reasons.append("Salaire mensuel est faible, ce qui peut augmenter le risque de départ.")
+
+if years_at_company >= df["YearsAtCompany"].median():
+    reasons.append("Ancienneté importante, indiquant une fidélité plus forte.")
+else:
+    reasons.append("Ancienneté faible, ce qui peut refléter une propension au départ.")
+
+if absence_days_input <= df["AbsenceDays"].median():
+    reasons.append("Faible nombre de jours d'absence, ce qui est un signe positif.")
+else:
+    reasons.append("Nombre de jours d'absence élevé, ce qui peut être un indicateur de désengagement.")
+
+# Analyse catégorielle
+
+# Pour JobRole
+jobrole_rate = df.groupby("JobRole")["Attrition"].mean().get(jobrole)
+if jobrole_rate is not None:
+    if jobrole_rate > overall_attrition_rate:
+        reasons.append(f"Le rôle de {jobrole} est souvent associé à une attrition élevée.")
+    else:
+        reasons.append(f"Le rôle de {jobrole} tend à bénéficier d'une faible attrition.")
+
+# Pour BusinessTravel
+# On utilise directement la modalité choisie pour formuler le message
+if business_travel_choice == "Travel_Frequently":
+    reasons.append("Voyager fréquemment est souvent lié à une attrition élevée.")
+elif business_travel_choice == "Travel_Rarely":
+    reasons.append("Voyager rarement est généralement moins risqué en termes d'attrition.")
+else:
+    reasons.append("Ne pas voyager est associé à une faible attrition.")
+
+# Pour Department
+department_rate = df.groupby("Department")["Attrition"].mean().get(department)
+if department_rate is not None:
+    if department_rate > overall_attrition_rate:
+        reasons.append(f"Le département {department} affiche un taux d'attrition élevé, ce qui peut indiquer un environnement plus instable.")
+    else:
+        reasons.append(f"Le département {department} présente un faible taux d'attrition, favorisant la rétention.")
+
+st.write("**Principales raisons identifiées :** " + " / ".join(reasons))
