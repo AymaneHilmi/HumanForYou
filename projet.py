@@ -745,13 +745,7 @@ with page6:
         }
         new_employee = pd.DataFrame(new_employee_dict, index=[0])
 
-        # Préparation des données pour le modèle Random Forest via one-hot encoding
-        features_rf = ["JobRole", "JobLevel", "YearsAtCompany", "YearsWithCurrManager",
-                       "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
-                       "PercentSalaryHike", "JobSatisfaction", "WorkLifeBalance",
-                       "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
-                       "AbsenceDays", "TotalWorkingYears", "Department"]
-        df_encoded = pd.get_dummies(df[features_rf], drop_first=True)
+        df_encoded = pd.get_dummies(df[features], drop_first=True)
         X_rf_columns = df_encoded.columns
         new_employee_encoded = pd.get_dummies(new_employee, drop_first=True).reindex(columns=X_rf_columns, fill_value=0)
 
