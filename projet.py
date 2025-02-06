@@ -584,7 +584,7 @@ with page3:
     # Créer le graphique 3D
     fig = px.scatter_3d(df, x='YearsAtCompany', y='MonthlyIncome', z='Attrition',
                         color='Attrition', 
-                        labels={'Attrition': 'Attrition (0 = Non, 1 = Oui)', 'YearsAtCompany': 'Ancienneté (années)', 'MonthlyIncome': 'Salaire (€)'}, 
+                        labels={'Attrition': 'Attrition (0 = Non, 1 = Oui)', 'YearsAtCompany': 'Ancienneté (années)', 'MonthlyIncome': 'Salaire (₹)'}, 
                         title="Ancienneté, Salaire et Attrition dans un espace 3D")
 
     # Affichage dans Streamlit
