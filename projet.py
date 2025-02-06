@@ -20,6 +20,8 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler, MinMaxScaler
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.inspection import permutation_importance
+from lifelines import KaplanMeierFitter
+
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
 # -----------------------------------------------------------------------------
@@ -431,9 +433,11 @@ with page2:
         # Visualisation dynamique de la variable sélectionnée
         st.subheader("Visualisation de la variable sélectionnée : **{}**".format(selected_var))
 
+
+
         # Histogramme avec distribution et KDE
         st.markdown("**Histogramme avec distribution et KDE**")
-        fig, ax = plt.subplots(figsize=(8, 3))
+        fig, ax = plt.subplots(figsize=(5, 2))
         sns.histplot(df[selected_var], kde=True, color="royalblue", ax=ax)
         ax.set_xlabel(selected_var)
         ax.set_ylabel("Fréquence")
@@ -441,14 +445,14 @@ with page2:
 
         # Boxplot
         st.markdown("**Boxplot**")
-        fig, ax = plt.subplots(figsize=(6, 3))
+        fig, ax = plt.subplots(figsize=(5, 2))
         sns.boxplot(x=df[selected_var], color="lightcoral", ax=ax)
         ax.set_xlabel(selected_var)
         st.pyplot(fig)
 
         # Courbe de densité (KDE)
         st.markdown("**Courbe de densité (KDE)**")
-        fig, ax = plt.subplots(figsize=(8, 3))
+        fig, ax = plt.subplots(figsize=(5, 2))
         sns.kdeplot(df[selected_var], fill=True, color="green", ax=ax)
         ax.set_xlabel(selected_var)
         ax.set_ylabel("Densité")
@@ -464,133 +468,154 @@ with page2:
 # Page 3 : Analyse Bivariée & Multivariée
 # -----------------------------------------------------------------------------
 with page3:
-    with st.expander("🔎 Options d'analyse", expanded=False):
-        selected_features = st.multiselect(
-            "Sélectionnez les variables pour la matrice de corrélation :",
-            df.select_dtypes(include=['int64', 'float64']).columns.tolist(),
-            default=["Attrition","JobLevel", "YearsAtCompany", "YearsWithCurrManager",
-                     "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
-                     "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
-                     "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
-                     "DistanceFromHome", "AbsenceDays", "TotalWorkingYears",
-                     "PerformanceRating", "JobInvolvement"]
+
+    # Création des onglets principaux
+    bivariée, multivariée  = st.tabs([
+        "Analyse Bivariée",
+        "Analyse Multivariée",
+    ])
+    with bivariée:
+        with st.expander("🔎 Options d'analyse", expanded=False):
+            selected_features = st.multiselect(
+                "Sélectionnez les variables pour la matrice de corrélation :",
+                df.select_dtypes(include=['int64', 'float64']).columns.tolist(),
+                default=["Attrition","JobLevel", "YearsAtCompany", "YearsWithCurrManager",
+                        "YearsSinceLastPromotion", "NumCompaniesWorked", "MonthlyIncome",
+                        "PercentSalaryHike", "StockOptionLevel", "JobSatisfaction", "WorkLifeBalance",
+                        "EnvironmentSatisfaction", "TrainingTimesLastYear", "BusinessTravel",
+                        "DistanceFromHome", "AbsenceDays", "TotalWorkingYears",
+                        "PerformanceRating", "JobInvolvement"]
+            )
+        
+        st.subheader("📌 Matrice de Corrélation")
+        correlation_matrix = normalized_df[selected_features].corr()
+        # Inversion pour une meilleure orientation
+        correlation_matrix = correlation_matrix.iloc[::-1]
+        fig_corr = ff.create_annotated_heatmap(
+            z=correlation_matrix.values,
+            x=list(correlation_matrix.columns),
+            y=list(correlation_matrix.index)[::-1],
+            colorscale="RdBu",
+            annotation_text=np.round(correlation_matrix.values, 2),
+            showscale=True,
+            reversescale=True
         )
+        fig_corr.update_layout(
+            title="Matrice de Corrélation",
+            xaxis=dict(title="Variables"),
+            yaxis=dict(title="Variables"),
+            margin=dict(l=100, r=100, t=50, b=50),
+            height=700
+        )
+        st.plotly_chart(fig_corr, use_container_width=True)
+
+        st.subheader("📈 Relation entre l’ancienneté et le salaire")
+
+        # Création des colonnes pour structurer l'affichage
+        col1, col2 = st.columns([1, 2])
+
     
-    st.subheader("📌 Matrice de Corrélation")
-    correlation_matrix = normalized_df[selected_features].corr()
-    # Inversion pour une meilleure orientation
-    correlation_matrix = correlation_matrix.iloc[::-1]
-    fig_corr = ff.create_annotated_heatmap(
-        z=correlation_matrix.values,
-        x=list(correlation_matrix.columns),
-        y=list(correlation_matrix.index)[::-1],
-        colorscale="RdBu",
-        annotation_text=np.round(correlation_matrix.values, 2),
-        showscale=True,
-        reversescale=True
-    )
-    fig_corr.update_layout(
-        title="Matrice de Corrélation",
-        xaxis=dict(title="Variables"),
-        yaxis=dict(title="Variables"),
-        margin=dict(l=100, r=100, t=50, b=50),
-        height=700
-    )
-    st.plotly_chart(fig_corr, use_container_width=True)
+        st.write("📊 **Visualisation avec Scatter Plot**")
+        st.scatter_chart(df, x="YearsAtCompany", y="MonthlyIncome", color="YearsAtCompany")
 
-    st.subheader("📈 Relation entre l’ancienneté et le salaire")
+        st.markdown("---")
 
-    # Création des colonnes pour structurer l'affichage
-    col1, col2 = st.columns([1, 2])
+        st.subheader("📊 Comparaisons selon l'Attrition")
 
-   
-    st.write("📊 **Visualisation avec Scatter Plot**")
-    st.scatter_chart(df, x="YearsAtCompany", y="MonthlyIncome", color="YearsAtCompany")
+        # 📌 Boxplot : Attrition vs Salaire
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write("💰 **Comparaison des salaires selon l'attrition**")
+            st.dataframe(df[['Attrition', 'MonthlyIncome']].head(10))
 
-    st.markdown("---")
+        with col2:
+            st.write("📦 **Boxplot : Salaire vs Attrition**")
+            fig, ax = plt.subplots(figsize=(4, 2))  # Ajuste la taille selon ton besoin
+            sns.boxplot(x=df["Attrition"], y=df["MonthlyIncome"], palette="coolwarm", ax=ax)
+            ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
+            ax.set_ylabel("Salaire Mensuel")
+            st.pyplot(fig)
 
-    st.subheader("📊 Comparaisons selon l'Attrition")
+        st.markdown("---")
 
-    # 📌 Boxplot : Attrition vs Salaire
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.write("💰 **Comparaison des salaires selon l'attrition**")
-        st.dataframe(df[['Attrition', 'MonthlyIncome']].head(10))
+        # 📌 Violin Plot : Satisfaction vs Attrition
+        col1, col2 = st.columns([1, 2])
+        with col1:
+            st.write("😀 **Satisfaction au travail vs Attrition**")
+            st.dataframe(df[['Attrition', 'JobSatisfaction']].head(10))
 
-    with col2:
-        st.write("📦 **Boxplot : Salaire vs Attrition**")
-        fig, ax = plt.subplots(figsize=(4, 2))  # Ajuste la taille selon ton besoin
-        sns.boxplot(x=df["Attrition"], y=df["MonthlyIncome"], palette="coolwarm", ax=ax)
-        ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
-        ax.set_ylabel("Salaire Mensuel")
-        st.pyplot(fig)
+        with col2:
+            st.write("🎻 **Violin Plot : Satisfaction au travail vs Attrition**")
+            fig, ax = plt.subplots()
+            sns.violinplot(x=df["Attrition"], y=df["JobSatisfaction"], palette="coolwarm", ax=ax)
+            ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
+            ax.set_ylabel("Niveau de Satisfaction")
+            st.pyplot(fig)
 
-    st.markdown("---")
+        st.markdown("---")
 
-    # 📌 Violin Plot : Satisfaction vs Attrition
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        st.write("😀 **Satisfaction au travail vs Attrition**")
-        st.dataframe(df[['Attrition', 'JobSatisfaction']].head(10))
+        # 📌 Grouped Bar Chart & Comparaison Attrition
+        st.subheader("📊 Analyse de l'Attrition")
 
-    with col2:
-        st.write("🎻 **Violin Plot : Satisfaction au travail vs Attrition**")
-        fig, ax = plt.subplots()
-        sns.violinplot(x=df["Attrition"], y=df["JobSatisfaction"], palette="coolwarm", ax=ax)
-        ax.set_xlabel("Attrition (0 = Reste, 1 = Quitte)")
-        ax.set_ylabel("Niveau de Satisfaction")
-        st.pyplot(fig)
-
-    st.markdown("---")
-
-    # 📌 Grouped Bar Chart & Comparaison Attrition
-    st.subheader("📊 Analyse de l'Attrition")
-
-    # Sélecteur de catégorie pour la répartition de l'attrition et la comparaison
-    category = st.selectbox("📍 Choisir une catégorie d'analyse :",
+        # Sélecteur de catégorie pour la répartition de l'attrition et la comparaison
+        category = st.selectbox("📍 Choisir une catégorie d'analyse :",
                             ["Department", "Gender", "MaritalStatus",
                             "Salaire Moyen", "Années dans l'Entreprise",
                             "Dernière Augmentation (%)", "Nombre d'Entreprises Précédentes",
                             "Niveau Hiérarchique", "Distance Domicile-Travail",
                             "Score Satisfaction", "Taux de Promotion", "Taux d'Absence"])
 
-    # Mapping des variables catégoriques
-    df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
-    df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
+        # Mapping des variables catégoriques
+        df["Gender"] = df["Gender"].map({1: "Homme", 0: "Femme"})
+        df["MaritalStatus"] = df["MaritalStatus"].map({0: "Célibataire", 1: "Marié", 2: "Divorcé"})
 
-    # Transformation des données pour la comparaison
-    df_comparison = df.copy()
-    attrition_comparison = {
-        "Salaire Moyen": df_comparison.groupby("Attrition")["MonthlyIncome"].mean(),
-        "Années dans l'Entreprise": df_comparison.groupby("Attrition")["YearsAtCompany"].mean(),
-        "Dernière Augmentation (%)": df_comparison.groupby("Attrition")["PercentSalaryHike"].mean(),
-        "Nombre d'Entreprises Précédentes": df_comparison.groupby("Attrition")["NumCompaniesWorked"].mean(),
-        "Niveau Hiérarchique": df_comparison.groupby("Attrition")["JobLevel"].mean(),
-        "Distance Domicile-Travail": df_comparison.groupby("Attrition")["DistanceFromHome"].mean(),
-        "Score Satisfaction": df_comparison.groupby("Attrition")["SatisfactionScore"].mean(),
-        "Taux de Promotion": df_comparison.groupby("Attrition")["PromotionRate"].mean(),
-        "Taux d'Absence": df_comparison.groupby("Attrition")["AbsenceRate"].mean()
-    }
+        # Transformation des données pour la comparaison
+        df_comparison = df.copy()
+        attrition_comparison = {
+            "Salaire Moyen": df_comparison.groupby("Attrition")["MonthlyIncome"].mean(),
+            "Années dans l'Entreprise": df_comparison.groupby("Attrition")["YearsAtCompany"].mean(),
+            "Dernière Augmentation (%)": df_comparison.groupby("Attrition")["PercentSalaryHike"].mean(),
+            "Nombre d'Entreprises Précédentes": df_comparison.groupby("Attrition")["NumCompaniesWorked"].mean(),
+            "Niveau Hiérarchique": df_comparison.groupby("Attrition")["JobLevel"].mean(),
+            "Distance Domicile-Travail": df_comparison.groupby("Attrition")["DistanceFromHome"].mean(),
+            "Score Satisfaction": df_comparison.groupby("Attrition")["SatisfactionScore"].mean(),
+            "Taux de Promotion": df_comparison.groupby("Attrition")["PromotionRate"].mean(),
+            "Taux d'Absence": df_comparison.groupby("Attrition")["AbsenceRate"].mean()
+        }
 
-    # Affichage des graphiques
-    if category in ["Department", "Gender", "MaritalStatus"]:
-        # Répartition de l'attrition
-        st.subheader(f"📌 Répartition de l'Attrition par {category}")
-        st.bar_chart(df.groupby(category)["Attrition"].value_counts().unstack())
-    else:
-        # Comparaison des employés partis vs restants
-        st.subheader(f"📌 Comparaison des Employés Partis vs. Restants ({category})")
-        st.bar_chart(attrition_comparison[category])
+        # Affichage des graphiques
+        if category in ["Department", "Gender", "MaritalStatus"]:
+            # Répartition de l'attrition
+            st.subheader(f"📌 Répartition de l'Attrition par {category}")
+            st.bar_chart(df.groupby(category)["Attrition"].value_counts().unstack())
+        else:
+            # Comparaison des employés partis vs restants
+            st.subheader(f"📌 Comparaison des Employés Partis vs. Restants ({category})")
+            st.bar_chart(attrition_comparison[category])
     
-    # Créer le graphique 3D
-    fig = px.scatter_3d(df, x='YearsAtCompany', y='MonthlyIncome', z='Attrition',
-                        color='Attrition', 
-                        labels={'Attrition': 'Attrition (0 = Non, 1 = Oui)', 'YearsAtCompany': 'Ancienneté (années)', 'MonthlyIncome': 'Salaire (€)'}, 
-                        title="Ancienneté, Salaire et Attrition dans un espace 3D")
+    with multivariée :
+        # Créer le graphique 3D
+        fig = px.scatter_3d(df, x='YearsAtCompany', y='MonthlyIncome', z='Attrition',
+                            color='Attrition', 
+                            labels={'Attrition': 'Attrition (0 = Non, 1 = Oui)', 'YearsAtCompany': 'Ancienneté (années)', 'MonthlyIncome': 'Salaire (€)'}, 
+                            title="Ancienneté, Salaire et Attrition dans un espace 3D")
 
-    # Affichage dans Streamlit
-    st.title('Graphique 3D - Ancienneté, Salaire et Attrition')
-    st.plotly_chart(fig)
+        # Affichage dans Streamlit
+        st.title('Graphique 3D - Ancienneté, Salaire et Attrition')
+        st.subheader('Graphique 3D - Ancienneté, Salaire et Attrition')
+        st.plotly_chart(fig)
+        
+        st.title("Graphique interactif des relations entre les variables")
+
+        # Sélection des axes pour explorer les relations
+        x_axis = st.selectbox("Sélectionnez l'axe X", df.columns)
+        y_axis = st.selectbox("Sélectionnez l'axe Y", df.columns)
+        color_var = st.selectbox("Sélectionnez la variable de couleur", df.columns)
+
+        # Affichage du scatter chart natif Streamlit
+        st.scatter_chart(df, x=x_axis, y=y_axis, color=color_var)
+
+    
 
     
         
@@ -599,7 +624,28 @@ with page3:
 # -----------------------------------------------------------------------------
 with page4:
     st.title("Analyse Avancée & Business Insights")
-    st.write("Ici aymane")
+    st.subheader("📈 Courbe de Rétention des Employés")
+
+    # ⏳ Durée de survie = Nombre d'années dans l'entreprise
+    df["Duration"] = df["YearsAtCompany"]
+
+    # 🚪 Variable indicatrice (1 = employé parti, 0 = toujours en poste)
+    df["Event"] = df["Attrition"]
+
+    # 📊 Kaplan-Meier Fitter
+    kmf = KaplanMeierFitter()
+    kmf.fit(df["Duration"], event_observed=df["Event"])
+
+    # 🔹 Transformation en DataFrame pour Streamlit
+    survival_df = pd.DataFrame({
+        "Années": kmf.survival_function_.index,
+        "Probabilité de survie": kmf.survival_function_["KM_estimate"]
+    })
+
+    # 📊 Graphique natif avec st.line_chart
+    st.line_chart(survival_df.set_index("Années"))
+
+
 
 # -----------------------------------------------------------------------------
 # Page 5 : Prédiction
