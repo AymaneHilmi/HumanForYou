@@ -925,7 +925,6 @@ with page5:
         ax.set_title("Comparaison des modèles par rapport au F1 Score")
         st.pyplot(fig)
 
-
         # Calcul du meilleur modèle pour chaque métrique
         best_f1_model = df_results["best_score"].idxmax()
         best_precision_model = df_results["best_precision"].idxmax()
