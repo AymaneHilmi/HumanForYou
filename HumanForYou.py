@@ -945,7 +945,6 @@ with page5:
         # Sauvegarde des résultats dans st.session_state pour une utilisation ultérieure
         st.session_state["hyper_results"] = results_dict
 
-
 # -----------------------------------------------------------------------------
 # Page 5 : Aide à la Décision
 # -----------------------------------------------------------------------------
