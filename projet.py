@@ -745,7 +745,6 @@ with page5:
         grid_params_lr = {
             "C": [0.01, 0.1, 1, 10, 100],
             "penalty": ["l1", "l2"],
-            "solver" : ["liblinear", "saga", "lbfgs"],
             "max_iter": [100, 200, 300, 400, 500]
         }
         encode_cols_lr = ["JobRole", "BusinessTravel", "Department"]
@@ -800,8 +799,7 @@ with page5:
         st.markdown("### SVM")
         grid_params_svm = {
             "C": [0.1, 1, 10, 100, 1000],
-            "gamma": [1e-3, 1e-2, 1e-1, 1],
-            "kernel": ["rbf"]
+            "gamma": [1, 0.1, 0.01, 0.001, 0.0001],
         }
         encode_cols_svm = ["JobRole", "Department", "BusinessTravel"]
         X_train_svm, X_test_svm, y_train_svm, y_test_svm = prepare_data_model(
@@ -853,13 +851,9 @@ with page5:
         ############################################################################
         st.markdown("### Random Forest")
         grid_params_rf = {
-            "n_estimators": [100, 200, 300, 400],
-            "max_depth": [None, 5, 10, 15, 20],
-            "min_samples_split": [2, 5, 10],
-            "min_samples_leaf": [1, 2, 4],
-            "max_features": ["sqrt", "log2", None],
-            "bootstrap": [True, False],
-            "class_weight": ["balanced", None]
+            "n_estimators": [100, 200, 300, 400, 500],
+            "max_features": ["auto", "sqrt", "log2"],
+            "max_depth": [10, 20, 30, 40, 50],
         }
         df_encoded_rf = pd.get_dummies(df[features], drop_first=True)
         X_rf = df_encoded_rf
