@@ -867,7 +867,7 @@ with page5:
             search_rf = RandomizedSearchCV(
                 estimator=model_rf,
                 param_distributions=grid_params_rf,
-                n_iter=20,
+                n_iter=50,
                 cv=5,
                 scoring={'f1': 'f1', 'accuracy': 'accuracy', 'recall': 'recall', 'precision': 'precision'},
                 refit='f1',
